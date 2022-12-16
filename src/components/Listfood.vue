@@ -69,11 +69,7 @@ export default {
       fetchData();
     });
 
-    const checkSpaces = (text) => {
-      let r = text.replaceAll(/,(\S)/, ", $1");
-      console.log(r);
-      return r;
-    };
+    const checkSpaces = (text) => text.replaceAll(/,(\S)/, ", $1");
 
     return {
       data,
