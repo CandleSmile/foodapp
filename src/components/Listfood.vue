@@ -5,12 +5,19 @@
     @entersearch="doSearch"
   ></SearchInput>
   <div class="flex-container" v-if="!loading && data && data.length">
-    <div class="flex-item meal-box" v-for="(meal, index) in data" :key="index">
-      <p>
-        <span>{{ meal.food.brand }}</span>
-      </p>
-      <p><span>Name: </span>{{ meal.food.label }}</p>
-      <p><span>Category: </span>{{ meal.food.category }}</p>
+    <div
+      class="flex-item meal-box"
+      :style="{ backgroundImage: 'url(' + meal.strMealThumb + ')' }"
+      v-for="(meal, index) in data"
+      :key="index"
+    >
+      <div class="tagsProd">
+        <div v-if="meal.strTags && meal.strTags != ''">
+          {{ checkSpaces(meal.strTags ?? "") }}
+        </div>
+      </div>
+
+      <div class="nameProd">{{ meal.strMeal }}</div>
     </div>
   </div>
   <div v-else-if="!loading && data == null && error == null">
@@ -43,7 +50,7 @@ export default {
     const fetchData = async (query) => {
       loading.value = true;
       try {
-        let info = await FoodApi.getFood(query ?? "");
+        let info = await FoodApi.getFood(query);
 
         loading.value = false;
 
@@ -59,16 +66,28 @@ export default {
     };
 
     onMounted(() => {
-      fetchData("salad");
+      fetchData();
     });
+
+    const checkSpaces = (text) => {
+      let r = text.replaceAll(/,(\S)/, ", $1");
+      console.log(r);
+      return r;
+    };
 
     return {
       data,
       loading,
       error,
       doSearch,
+      checkSpaces,
     };
   },
+};
+
+String.prototype.replaceAll = function (search, replacement) {
+  const target = this;
+  return target.replace(new RegExp(search, "g"), replacement);
 };
 </script>
 
@@ -82,14 +101,54 @@ export default {
 }
 
 .flex-container > .flex-item {
-  flex-basis: 50%;
+  flex-basis: 30%;
+  margin-bottom: 30px;
 }
+.flex-container > .flex-item:not(:nth-child(3n)) {
+  margin-right: 5%;
+}
+
 .meal-box {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  align-content: space-between;
+  flex-wrap: wrap;
   box-sizing: border-box;
-  box-shadow: inset 0 0 0 1px #8c8c8c;
-  padding: 20px;
+  opacity: 0.75;
+  background-size: cover;
+  background-position: center;
+  min-height: 200px;
 }
-.meal-box p > span {
-  font-weight: bold;
+.meal-box div {
+  display: -webkit-flex;
+  display: flex;
+}
+.meal-box > div {
+  width: 100%;
+}
+.meal-box > .tagsProd {
+  justify-content: end;
+}
+
+.meal-box > .tagsProd > div {
+  justify-content: end;
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 0.8em;
+  color: #fff;
+  background-color: rgb(0, 61, 66);
+}
+
+.meal-box > .nameProd {
+  flex-basis: 100%;
+  align-self: flex-end;
+  justify-content: center;
+  align-items: center;
+  min-height: 30px;
+  padding: 10px;
+  color: #fff;
+  background: rgb(0 0 0 / 50%);
 }
 </style>

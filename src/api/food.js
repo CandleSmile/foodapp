@@ -1,21 +1,18 @@
 import conf from "./configapi.js";
 export default {
-  getFood: async function (searchString) {
+  getFood: async (searchstring) => {
     let result = {
       ok: false,
       data: null,
       error: null,
     };
+    const url = `${conf.mainUrl}${conf.apiKey}${
+      searchstring ? conf.getSearchProducts : conf.getLatestProducts
+    }${searchstring ?? ""}`;
 
-    const mealRes = await fetch(
-      `${conf.getFoodUrl}?app_id=${conf.apiId}&app_key=${conf.apiKey}&ingr=${searchString}`,
-      {
-        method: "get",
-        headers: {
-          "content-type": "application/json",
-        },
-      }
-    );
+    const mealRes = await fetch(url, {
+      method: "get",
+    });
 
     if (!mealRes.ok) {
       result.error = new Error(mealRes.statusText);
@@ -23,7 +20,7 @@ export default {
     } else {
       const meals = await mealRes.json();
       result.ok = true;
-      result.data = meals ? meals.hints : [];
+      result.data = meals && meals.meals ? meals.meals : [];
     }
 
     return result;

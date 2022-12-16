@@ -38,7 +38,6 @@ const onSearch = () => {
 .searchForm .searchstring {
   flex-basis: 400px;
   margin-right: 20px;
-
   padding: 10px;
 }
 </style>
