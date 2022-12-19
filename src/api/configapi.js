@@ -5,4 +5,5 @@ export default {
   getProductsUrl: "/filter.php?c=",
   getLatestProducts: "/randomselection.php",
   getSearchProducts: "/search.php?s=",
+  getFoodByIdUrl: "/lookup.php?i=",
 };

@@ -1,28 +1,25 @@
 <template>
-  <Greeting msg="THE BEST FOOD" />
-  <Listfood></Listfood>
+  <header class="header">
+    <Greeting msg="THE BEST FOOD" />
+    <Navigation></Navigation>
+  </header>
+  <main>
+    <router-view></router-view>
+  </main>
 </template>
 
 <script>
 import Greeting from "./components/Greeting.vue";
-import Listfood from "./components/Listfood.vue";
-
+import Navigation from "./components/Navigation.vue";
 export default {
   name: "App",
   components: {
     Greeting,
-    Listfood,
+    Navigation,
   },
 };
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import "./assets/styles/index.scss";
 </style>

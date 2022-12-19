@@ -4,20 +4,28 @@
     placeholder="Search products"
     @entersearch="doSearch"
   ></SearchInput>
-  <div class="flex-container" v-if="!loading && data && data.length">
+  <div class="list-food" v-if="!loading && data && data.length">
     <div
-      class="flex-item meal-box"
+      class="list-food__item"
       :style="{ backgroundImage: 'url(' + meal.strMealThumb + ')' }"
       v-for="(meal, index) in data"
       :key="index"
     >
-      <div class="tagsProd">
-        <div v-if="meal.strTags && meal.strTags != ''">
-          {{ checkSpaces(meal.strTags ?? "") }}
+      <router-link
+        :to="{ name: 'food', params: { id: meal.idMeal } }"
+        class="list-food__link"
+      >
+        <div class="list-food__tags">
+          <div
+            class="list-food__tags-desc"
+            v-if="meal.strTags && meal.strTags != ''"
+          >
+            {{ checkSpaces(meal.strTags ?? "") }}
+          </div>
         </div>
-      </div>
 
-      <div class="nameProd">{{ meal.strMeal }}</div>
+        <div class="list-food__name">{{ meal.strMeal }}</div>
+      </router-link>
     </div>
   </div>
   <div v-else-if="!loading && data == null && error == null">
@@ -51,9 +59,7 @@ export default {
       loading.value = true;
       try {
         let info = await FoodApi.getFood(query);
-
         loading.value = false;
-
         if (!info.ok) {
           error.value = info.error.json;
         } else {
@@ -87,49 +93,42 @@ String.prototype.replaceAll = function (search, replacement) {
 };
 </script>
 
-<style scoped>
-.flex-container {
-  display: -webkit-flex;
+<style lang="scss">
+.list-food {
   display: flex;
-  -webkit-flex-direction: row;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.flex-container > .flex-item {
-  flex-basis: 30%;
-  margin-bottom: 30px;
-}
-.flex-container > .flex-item:not(:nth-child(3n)) {
-  margin-right: 5%;
-}
-
-.meal-box {
-  display: -webkit-flex;
+.list-food__item {
   display: flex;
-  -webkit-flex-direction: row;
+
+  flex-basis: 30%;
+  min-height: 200px;
+  margin-bottom: 30px;
+
+  background-size: cover;
+  background-position: center;
+  opacity: 0.75;
+  &:not(:nth-child(3n)) {
+    margin-right: 5%;
+  }
+}
+.list-food__link {
+  display: flex;
+  flex-basis: 100%;
+  height: 100%;
   flex-direction: row;
   align-content: space-between;
   flex-wrap: wrap;
-  box-sizing: border-box;
-  opacity: 0.75;
-  background-size: cover;
-  background-position: center;
-  min-height: 200px;
+  text-decoration-line: none;
 }
-.meal-box div {
-  display: -webkit-flex;
+.list-food__tags {
+  justify-content: flex-end;
+  flex-basis: 100%;
   display: flex;
 }
-.meal-box > div {
-  width: 100%;
-}
-.meal-box > .tagsProd {
-  justify-content: end;
-}
-
-.meal-box > .tagsProd > div {
-  justify-content: end;
+.list-food__tags-desc {
   margin: 0;
   padding: 5px 10px;
   font-size: 0.8em;
@@ -137,11 +136,8 @@ String.prototype.replaceAll = function (search, replacement) {
   background-color: rgb(0, 61, 66);
 }
 
-.meal-box > .nameProd {
+.list-food__name {
   flex-basis: 100%;
-  align-self: flex-end;
-  justify-content: center;
-  align-items: center;
   min-height: 30px;
   padding: 10px;
   color: #fff;

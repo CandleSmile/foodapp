@@ -1,13 +1,18 @@
 <template>
-  <div class="searchForm">
+  <div class="search-form">
     <input
       type="text"
       :placeholder="placeholder"
-      class="searchstring"
+      class="search-form__input"
       :id="id"
       v-model="query"
     />
-    <input type="button" @click="onSearch" value="Search" />
+    <input
+      type="button"
+      @click="onSearch"
+      value="Search"
+      class="search-form__button"
+    />
   </div>
 </template>
 
@@ -23,7 +28,7 @@ const onSearch = () => {
 </script>
 
 <style scoped>
-.searchForm {
+.search-form {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: row;
@@ -32,10 +37,10 @@ const onSearch = () => {
   justify-content: center;
   margin-bottom: 20px;
 }
-.searchForm > input[type="button"] {
+.search-form__button {
   flex-basis: 30px;
 }
-.searchForm .searchstring {
+.search-form__input {
   flex-basis: 400px;
   margin-right: 20px;
   padding: 10px;

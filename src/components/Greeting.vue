@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <h1 class="greeting">{{ msg }}</h1>
-  </div>
+  <h1 class="greeting header__greeting">{{ msg }}</h1>
 </template>
 
 <script>
@@ -15,7 +13,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+@import "../assets/styles/variables.scss";
 .greeting {
-  color: aquamarine;
+  color: $greeting-color;
 }
 </style>
