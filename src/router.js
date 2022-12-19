@@ -13,9 +13,13 @@ const routeInfos = [
     name: "food",
   },
   {
-    path: "/:pathMatch(.*)*",
+    path: "/404",
     component: NotFound,
-    name: "not-found",
+    name: "404",
+  },
+  {
+    path: "/:catchAll(.*)",
+    redirect: "404",
   },
 ];
 
