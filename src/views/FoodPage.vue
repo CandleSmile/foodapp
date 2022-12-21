@@ -87,46 +87,46 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   margin-top: 50px;
-}
-
-.food__food-picture {
-  flex-basis: 30%;
-}
-.food_picture__image {
-  width: 100%;
-}
-.food-info {
-  padding: 0 20px;
-}
-.food__food-info {
-  flex-basis: 70%;
-  flex-direction: column;
-  display: flex;
-}
-
-.food-info__name {
-  font-weight: 900;
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-.food-info__cat {
-  margin-bottom: 20px;
-  & span {
-    font-weight: 900;
+  &__food-picture {
+    flex-basis: 30%;
+  }
+  &__food-info {
+    flex-basis: 70%;
+    flex-direction: column;
+    display: flex;
   }
 }
 
-.food-info__insrtuctions {
-  font-size: 0.9 rem;
+.food_picture {
+  &__image {
+    width: 100%;
+  }
 }
-.food-info__ingridients {
-  border: 1px #000;
-}
-.food-info__ingridients-title {
-  font-weight: 900;
-}
-.food-info__ingridients-list {
-  list-style: none;
-  padding: 0;
+.food-info {
+  padding: 0 20px;
+  &__name {
+    font-weight: 900;
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  &__cat {
+    margin-bottom: 20px;
+    & span {
+      font-weight: 900;
+    }
+  }
+  &__insrtuctions {
+    font-size: 0.9 rem;
+  }
+  &__ingridients {
+    border: 1px #000;
+  }
+  &__ingridients-title {
+    font-weight: 900;
+  }
+  &__ingridients-list {
+    list-style: none;
+    padding: 0;
+  }
 }
 </style>
