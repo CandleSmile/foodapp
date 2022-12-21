@@ -7,7 +7,7 @@
       id="searchQuery"
       placeholder="Search products"
       @entersearch="doSearch"
-    />
+    ></SearchInput>
   </header>
   <main>
     <router-view v-slot="{ Component }">
