@@ -1,25 +1,25 @@
 <template>
   <div class="list-food" v-if="!loading && data && data.length">
-    <div
-      class="list-food__item"
-      :style="{ backgroundImage: 'url(' + meal.strMealThumb + ')' }"
-      v-for="(meal, index) in data"
-      :key="index"
-    >
+    <div class="list-food__item" v-for="(meal, index) in data" :key="index">
       <router-link
         :to="{ name: 'food', params: { id: meal.idMeal } }"
         class="list-food__link"
       >
-        <div class="list-food__tags">
-          <div
-            class="list-food__tags-desc"
-            v-if="meal.strTags && meal.strTags != ''"
-          >
-            {{ checkSpaces(meal.strTags ?? "") }}
-          </div>
+        <div class="list-food__img-wrapper">
+          <img
+            class="list-food__img"
+            :src="meal.strMealThumb"
+            :alt="meal.strMeal"
+          />
         </div>
+        <div class="list-food__info-wrapper">
+          <div class="list-food__name">{{ meal.strMeal }}</div>
 
-        <div class="list-food__name">{{ meal.strMeal }}</div>
+          <div class="list-food__insrtuctions">{{ meal.strCategory }}</div>
+        </div>
+        <div class="list-food__tags">
+          {{ checkSpaces(meal.strTags ?? "") }}
+        </div>
       </router-link>
     </div>
   </div>
@@ -93,49 +93,65 @@ String.prototype.replaceAll = function (search, replacement) {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-}
+  justify-content: space-between;
 
-.list-food__item {
-  display: flex;
+  &__item {
+    display: flex;
 
-  flex-basis: 30%;
-  min-height: 200px;
-  margin-bottom: 30px;
-
-  background-size: cover;
-  background-position: center;
-  opacity: 0.75;
-  &:not(:nth-child(3n)) {
-    margin-right: 5%;
+    flex-basis: 30%;
+    min-height: 200px;
+    margin-bottom: 30px;
+    box-shadow: 0px 3px 3px 0px rgb(0 0 0 / 17%);
+    border-radius: 5px;
+    overflow: hidden;
   }
-}
-.list-food__link {
-  display: flex;
-  flex-basis: 100%;
-  height: 100%;
-  flex-direction: row;
-  align-content: space-between;
-  flex-wrap: wrap;
-  text-decoration-line: none;
-}
-.list-food__tags {
-  justify-content: flex-end;
-  flex-basis: 100%;
-  display: flex;
-}
-.list-food__tags-desc {
-  margin: 0;
-  padding: 5px 10px;
-  font-size: 0.8em;
-  color: #fff;
-  background-color: rgb(0, 61, 66);
-}
+  &__link {
+    display: flex;
+    flex-basis: 100%;
+    height: 100%;
+    flex-direction: row;
+    align-content: space-between;
+    flex-wrap: wrap;
+    text-decoration-line: none;
+  }
+  &__img-wrapper {
+    overflow: hidden;
+    max-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &__img {
+    width: 100%;
+  }
+  &__info-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    padding: 10px;
+  }
+  &__insrtuctions {
+    text-align: left;
+    color: #000;
+    font-size: 0.6em;
+  }
 
-.list-food__name {
-  flex-basis: 100%;
-  min-height: 30px;
-  padding: 10px;
-  color: #fff;
-  background: rgb(0 0 0 / 50%);
+  &__name {
+    flex-basis: 100%;
+    color: #000;
+    text-align: left;
+    font-size: 0.8em;
+    font-weight: 700;
+    line-height: 1.3em;
+  }
+  &__tags {
+    flex-basis: 100%;
+    color: #9a9a9a;
+    font-size: 0.6em;
+    text-align: left;
+    border-top: 1px dashed;
+    padding: 0 10px;
+    line-height: 2em;
+  }
 }
 </style>

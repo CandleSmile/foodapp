@@ -1,7 +1,8 @@
 <template>
   <header class="header">
-    <router-link to="/">
+    <router-link to="/" class="logo-title-block">
       <img class="logo" src="@/assets/images/logo.svg" />
+      <h1 class="site-title">THE BEST FOOD</h1>
     </router-link>
     <SearchInput
       id="searchQuery"
@@ -9,7 +10,7 @@
       @entersearch="doSearch"
     ></SearchInput>
   </header>
-  <main>
+  <main class="main-block">
     <router-view v-slot="{ Component }">
       <transition name="fade">
         <component :is="Component" />
