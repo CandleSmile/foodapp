@@ -2,7 +2,7 @@
   <header class="header">
     <router-link to="/" class="logo-title-block">
       <img class="logo" src="@/assets/images/logo.svg" />
-      <h1 class="site-title">THE BEST FOOD</h1>
+      <h1 class="site-title">THE <span>BEST </span>FOOD</h1>
     </router-link>
     <SearchInput
       id="searchQuery"
@@ -47,6 +47,7 @@ export default {
     watch(
       () => route.name,
       (name) => {
+        console.log(name);
         if (name != "home") {
           clearSearchForm.value = true;
         }

@@ -8,7 +8,7 @@
       v-model="query"
       v-on:keyup.enter="onSearch"
     />
-    <span class="search-form__icon"></span>
+    <span class="search-form__icon" v-on:click="onSearch"></span>
   </div>
 </template>
 
@@ -37,25 +37,28 @@ watch(clearSearchForm, (newVaue) => {
   align-self: center;
 }
 .search-form {
-  max-width: 600px;
-  min-width: 100px;
   position: relative;
-  &__button {
-    flex-basis: 30px;
-  }
+
   &__input {
     height: 25px;
-    background: #f4f6f6;
-    border: 2px solid #ededed;
+    background: $search-background-color;
+    border: 2px solid $search-border-color;
     border-radius: 50px;
     padding-left: 35px;
     padding-right: 10px;
     padding-top: 4px;
     padding-bottom: 4px;
     font-size: 14px;
-    color: #555;
+    color: $search-text-color;
+    -webkit-background-clip: text;
+    &::placeholder {
+      color: $search-placeholder-color;
+    }
     &:focus {
-      border-color: #ededed;
+      outline: none;
+      &::placeholder {
+        opacity: 0;
+      }
     }
   }
   &__icon {
@@ -63,14 +66,14 @@ watch(clearSearchForm, (newVaue) => {
     height: 12px;
     width: 12px;
     background: transparent;
-    border: 3px solid #958f8f;
+    border: 3px solid $search-icon-color;
     left: 12px;
     top: 9px;
     border-radius: 100%;
     &:after {
       content: "";
       position: absolute;
-      background: #958f8f;
+      background: $search-icon-color;
       height: 6px;
       width: 3px;
       bottom: -5px;

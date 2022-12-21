@@ -104,6 +104,7 @@ export default {
 }
 .food-info {
   padding: 0 20px;
+  text-align: left;
   &__name {
     font-weight: 900;
     font-size: 2rem;
@@ -120,6 +121,7 @@ export default {
   }
   &__ingridients {
     border: 1px #000;
+    font-size: 0.9em;
   }
   &__ingridients-title {
     font-weight: 900;

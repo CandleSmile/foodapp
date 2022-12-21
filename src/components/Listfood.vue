@@ -18,7 +18,9 @@
           <div class="list-food__insrtuctions">{{ meal.strCategory }}</div>
         </div>
         <div class="list-food__tags">
-          {{ checkSpaces(meal.strTags ?? "") }}
+          <span v-if="meal.strTags && meal.strTags != ''">{{
+            checkSpaces(meal.strTags)
+          }}</span>
         </div>
       </router-link>
     </div>
@@ -101,7 +103,7 @@ String.prototype.replaceAll = function (search, replacement) {
     flex-basis: 30%;
     min-height: 200px;
     margin-bottom: 30px;
-    box-shadow: 0px 3px 3px 0px rgb(0 0 0 / 17%);
+    box-shadow: 0px 3px 3px 0px $food-item-border-color;
     border-radius: 5px;
     overflow: hidden;
   }
@@ -110,7 +112,7 @@ String.prototype.replaceAll = function (search, replacement) {
     flex-basis: 100%;
     height: 100%;
     flex-direction: row;
-    align-content: space-between;
+    align-content: flex-start;
     flex-wrap: wrap;
     text-decoration-line: none;
   }
@@ -132,13 +134,13 @@ String.prototype.replaceAll = function (search, replacement) {
   }
   &__insrtuctions {
     text-align: left;
-    color: #000;
+    color: $text-dark-color;
     font-size: 0.6em;
   }
 
   &__name {
     flex-basis: 100%;
-    color: #000;
+    color: $text-dark-color;
     text-align: left;
     font-size: 0.8em;
     font-weight: 700;
@@ -146,12 +148,40 @@ String.prototype.replaceAll = function (search, replacement) {
   }
   &__tags {
     flex-basis: 100%;
-    color: #9a9a9a;
+    color: $text-light-color;
     font-size: 0.6em;
     text-align: left;
-    border-top: 1px dashed;
+    border-top: 1px dashed $text-light-color;
     padding: 0 10px;
     line-height: 2em;
+    min-height: 20px;
+  }
+}
+@media only screen and (min-width: 1824px) {
+  .list-food__item {
+    flex-basis: 22%;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .list-food__item {
+    flex-basis: 45%;
+  }
+}
+@media only screen and (min-width: 481px) and (max-width: 767px) {
+  .list-food {
+    justify-content: center;
+    &__item {
+      flex-basis: 52%;
+    }
+  }
+}
+@media only screen and (max-width: 480px) {
+  .list-food {
+    justify-content: center;
+    &__item {
+      flex-basis: 80%;
+    }
   }
 }
 </style>
