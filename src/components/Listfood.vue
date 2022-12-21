@@ -1,9 +1,4 @@
 <template>
-  <SearchInput
-    id="searchQuery"
-    placeholder="Search products"
-    @entersearch="doSearch"
-  ></SearchInput>
   <div class="list-food" v-if="!loading && data && data.length">
     <div
       class="list-food__item"
@@ -41,27 +36,27 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, inject, watch } from "vue";
 import FoodApi from "../api/food.js";
-import SearchInput from "./SearchInput.vue";
+
 export default {
   name: "list-food",
   props: {},
-  components: { SearchInput },
   setup() {
     const data = ref(null);
     const loading = ref(true);
     const error = ref(null);
-    const doSearch = (query) => {
-      fetchData(query);
-    };
+    const serchStr = inject("serchStr");
+    watch(serchStr, (newVaue) => {
+      fetchData(newVaue);
+    });
     const fetchData = async (query) => {
       loading.value = true;
       try {
         let info = await FoodApi.getFood(query);
         loading.value = false;
         if (!info.ok) {
-          error.value = info.error.json;
+          error.value = info.error;
         } else {
           data.value = info.data;
         }
@@ -81,7 +76,6 @@ export default {
       data,
       loading,
       error,
-      doSearch,
       checkSpaces,
     };
   },

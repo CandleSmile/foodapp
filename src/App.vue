@@ -1,21 +1,43 @@
 <template>
   <header class="header">
-    <Greeting msg="THE BEST FOOD" />
-    <Navigation></Navigation>
+    <router-link to="/">
+      <img class="logo" src="@/assets/images/logo.svg" />
+    </router-link>
+    <SearchInput
+      id="searchQuery"
+      placeholder="Search products"
+      @entersearch="doSearch"
+    ></SearchInput>
   </header>
   <main>
-    <router-view></router-view>
+    <router-view v-slot="{ Component }">
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </main>
 </template>
 
 <script>
-import Greeting from "./components/Greeting.vue";
-import Navigation from "./components/Navigation.vue";
+import SearchInput from "./components/SearchInput.vue";
+import { provide, ref } from "vue";
+
 export default {
   name: "App",
   components: {
-    Greeting,
-    Navigation,
+    SearchInput,
+  },
+
+  setup() {
+    const searchString = ref("");
+    const doSearch = (query) => {
+      searchString.value = query;
+    };
+    provide("serchStr", searchString);
+
+    return {
+      doSearch,
+    };
   },
 };
 </script>

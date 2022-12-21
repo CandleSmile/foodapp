@@ -1,52 +1,46 @@
+import axios from "axios";
 import conf from "./configapi.js";
-// rewrite to axios or make common functionality for fetch
+axios.defaults.baseURL = `${conf.mainUrl}${conf.apiKey}`;
+
+const getAxiosReq = async (url, parameters) => {
+  let result = {
+    ok: false,
+    data: null,
+    error: null,
+  };
+
+  await await axios
+    .get(url, { params: parameters })
+    .then((response) => {
+      result.ok = true;
+      result.data = response.data;
+    })
+    .catch((error) => {
+      if (error.response) {
+        result.Error = new Error(error.response.data);
+      } else if (error.request) {
+        result.Error = new Error(error.request);
+      } else {
+        result.Error = new Error(error.message);
+      }
+    });
+  return result;
+};
+
 export default {
   getFood: async (searchstring) => {
-    let result = {
-      ok: false,
-      data: null,
-      error: null,
-    };
-    const url = `${conf.mainUrl}${conf.apiKey}${
+    const url = `${
       searchstring ? conf.getSearchProducts : conf.getLatestProducts
     }${searchstring ?? ""}`;
-
-    const mealRes = await fetch(url, {
-      method: "get",
-    });
-
-    if (!mealRes.ok) {
-      result.error = new Error(mealRes.statusText);
-      result.error.json = await mealRes.json();
-    } else {
-      const meals = await mealRes.json();
-      result.ok = true;
-      result.data = meals && meals.meals ? meals.meals : [];
-    }
-
-    return result;
+    const res = await getAxiosReq(url);
+    return {
+      ok: res.ok,
+      data: res.data.meals,
+      error: res.error,
+    };
   },
   getFoodById: async (id) => {
-    let result = {
-      ok: false,
-      data: null,
-      error: null,
-    };
-
-    const url = `${conf.mainUrl}${conf.apiKey}${conf.getFoodByIdUrl}${id}`;
-    const food = await fetch(url, {
-      method: "get",
-    });
-
-    if (!food.ok) {
-      result.error = new Error(food.statusText);
-      result.error.json = await food.json();
-    } else {
-      result.ok = true;
-      const r = await food.json();
-      result.data = r;
-    }
-
-    return result;
+    const url = `${conf.getFoodByIdUrl}${id}`;
+    return await getAxiosReq(url);
   },
 };

@@ -1,5 +1,4 @@
 @import "~normalize.css";
-@import "@/assets/styles/variables.scss";
 div, p ,main, nav, article, header{
     box-sizing: border-box;
   }
@@ -7,4 +6,7 @@ div, p ,main, nav, article, header{
     font-family: Avenir, Helvetica, Arial, sans-serif;
     text-align: center;
     padding: 20px;
+  }
+  .logo{
+    width: 100px;
   }
