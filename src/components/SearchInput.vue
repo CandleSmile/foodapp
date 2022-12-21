@@ -17,14 +17,23 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from "vue";
-defineProps({ id: String, placeholder: String });
+import { defineProps, defineEmits, ref, inject, watch } from "vue";
+defineProps({
+  id: String,
+  placeholder: String,
+});
 const emit = defineEmits(["entersearch"]);
 const query = ref("");
 
 const onSearch = () => {
   emit("entersearch", query.value);
 };
+const clearSearchForm = inject("clearSearchForm");
+watch(clearSearchForm, (newVaue) => {
+  if (newVaue) {
+    query.value = "";
+  }
+});
 </script>
 
 <style scoped>

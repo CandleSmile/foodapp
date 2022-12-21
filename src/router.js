@@ -6,6 +6,7 @@ const routeInfos = [
   {
     path: "/",
     component: HomePage,
+    name: "home",
   },
   {
     path: "/foodPage/:id",

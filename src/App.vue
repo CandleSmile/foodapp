@@ -20,7 +20,8 @@
 
 <script>
 import SearchInput from "./components/SearchInput.vue";
-import { provide, ref } from "vue";
+import { provide, ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 export default {
   name: "App",
@@ -30,9 +31,28 @@ export default {
 
   setup() {
     const searchString = ref("");
+    const router = useRouter();
+    const route = useRoute();
+
     const doSearch = (query) => {
+      if (route.name != "home") {
+        router.push({ name: "home" });
+      }
+
       searchString.value = query;
     };
+    const clearSearchForm = ref(false);
+
+    watch(
+      () => route.name,
+      (name) => {
+        if (name != "home") {
+          clearSearchForm.value = true;
+        }
+      }
+    );
+
+    provide("clearSearchForm", clearSearchForm);
     provide("serchStr", searchString);
 
     return {
