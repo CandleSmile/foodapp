@@ -61,7 +61,7 @@ export default {
           error.value = info.error;
         } else {
           console.log(info.data);
-          data.value = info.data;
+          data.value = info.data ?? [];
         }
       } catch (err) {
         loading.value = false;
