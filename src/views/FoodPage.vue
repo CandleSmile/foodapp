@@ -1,5 +1,5 @@
 <template>
-  <div class="food">
+  <div class="food main-block__food">
     <div class="food-picture food__food-picture">
       <img
         class="food_picture__image"
@@ -81,28 +81,28 @@ export default {
 </script>
 <style scoped lang="scss">
 .food {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: row;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-top: 50px;
+
   &__food-picture {
     flex-basis: 30%;
   }
   &__food-info {
     flex-basis: 70%;
-    flex-direction: column;
-    display: flex;
   }
 }
-
+.main-block__food {
+  margin-top: 20px;
+}
 .food_picture {
   &__image {
     width: 100%;
   }
 }
 .food-info {
+  display: flex;
+  flex-direction: column;
   padding: 0 20px;
   text-align: left;
   &__name {
@@ -129,6 +129,23 @@ export default {
   &__ingridients-list {
     list-style: none;
     padding: 0;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .food {
+    flex-direction: column;
+    &__food-picture {
+      width: 50%;
+      margin: auto;
+    }
+  }
+
+  .food-info {
+    padding-top: 20px;
+  }
+  .food__food-info {
+    text-align: center;
   }
 }
 </style>
