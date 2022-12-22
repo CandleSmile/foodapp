@@ -48,9 +48,7 @@ export default {
       () => route.name,
       (name) => {
         console.log(name);
-        if (name != "home") {
-          clearSearchForm.value = true;
-        }
+        clearSearchForm.value = name != "home";
       }
     );
 
