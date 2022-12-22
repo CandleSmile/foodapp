@@ -92,9 +92,7 @@ export default {
     flex-basis: 70%;
   }
 }
-.main-block__food {
-  margin-top: 20px;
-}
+
 .food_picture {
   &__image {
     width: 100%;
