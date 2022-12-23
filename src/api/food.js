@@ -45,16 +45,20 @@ export default {
       catFilters.length == 0
         ? `${conf.getSearchProducts}${searchFilter}`
         : `${conf.getProductsByCategoryUrl}${catFilters[0]}`;
-
+    //filter by first category for a while
     const res = await getAxiosReq(url);
 
     let meals = res.data?.meals;
 
-    if (catFilters.length > 0 && searchFilter != "")
+    if (catFilters.length > 0 && searchFilter != "") {
       meals = meals.filter((f) =>
         f.strMeal.toLowerCase().includes(searchFilter.toLowerCase())
       );
-
+    }
+    if (catFilters.length > 0)
+      meals.forEach((food) => {
+        food.strCategory = catFilters[0];
+      }); // fix because this api don't return category name in the list of meals
     return {
       ok: res.ok,
       data: meals,

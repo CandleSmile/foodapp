@@ -1,5 +1,6 @@
 import HomePage from "./views/HomePage.vue";
 import FoodPage from "./views/FoodPage.vue";
+import MealsPage from "./views/MealsPage.vue";
 import NotFound from "./views/NotFound.vue";
 import { createRouter, createWebHistory } from "vue-router";
 const routeInfos = [
@@ -7,6 +8,11 @@ const routeInfos = [
     path: "/",
     component: HomePage,
     name: "home",
+  },
+  {
+    path: "/meals",
+    component: MealsPage,
+    name: "meal",
   },
   {
     path: "/foodPage/:id",

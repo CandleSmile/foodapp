@@ -6,29 +6,39 @@
       class="search-form__input"
       :id="id"
       v-model="query"
-      v-on:keyup.enter="onSearch"
+      @keyup.enter="onSearch"
     />
-    <span class="search-form__icon" v-on:click="onSearch"></span>
+    <span class="search-form__icon" @click="onSearch"></span>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, inject, watch } from "vue";
+import { defineProps, ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { FilterType } from "../const/filterType";
+import { filters } from "../filters";
+
 defineProps({
   id: String,
   placeholder: String,
 });
-const emit = defineEmits(["entersearch"]);
+
 const query = ref("");
 
+const router = useRouter();
+const route = useRoute();
 const onSearch = () => {
-  emit("entersearch", query.value);
-};
-const clearSearchForm = inject("clearSearchForm");
-watch(clearSearchForm, (newVaue) => {
-  if (newVaue) {
-    query.value = "";
+  if (route.name != "meal") {
+    router.push({ name: "meal", query: { [FilterType.SEARCH]: query.value } });
+  } else {
+    let routeQuery = Object.assign({}, route.query);
+    routeQuery[[FilterType.SEARCH]] = query.value;
+    router.push({ name: "meal", query: routeQuery });
   }
+};
+watch(filters, (filters) => {
+  query.value =
+    filters[[FilterType.SEARCH]] != "" ? filters[[FilterType.SEARCH]] : "";
 });
 </script>
 

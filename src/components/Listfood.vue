@@ -1,5 +1,10 @@
 <template>
-  <div class="list-food" v-if="!loading && data && data.length">
+  <h2 class="products-title main-block__product-title">{{ titleList }}</h2>
+
+  <div
+    class="list-food main-block__list-food"
+    v-if="!loading && data && data.length"
+  >
     <div class="list-food__item" v-for="(meal, index) in data" :key="index">
       <router-link
         :to="{ name: 'food', params: { id: meal.idMeal } }"
@@ -15,11 +20,13 @@
         <div class="list-food__info-wrapper">
           <div class="list-food__name">{{ meal.strMeal }}</div>
 
-          <div class="list-food__insrtuctions">{{ meal.strCategory }}</div>
+          <div class="list-food__insrtuctions">
+            <span>{{ meal.strInstructions }}</span>
+          </div>
         </div>
         <div class="list-food__tags">
-          <span v-if="meal.strTags && meal.strTags != ''">{{
-            checkSpaces(meal.strTags)
+          <span v-if="meal.strCategory && meal.strCategory != ''">{{
+            checkSpaces(meal.strCategory)
           }}</span>
         </div>
       </router-link>
@@ -38,24 +45,24 @@
 </template>
 
 <script>
-import { ref, onMounted, inject, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
 import FoodApi from "../api/food.js";
+import { filters } from "../filters";
 
 export default {
   name: "list-food",
-  props: {},
-  setup() {
+  props: { titleList: String, isLatestProducts: Boolean },
+  setup(props) {
     const data = ref(null);
     const loading = ref(true);
     const error = ref(null);
-    const serchStr = inject("serchStr");
-    watch(serchStr, (newVaue) => {
-      fetchData(newVaue);
-    });
-    const fetchData = async (query) => {
+    const fetchData = async (filtersFromQuery) => {
       loading.value = true;
       try {
-        let info = await FoodApi.getFood(query);
+        let info = props.isLatestProducts
+          ? await FoodApi.getInitialFood("")
+          : await FoodApi.getFoodByFilters(filtersFromQuery);
+
         loading.value = false;
         if (!info.ok) {
           error.value = info.error;
@@ -67,9 +74,12 @@ export default {
         error.value = err;
       }
     };
+    watch(filters, async (newFilters) => {
+      fetchData(newFilters);
+    });
 
     onMounted(() => {
-      fetchData(serchStr.value);
+      fetchData(filters);
     });
 
     const checkSpaces = (text) => text.replaceAll(/,(\S)/, ", $1");
@@ -90,18 +100,27 @@ String.prototype.replaceAll = function (search, replacement) {
 </script>
 
 <style lang="scss">
+.products-title {
+  font-size: 1.1em;
+  font-weight: 900;
+  text-align: left;
+}
+.main-block__product-title {
+  margin: 0;
+}
+.main-block__list-food {
+  margin-top: 20px;
+}
 .list-food {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
-
+  justify-content: center;
+  gap: 20px 16px;
   &__item {
     display: flex;
-
-    flex-basis: 30%;
+    width: calc(25% - 12px);
     min-height: 200px;
-    margin-bottom: 30px;
     box-shadow: 0px 3px 3px 0px $food-item-border-color;
     border-radius: 5px;
     overflow: hidden;
@@ -114,6 +133,7 @@ String.prototype.replaceAll = function (search, replacement) {
     align-content: flex-start;
     flex-wrap: wrap;
     text-decoration-line: none;
+    width: 100%;
   }
   &__img-wrapper {
     overflow: hidden;
@@ -130,11 +150,17 @@ String.prototype.replaceAll = function (search, replacement) {
     flex-direction: column;
     flex-basis: 100%;
     padding: 10px;
+    width: 100%;
   }
   &__insrtuctions {
     text-align: left;
     color: $text-dark-color;
     font-size: 0.6em;
+    min-height: 1.2em;
+    padding-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__name {
@@ -154,24 +180,33 @@ String.prototype.replaceAll = function (search, replacement) {
     padding: 0 10px;
     line-height: 2em;
     min-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
-@media only screen and (min-width: 1824px) {
-  .list-food__item {
-    flex-basis: 22%;
+@media only screen and (min-width: 1700px) {
+  .list-food {
+    gap: 35px 25px;
+    &__item {
+      width: calc(20% - 20px);
+    }
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .list-food {
+    gap: 20px 12px;
+    &__item {
+      width: calc(33% - 8px);
+    }
   }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-  .list-food__item {
-    flex-basis: 45%;
-  }
-}
 @media only screen and (min-width: 481px) and (max-width: 767px) {
   .list-food {
-    justify-content: center;
+    gap: 20px 10px;
     &__item {
-      flex-basis: 52%;
+      width: calc(50% - 5px);
     }
   }
 }
@@ -179,7 +214,7 @@ String.prototype.replaceAll = function (search, replacement) {
   .list-food {
     justify-content: center;
     &__item {
-      flex-basis: 80%;
+      flex-basis: 100%;
     }
   }
 }

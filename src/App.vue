@@ -2,13 +2,11 @@
   <header class="header">
     <router-link to="/" class="logo-title-block">
       <img class="logo" src="@/assets/images/logo.svg" />
-      <h1 class="site-title">THE <span>BEST </span>FOOD</h1>
+      <h1 class="site-title logo-title-block__site-title">
+        THE <span>BEST </span>FOOD
+      </h1>
     </router-link>
-    <SearchInput
-      id="searchQuery"
-      placeholder="Search products"
-      @entersearch="doSearch"
-    ></SearchInput>
+    <SearchInput id="searchQuery" placeholder="Search products"></SearchInput>
   </header>
   <main class="main-block">
     <router-view v-slot="{ Component }">
@@ -21,9 +19,9 @@
 
 <script>
 import SearchInput from "./components/SearchInput.vue";
-import { provide, ref, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
-
+import { watch, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { parseQueryStringToFilters } from "./filters";
 export default {
   name: "App",
   components: {
@@ -31,33 +29,18 @@ export default {
   },
 
   setup() {
-    const searchString = ref("");
-    const router = useRouter();
     const route = useRoute();
 
-    const doSearch = (query) => {
-      if (route.name != "home") {
-        router.push({ name: "home" });
-      }
-
-      searchString.value = query;
-    };
-    const clearSearchForm = ref(false);
-
     watch(
-      () => route.name,
-      (name) => {
-        console.log(name);
-        clearSearchForm.value = name != "home";
+      () => route.query,
+      (newVaue) => {
+        parseQueryStringToFilters(newVaue);
       }
     );
 
-    provide("clearSearchForm", clearSearchForm);
-    provide("serchStr", searchString);
-
-    return {
-      doSearch,
-    };
+    onMounted(() => {
+      parseQueryStringToFilters(route.query);
+    });
   },
 };
 </script>

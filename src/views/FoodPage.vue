@@ -134,7 +134,7 @@ export default {
   .food {
     flex-direction: column;
     &__food-picture {
-      width: 50%;
+      width: 100%;
       margin: auto;
     }
   }
