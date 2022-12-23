@@ -1,5 +1,7 @@
 import axios from "axios";
 import conf from "./configapi.js";
+import { FilterType } from "../const/filterType";
+
 axios.defaults.baseURL = `${conf.mainUrl}${conf.apiKey}`;
 
 const getAxiosReq = async (url, parameters) => {
@@ -8,7 +10,6 @@ const getAxiosReq = async (url, parameters) => {
     data: null,
     error: null,
   };
-
   await await axios
     .get(url, { params: parameters })
     .then((response) => {
@@ -28,19 +29,59 @@ const getAxiosReq = async (url, parameters) => {
 };
 
 export default {
-  getFood: async (searchstring) => {
-    const url = `${
-      searchstring ? conf.getSearchProducts : conf.getLatestProducts
-    }${searchstring ?? ""}`;
+  getFoodByFilters: async (filters) => {
+    if (filters.length == 0) {
+      return {
+        ok: true,
+        data: null,
+        error: null,
+      };
+    }
+
+    const catFilters = filters[FilterType.CATEGORY];
+    const searchFilter = filters[FilterType.SEARCH];
+    //const ingridientsFilters = filters[FilterType.INGRIDIENTS]; for implementation
+    const url =
+      catFilters.length == 0
+        ? `${conf.getSearchProducts}${searchFilter}`
+        : `${conf.getProductsByCategoryUrl}${catFilters[0]}`;
+
     const res = await getAxiosReq(url);
+
+    let meals = res.data?.meals;
+
+    if (catFilters.length > 0 && searchFilter != "")
+      meals = meals.filter((f) =>
+        f.strMeal.toLowerCase().includes(searchFilter.toLowerCase())
+      );
+
     return {
       ok: res.ok,
-      data: res.data.meals,
+      data: meals,
       error: res.error,
     };
   },
+
+  getInitialFood: async () => {
+    const res = await getAxiosReq(`${conf.getLatestProducts}`);
+    return {
+      ok: res.ok,
+      data: res.data?.meals,
+      error: res.error,
+    };
+  },
+
   getFoodById: async (id) => {
     const url = `${conf.getFoodByIdUrl}${id}`;
     return await getAxiosReq(url);
+  },
+
+  getAllCategoriesWithImages: async () => {
+    const res = await getAxiosReq(`${conf.getCategoriesUrl}`);
+    return {
+      ok: res.ok,
+      data: res.data?.categories,
+      error: res.error,
+    };
   },
 };
