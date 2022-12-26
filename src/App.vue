@@ -29,6 +29,7 @@ export default {
   },
 
   setup() {
+    console.log("app setup begin");
     const route = useRoute();
 
     watch(
