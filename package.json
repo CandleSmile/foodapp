@@ -14,6 +14,7 @@
     "mkcert": "^1.5.1",
     "normalize.css": "^8.0.1",
     "vue": "^3.2.13",
+    "vue-next-select": "^2.10.5",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

@@ -37,7 +37,7 @@ export default {
         error: null,
       };
     }
-
+    console.log("test");
     const catFilters = filters[FilterType.CATEGORY];
     const searchFilter = filters[FilterType.SEARCH];
     //const ingridientsFilters = filters[FilterType.INGRIDIENTS]; for implementation
@@ -67,6 +67,7 @@ export default {
   },
 
   getInitialFood: async () => {
+    console.log("test init");
     const res = await getAxiosReq(`${conf.getLatestProducts}`);
     return {
       ok: res.ok,
@@ -85,6 +86,23 @@ export default {
     return {
       ok: res.ok,
       data: res.data?.categories,
+      error: res.error,
+    };
+  },
+  getListCategories: async () => {
+    const res = await getAxiosReq(`${conf.getListCategories}`);
+    return {
+      ok: res.ok,
+      data: res.data?.meals,
+      error: res.error,
+    };
+  },
+
+  getIngridientsList: async () => {
+    const res = await getAxiosReq(`${conf.getIngridientsList}`);
+    return {
+      ok: res.ok,
+      data: res.data?.meals,
       error: res.error,
     };
   },

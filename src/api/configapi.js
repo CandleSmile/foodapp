@@ -6,4 +6,6 @@ export default {
   getLatestProducts: "/randomselection.php",
   getSearchProducts: "/search.php?s=",
   getFoodByIdUrl: "/lookup.php?i=",
+  getListCategories: "/list.php?c=list",
+  getIngridientsList: "/list.php?i=list",
 };
