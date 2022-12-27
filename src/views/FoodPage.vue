@@ -1,5 +1,5 @@
 <template>
-  <div class="food main-block__food">
+  <article class="food main-block__food">
     <div class="food-picture food__food-picture">
       <img
         class="food_picture__image"
@@ -8,7 +8,7 @@
       />
     </div>
     <div class="food-info food__food-info">
-      <div class="food-info__name">{{ foodData.strMeal }}</div>
+      <h1 class="food-info__name">{{ foodData.strMeal }}</h1>
       <div class="food-info__cat">
         <span>Category: </span>{{ foodData.strCategory }}
       </div>
@@ -22,7 +22,7 @@
         </ul>
       </div>
     </div>
-  </div>
+  </article>
 </template>
 <script>
 import { useRoute, useRouter } from "vue-router";
@@ -104,14 +104,14 @@ export default {
   padding: 0 20px;
   text-align: left;
   &__name {
-    font-weight: 900;
+    font-weight: 600;
     font-size: 2rem;
     margin-bottom: 20px;
   }
   &__cat {
     margin-bottom: 20px;
     & span {
-      font-weight: 900;
+      font-weight: 600;
     }
   }
   &__insrtuctions {
@@ -122,7 +122,7 @@ export default {
     font-size: 0.9em;
   }
   &__ingridients-title {
-    font-weight: 900;
+    font-weight: 600;
   }
   &__ingridients-list {
     list-style: none;

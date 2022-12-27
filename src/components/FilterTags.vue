@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-tags-panel" v-if="filtersToArray.length > 0">
+  <section class="filter-tags-panel" v-if="filtersToArray.length > 0">
     <ul class="filter-tags-list">
       <li
         :class="[
@@ -21,7 +21,7 @@
         ></span>
       </li>
     </ul>
-  </div>
+  </section>
 </template>
 <script setup>
 import { FilterType } from "@/const/filterType";
@@ -60,6 +60,7 @@ const filtersToArray = computed(() => {
   gap: 10px;
   list-style: none;
   padding: 0;
+  margin-top: 0;
 }
 .filter-tags-list-item {
   padding: 2px 5px;

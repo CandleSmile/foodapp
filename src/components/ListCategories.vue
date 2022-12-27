@@ -1,36 +1,51 @@
 <template>
-  <h2 class="categories-title main-block__categories-title">Categories</h2>
-  <div
-    class="list-categories main-block__list-categories"
-    v-if="!loading && data && data.length"
-  >
-    <div
-      class="list-categories__item"
-      v-for="(cat, index) in data"
-      :key="index"
+  <section class="categories-block">
+    <h2 class="categories-title main-block__categories-title">Categories</h2>
+    <ul
+      class="list-categories main-block__list-categories"
+      v-if="!loading && data && data.length"
     >
-      <router-link
-        class="list-categories__link"
-        :to="{
-          name: 'meal',
-          query: { [catFilter]: cat.strCategory },
-        }"
+      <li
+        class="list-categories__item"
+        v-for="(cat, index) in data"
+        :key="index"
       >
-        <div class="list-categories__img-wrapper">
-          <img
-            class="list-categories__img"
-            :src="cat.strCategoryThumb"
-            :alt="cat.strCategory"
-          />
-        </div>
-        <div class="list-categories__info-wrapper">
-          <div class="list-categories__name">{{ cat.strCategory }}</div>
+        <router-link
+          class="list-categories__link"
+          :to="{
+            name: 'meal',
+            query: { [catFilter]: cat.strCategory },
+          }"
+        >
+          <div class="list-categories__img-wrapper">
+            <img
+              class="list-categories__img"
+              :src="cat.strCategoryThumb"
+              :alt="cat.strCategory"
+            />
+          </div>
+          <div class="list-categories__info-wrapper">
+            <div class="list-categories__name">{{ cat.strCategory }}</div>
 
-          <div class="list-categories__count">{{ cat.strCategory }}</div>
-        </div>
-      </router-link>
+            <div class="list-categories__count">{{ cat.strCategory }}</div>
+          </div>
+        </router-link>
+      </li>
+    </ul>
+    <div
+      class="input-request-meal-block"
+      v-else-if="!loading && data == null && error == null"
+    >
+      <p>Please, input your request</p>
     </div>
-  </div>
+    <div class="no-meal-data" v-else-if="!loading && data && data.length == 0">
+      <p>No such data</p>
+    </div>
+    <div class="error-meal-data" v-else-if="!loading && error">
+      <p>There war an error {{ error }}</p>
+    </div>
+    <div class="loading-meal-data" v-else>Loading...</div>
+  </section>
 </template>
 <script>
 import { ref, onMounted } from "vue";
@@ -76,8 +91,8 @@ export default {
 
 <style lang="scss">
 .categories-title {
-  font-size: 1.1em;
-  font-weight: 900;
+  font-size: 1em;
+  font-weight: 600;
   text-align: left;
 }
 .main-block__categories-title {
@@ -92,7 +107,7 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
   gap: 35px 25px;
-
+  padding: 0;
   &__item {
     display: flex;
     width: calc(20% - 20px);

@@ -1,11 +1,12 @@
 <template>
-  <h2 class="products-title main-block__product-title">{{ titleList }}</h2>
+  <section class="meals-block"></section>
+  <h2 class="meals-title main-block__meals-title">{{ titleList }}</h2>
 
-  <div
+  <ul
     class="list-food main-block__list-food"
     v-if="!loading && data && data.length"
   >
-    <div class="list-food__item" v-for="(meal, index) in data" :key="index">
+    <li class="list-food__item" v-for="(meal, index) in data" :key="index">
       <router-link
         :to="{ name: 'food', params: { id: meal.idMeal } }"
         class="list-food__link"
@@ -30,18 +31,16 @@
           }}</span>
         </div>
       </router-link>
-    </div>
+    </li>
+  </ul>
+
+  <div class="no-cat-data" v-else-if="!loading && data && data.length == 0">
+    <p>No categories</p>
   </div>
-  <div v-else-if="!loading && data == null && error == null">
-    <p>Please, input your request</p>
-  </div>
-  <div v-else-if="!loading && data && data.length == 0">
-    <p>No such data</p>
-  </div>
-  <div v-else-if="!loading && error">
+  <div class="error-cat-data" v-else-if="!loading && error">
     <p>There war an error {{ error }}</p>
   </div>
-  <div v-else>Loading...</div>
+  <div class="loading-cat-data" v-else>Loading...</div>
 </template>
 
 <script>
@@ -100,12 +99,12 @@ String.prototype.replaceAll = function (search, replacement) {
 </script>
 
 <style lang="scss">
-.products-title {
-  font-size: 1.1em;
-  font-weight: 900;
+.meals-title {
+  font-size: 1em;
+  font-weight: 600;
   text-align: left;
 }
-.main-block__product-title {
+.main-block__meals-title {
   margin: 0;
 }
 .main-block__list-food {
@@ -117,6 +116,7 @@ String.prototype.replaceAll = function (search, replacement) {
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px 16px;
+  padding: 0;
   &__item {
     display: flex;
     width: calc(25% - 12px);

@@ -8,5 +8,5 @@ module.exports = defineConfig({
       },
     },
   },
-  publicPath: "/foodapp/",
+  publicPath: process.env.NODE_ENV === "production" ? "/foodapp/" : "/",
 });
