@@ -8,7 +8,7 @@
               tag.type == FilterType.CATEGORY,
             'filter-tags-list-item--search-theme':
               tag.type == FilterType.SEARCH,
-            'filter-tags-list-item--ingiridents-theme':
+            'filter-tags-list-item--ingridients-theme':
               tag.type == FilterType.INGRIDIENTS,
           },
           'filter-tags-list-item',
