@@ -55,7 +55,10 @@ export default {
         `${conf.getFoodByIngridients}${ingridientsFilter}`
       );
 
-      if (resByIngridients.ok && resByIngridients.data?.meals) {
+      if (resByIngridients.ok && resByIngridients.data) {
+        if (!resByIngridients.data.meals) {
+          meals = [];
+        }
         meals = meals.filter(
           (meal) =>
             resByIngridients.data.meals.findIndex(

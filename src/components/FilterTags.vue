@@ -58,6 +58,7 @@ const filtersToArray = computed(() => {
   return filtersArray;
 });
 </script>
+
 <style lang="scss">
 .filter-tags-list {
   display: flex;
