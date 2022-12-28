@@ -30,35 +30,48 @@ const getAxiosReq = async (url, parameters) => {
 
 export default {
   getFoodByFilters: async (filters) => {
-    if (filters.length == 0) {
-      return {
-        ok: true,
-        data: null,
-        error: null,
-      };
-    }
-    console.log("test");
     const catFilters = filters[FilterType.CATEGORY];
     const searchFilter = filters[FilterType.SEARCH];
-    //const ingridientsFilters = filters[FilterType.INGRIDIENTS]; for implementation
-    const url =
-      catFilters.length == 0
-        ? `${conf.getSearchProducts}${searchFilter}`
-        : `${conf.getProductsByCategoryUrl}${catFilters[0]}`;
-    //filter by first category for a while
+    const ingridientsFilter = filters[FilterType.INGRIDIENTS];
+
+    let url = "";
+    if (catFilters != "") url = `${conf.getProductsByCategoryUrl}${catFilters}`;
+    else if (ingridientsFilter != "")
+      url = `${conf.getFoodByIngridients}${ingridientsFilter}`;
+    else url = `${conf.getSearchProducts}${searchFilter}`;
+
     const res = await getAxiosReq(url);
 
     let meals = res.data?.meals;
+    // fix because this api don't return category name in the list of meals
+    if (catFilters != "")
+      meals.forEach((food) => {
+        food.strCategory = catFilters;
+      });
 
-    if (catFilters.length > 0 && searchFilter != "") {
+    //case filter by ingridients after filtering by category
+    if (ingridientsFilter != "" && catFilters != "") {
+      const resByIngridients = await getAxiosReq(
+        `${conf.getFoodByIngridients}${ingridientsFilter}`
+      );
+
+      if (resByIngridients.ok && resByIngridients.data?.meals) {
+        meals = meals.filter(
+          (meal) =>
+            resByIngridients.data.meals.findIndex(
+              (mbi) => mbi.idMeal == meal.idMeal
+            ) >= 0
+        );
+      }
+    }
+
+    //case when filter category and/or ingridients -> search
+    if ((catFilters != "" || ingridientsFilter != "") && searchFilter != "") {
       meals = meals.filter((f) =>
         f.strMeal.toLowerCase().includes(searchFilter.toLowerCase())
       );
     }
-    if (catFilters.length > 0)
-      meals.forEach((food) => {
-        food.strCategory = catFilters[0];
-      }); // fix because this api don't return category name in the list of meals
+
     return {
       ok: res.ok,
       data: meals,
@@ -67,7 +80,6 @@ export default {
   },
 
   getInitialFood: async () => {
-    console.log("test init");
     const res = await getAxiosReq(`${conf.getLatestProducts}`);
     return {
       ok: res.ok,

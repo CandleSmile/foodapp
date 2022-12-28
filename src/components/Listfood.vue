@@ -35,7 +35,7 @@
   </ul>
 
   <div class="no-cat-data" v-else-if="!loading && data && data.length == 0">
-    <p>No categories</p>
+    <p>Meal were not found</p>
   </div>
   <div class="error-cat-data" v-else-if="!loading && error">
     <p>There war an error {{ error }}</p>

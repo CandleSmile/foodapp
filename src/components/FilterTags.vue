@@ -8,6 +8,8 @@
               tag.type == FilterType.CATEGORY,
             'filter-tags-list-item--search-theme':
               tag.type == FilterType.SEARCH,
+            'filter-tags-list-item--ingiridents-theme':
+              tag.type == FilterType.INGRIDIENTS,
           },
           'filter-tags-list-item',
         ]"
@@ -33,21 +35,24 @@ const router = useRouter();
 const route = useRoute();
 const deleteFromFilters = (tag) => {
   let routeQuery = Object.assign({}, route.query);
-  delete routeQuery[[tag.type]];
+  if (tag.type === FilterType.INGRIDIENTS) {
+    let ingridientsArr = routeQuery[[tag.type]].split(",");
+    ingridientsArr = ingridientsArr.filter((ing) => ing != tag.val);
+    routeQuery[[tag.type]] = ingridientsArr.join(",");
+  } else delete routeQuery[[tag.type]];
   router.push({ name: "meal", query: routeQuery });
 };
 
 const filtersToArray = computed(() => {
   let filtersArray = [];
   for (let key in filters) {
-    if (key !== FilterType.SEARCH)
-      filtersArray = filtersArray.concat(
-        filters[key].map((val) => {
-          return { type: key, val: val };
-        })
+    if (key === FilterType.INGRIDIENTS && filters[key] != "") {
+      const ingridientsArr = filters[key].split(",");
+      ingridientsArr.forEach((ing) =>
+        filtersArray.push({ type: FilterType.INGRIDIENTS, val: ing })
       );
-    else if (key === FilterType.SEARCH && filters[key] != "") {
-      filtersArray.push({ type: FilterType.SEARCH, val: filters[key] });
+    } else if (filters[key] != "") {
+      filtersArray.push({ type: key, val: filters[key] });
     }
   }
   return filtersArray;
@@ -97,6 +102,9 @@ const filtersToArray = computed(() => {
   }
   &--search-theme {
     background: $filter-tag-search-background;
+  }
+  &--ingridients-theme {
+    background: $filter-tag-ingridients-background;
   }
 }
 </style>

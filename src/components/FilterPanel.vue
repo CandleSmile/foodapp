@@ -14,17 +14,18 @@
         clear-on-select
       ></vue-select>
       <span>Ingridients</span>
-      <!--   <vue-select
+      <vue-select
         class="filter-panel-box__cat-select"
         placeholder="Select ingridient"
         searchable="true"
         multiple="true"
         :options="ingridientsOptions"
         :maxHeight="200"
+        v-model="checkedIngridients"
         close-on-select
         clear-on-select
       ></vue-select>
- -->
+
       <input type="button" @click="filter" value="Filter" />
     </fieldset>
   </section>
@@ -53,10 +54,11 @@ export default {
     const checkedIngridients = ref([]);
     let category = ref("");
 
-    const changeTempFilters = () => {
-      if (filters[[FilterType.CATEGORY]].length > 0)
-        category.value = toRaw(filters[[FilterType.CATEGORY]][0]);
-      else category.value = "";
+    const changeFilters = () => {
+      category.value = toRaw(filters[[FilterType.CATEGORY]]);
+      checkedIngridients.value = toRaw(filters[[FilterType.INGRIDIENTS]]).split(
+        ","
+      );
     };
 
     const filter = () => {
@@ -66,6 +68,12 @@ export default {
       } else {
         delete routeQuery[[FilterType.CATEGORY]];
       }
+
+      if (checkedIngridients.value != "")
+        routeQuery[[FilterType.INGRIDIENTS]] =
+          checkedIngridients.value.join(",");
+      else delete routeQuery[[FilterType.INGRIDIENTS]];
+
       router.push({ name: "meal", query: routeQuery });
     };
 
@@ -82,10 +90,10 @@ export default {
         );
       }
 
-      changeTempFilters();
+      changeFilters();
     });
 
-    watch(filters, () => changeTempFilters());
+    watch(filters, () => changeFilters());
 
     return {
       category,

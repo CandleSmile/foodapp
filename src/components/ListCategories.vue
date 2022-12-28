@@ -39,7 +39,7 @@
       <p>Please, input your request</p>
     </div>
     <div class="no-meal-data" v-else-if="!loading && data && data.length == 0">
-      <p>No such data</p>
+      <p>Categories were not found</p>
     </div>
     <div class="error-meal-data" v-else-if="!loading && error">
       <p>There war an error {{ error }}</p>
