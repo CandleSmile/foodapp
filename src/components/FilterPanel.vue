@@ -12,9 +12,10 @@
         :options="catOptions"
         :maxHeight="200"
         close-on-select
+        clear-on-select
       ></vue-select>
       <span>Ingridients</span>
-      <div v-for="ingridient in ingridientsOptions" :key="ingridient.id">
+      <!--  <div v-for="ingridient in ingridientsOptions" :key="ingridient.id">
         <input
           type="checkbox"
           id="ing{{ ingridient.id }}"
@@ -23,7 +24,7 @@
         />
         <label for="ing{{ ingridient.id }}">{{ ingridient.val }}</label>
       </div>
-
+ -->
       <input type="button" @click="filter" value="Filter" />
     </fieldset>
   </section>
@@ -51,26 +52,22 @@ export default {
     const ingridientsOptions = reactive([]);
     const checkedIngridients = ref([]);
     let category = ref("");
-    let tempFilters = {};
-    const changeTempFilters = () => {
-      tempFilters = toRaw(filters);
 
-      const initialCat = tempFilters[[FilterType.CATEGORY]][0];
-      //  const initialIngridients = tempFilters[[FilterType.INGRIDIENTS]]; to do
-      category.value =
-        tempFilters[[FilterType.CATEGORY]].length > 0 ? initialCat : "";
+    const changeTempFilters = () => {
+      if (filters[[FilterType.CATEGORY]].length > 0)
+        category.value = toRaw(filters[[FilterType.CATEGORY]][0]);
+      else category.value = "";
     };
 
     const onSelected = (opt) => {
       category.value = opt;
-      tempFilters[[FilterType.CATEGORY]][0] = opt;
     };
-
     const filter = () => {
       let routeQuery = Object.assign({}, route.query);
-      if (tempFilters[[FilterType.CATEGORY]].length > 0) {
-        routeQuery[[FilterType.CATEGORY]] =
-          tempFilters[[FilterType.CATEGORY]][0];
+      if (category.value != "") {
+        routeQuery[[FilterType.CATEGORY]] = category.value;
+      } else {
+        delete routeQuery[[FilterType.CATEGORY]];
       }
       router.push({ name: "meal", query: routeQuery });
     };
@@ -107,11 +104,11 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss">
 .filter-panel-box__cat-select {
   margin: auto;
-}
-.filter-panel-box__cat-select .vue-dropdown-item.highlighted {
-  background-color: #e8e8e8; /* не видет variables (разобраться)*/
+  .vue-dropdown-item.highlighted {
+    background-color: $select-highlight;
+  }
 }
 </style>
