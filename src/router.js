@@ -34,6 +34,7 @@ const router = createRouter({
   history: createWebHistory(
     process.env.NODE_ENV === "production" ? "/foodapp/" : "/"
   ),
+
   routes: routeInfos,
 });
 

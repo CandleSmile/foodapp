@@ -8,7 +8,7 @@ npm run build
 
 # переход в каталог сборки
 cd dist
-
+cp index.html 404.html
 # если вы публикуете на пользовательский домен
 # echo 'www.example.com' > CNAME
 

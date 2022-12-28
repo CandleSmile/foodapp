@@ -13,11 +13,16 @@ const changeFilter = (value, type) => {
 };
 
 const parseQueryStringToFilters = (query) => {
+  for (let t in filters) {
+    filters[t] = "";
+  }
+  console.log(filters);
   for (let key in query) {
     if (Object.values(FilterType).includes(key)) {
       changeFilter(query[key], key);
     }
   }
+  console.log(filters);
 };
 
 const isFiltersChosen =

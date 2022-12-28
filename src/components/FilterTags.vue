@@ -36,10 +36,15 @@ const route = useRoute();
 const deleteFromFilters = (tag) => {
   let routeQuery = Object.assign({}, route.query);
   if (tag.type === FilterType.INGRIDIENTS) {
-    let ingridientsArr = routeQuery[[tag.type]].split(",");
+    let ingridientsArr = routeQuery[[tag.type]]
+      ? routeQuery[[tag.type]].split(",")
+      : [];
     ingridientsArr = ingridientsArr.filter((ing) => ing != tag.val);
-    routeQuery[[tag.type]] = ingridientsArr.join(",");
+    ingridientsArr.length > 0
+      ? (routeQuery[[tag.type]] = ingridientsArr.join(","))
+      : delete routeQuery[[tag.type]];
   } else delete routeQuery[[tag.type]];
+
   router.push({ name: "meal", query: routeQuery });
 };
 
@@ -58,7 +63,6 @@ const filtersToArray = computed(() => {
   return filtersArray;
 });
 </script>
-
 <style lang="scss">
 .filter-tags-list {
   display: flex;
