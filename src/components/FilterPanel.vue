@@ -5,7 +5,6 @@
       <span class="filter-panel-box__cat-title">Category</span>
       <vue-select
         class="filter-panel-box__cat-select"
-        @selected="onSelected"
         placeholder="Select category"
         searchable="true"
         v-model="category"
@@ -15,15 +14,16 @@
         clear-on-select
       ></vue-select>
       <span>Ingridients</span>
-      <!--  <div v-for="ingridient in ingridientsOptions" :key="ingridient.id">
-        <input
-          type="checkbox"
-          id="ing{{ ingridient.id }}"
-          name="ingridients"
-          value="{{ ingridient.id }}"
-        />
-        <label for="ing{{ ingridient.id }}">{{ ingridient.val }}</label>
-      </div>
+      <!--   <vue-select
+        class="filter-panel-box__cat-select"
+        placeholder="Select ingridient"
+        searchable="true"
+        multiple="true"
+        :options="ingridientsOptions"
+        :maxHeight="200"
+        close-on-select
+        clear-on-select
+      ></vue-select>
  -->
       <input type="button" @click="filter" value="Filter" />
     </fieldset>
@@ -59,9 +59,6 @@ export default {
       else category.value = "";
     };
 
-    const onSelected = (opt) => {
-      category.value = opt;
-    };
     const filter = () => {
       let routeQuery = Object.assign({}, route.query);
       if (category.value != "") {
@@ -81,10 +78,7 @@ export default {
       const ingridientList = await FoodApi.getIngridientsList();
       if (ingridientList.ok && ingridientList.data?.length > 0) {
         ingridientList.data.forEach((ing) =>
-          ingridientsOptions.push({
-            id: ing.idIngredient,
-            val: ing.strIngredient,
-          })
+          ingridientsOptions.push(ing.strIngredient)
         );
       }
 
@@ -98,7 +92,6 @@ export default {
       catOptions,
       ingridientsOptions,
       checkedIngridients,
-      onSelected,
       filter,
     };
   },
