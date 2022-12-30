@@ -12,39 +12,20 @@
   </header>
   <main class="main-block">
     <router-view v-slot="{ Component }">
-      <transition name="fade">
-        <component :is="Component" />
-      </transition>
+      <component :is="Component" />
     </router-view>
   </main>
 </template>
 
 <script>
 import SearchInput from "./components/SearchInput.vue";
-import { watch, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { parseQueryStringToFilters } from "./filters";
+
 export default {
   name: "App",
   components: {
     SearchInput,
   },
-
-  setup() {
-    console.log("app setup begin");
-    const route = useRoute();
-
-    watch(
-      () => route.query,
-      (newVaue) => {
-        parseQueryStringToFilters(newVaue);
-      }
-    );
-
-    onMounted(() => {
-      parseQueryStringToFilters(route.query);
-    });
-  },
+  setup() {},
 };
 </script>
 

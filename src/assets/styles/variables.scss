@@ -8,7 +8,7 @@ $search-background-color:#f4f6f6;
 $search-border-color:#ededed;
 $search-placeholder-color:#555;
 $search-text-color:#000;
-$search-icon-color:#958f8f;
+$search-icon-color:#999;
 
 $food-item-border-color:rgba(0, 0, 0, 0.17) ;
 
@@ -17,11 +17,105 @@ $text-dark-color: #000;
 
 $filter-tag-cat-background:#801711;
 $filter-tag-search-background:#7fcb2a;
-$filter-tag-ingridients-background:#958f8f;
+$filter-tag-ingridients-background:#999;
 $filter-tag-text:#fff;
 $filter-tag-del:#e12c21;
 
-$select-highlight: #958f8f;
+$select-highlight: #f4f6f6;
+$select-title:#999;
+$select-text:#999;
+
+$filter-button-border:#999;
+$filter-button-background:#7fcb2a;
+$filter-button-text:rgb(34, 34, 34);
 
 
 $max-content-width:1920px;
+
+
+@function itemWidth($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$common-gap-large,$common-gap-small) {
+    $width: null;
+   $item-count: null;
+    $common-gap: null;
+    @if ($breakpoint == 'sizeSL') {
+        $item-count:$item-count-supersize;
+        $common-gap:$common-gap-large;
+    }
+    @else if ($breakpoint == 'sizeL') {
+       $item-count:$item-count-large;
+        $common-gap:$common-gap-large;
+    }
+    @else if ($breakpoint == 'sizeM1') {
+       $item-count:$item-count-middle1;
+        $common-gap:$common-gap-large;
+    }
+    @else if ($breakpoint =='sizeM2') {
+       $item-count:$item-count-middle2;
+        $common-gap:$common-gap-small;
+    }
+    @else {
+       $item-count:$item-count-small;
+        $common-gap:$common-gap-small;
+    }
+    $width: calc((100% / #{$item-count}) - (#{$common-gap} / #{$item-count}));
+
+    @return #{$width};
+}
+@function itemGap($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$common-gap-large,$common-gap-small) {
+   $item-count: null;
+    $common-gap: null;
+    @if ($breakpoint == 'sizeSL') {
+        $item-count:$item-count-supersize;
+        $common-gap:$common-gap-large;
+    }
+    @else if  ($breakpoint == 'sizeL') {
+       $item-count:$item-count-large;
+        $common-gap:$common-gap-large;
+    }
+    @else if ($breakpoint == 'sizeM1') {
+       $item-count:$item-count-middle1;
+        $common-gap:$common-gap-large;
+    }
+    @else if ($breakpoint =='sizeM2') {
+       $item-count:$item-count-middle2;
+        $common-gap:$common-gap-small;
+    }
+    @else {
+       $item-count:$item-count-small;
+        $common-gap:$common-gap-small;
+    }
+    $gap: calc(#{$common-gap} / (#{$item-count} - 1)) calc((#{$common-gap} / (#{$item-count} - 1)));
+
+    @return #{$gap};
+}
+
+$cat-count-supersize: 9;
+$cat-count-large: 8;
+$cat-count-middle1: 6;
+$cat-count-middle2: 3;
+$cat-count-small: 2;
+$cat-common-gap-large:60px;
+$cat-common-gap-small:20px;
+
+@function catWidth($breakpoint){
+    @return itemWidth($breakpoint,$cat-count-supersize,$cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-common-gap-large,$cat-common-gap-small );
+};
+@function catGap($breakpoint){
+    @return itemGap($breakpoint,$cat-count-supersize, $cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-common-gap-large,$cat-common-gap-small );
+};
+
+$meal-count-supersize:6;
+$meal-count-large: 4;
+$meal-count-middle1: 3;
+$meal-count-middle2: 2;
+$meal-count-small: 1;
+$meal-common-gap-large:60px;
+$meal-common-gap-small:20px;
+
+@function mealWidth($breakpoint){
+    @return itemWidth($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-common-gap-large,$meal-common-gap-small );
+};
+@function mealGap($breakpoint){
+    @return itemGap($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-common-gap-large,$meal-common-gap-small );
+};
+   

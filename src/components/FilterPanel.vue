@@ -1,69 +1,71 @@
 <template>
   <section class="filter-panel">
-    <fieldset class="filter-panel-box">
-      <legend class="filter-panel-box__legend">Choose your filters:</legend>
-      <span class="filter-panel-box__cat-title">Category</span>
-      <vue-select
-        class="filter-panel-box__cat-select"
-        placeholder="Select category"
-        searchable="true"
-        v-model="category"
-        :options="catOptions"
-        :maxHeight="200"
-        close-on-select
-        clear-on-select
-      ></vue-select>
-      <span>Ingridients</span>
-      <vue-select
-        class="filter-panel-box__cat-select"
-        placeholder="Select ingridient"
-        searchable="true"
-        multiple="true"
-        :options="ingridientsOptions"
-        :maxHeight="200"
-        v-model="checkedIngridients"
-        close-on-select
-        clear-on-select
-      ></vue-select>
+    <div class="filter-panel-box">
+      <div class="filter-panel-box__category">
+        <span class="filter-panel-box__cat-title">Category</span>
 
-      <input type="button" @click="filter" value="Filter" />
-    </fieldset>
+        <v-select
+          :options="catOptions"
+          v-model="category"
+          :filterable="true"
+          placeholder="Select category"
+          :clearable="true"
+          :close-on-select="true"
+        ></v-select>
+      </div>
+      <div class="filter-panel-box__ingredients">
+        <span class="filter-panel-box__ingred-title">Ingredients</span>
+        <v-select
+          :options="ingridientsOptions"
+          v-model="checkedIngridients"
+          :filterable="true"
+          placeholder="Select ingredients"
+          :clearable="true"
+          :multiple="true"
+          :close-on-select="true"
+        ></v-select>
+      </div>
+      <input
+        type="button"
+        @click="filter"
+        class="filter-panel-box__button"
+        value="Filter"
+      />
+    </div>
   </section>
 </template>
-<script>
-import VueSelect from "vue-next-select";
-import "vue-next-select/dist/index.min.css";
-import { ref, reactive, onMounted, toRaw, watch } from "vue";
-import FoodApi from "../api/food.js";
-import { filters } from "@/filters";
-import { FilterType } from "@/const/filterType";
 
+<script>
+import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import vSelect from "vue-select";
+
+import "vue-select/dist/vue-select.css";
+import { FilterType } from "@/const/filterType";
 
 export default {
   name: "FilterPanel",
   components: {
-    VueSelect,
+    vSelect,
   },
-  setup() {
+  props: {
+    ingridientsOptions: Array,
+    catOptions: Array,
+    initialCategory: String,
+    initialIngredientsOptions: Array,
+  },
+
+  setup(props) {
     const router = useRouter();
     const route = useRoute();
+    let checkedIngridients = ref(props.initialIngredientsOptions);
+    let category = ref(props.initialCategory);
 
-    const catOptions = reactive([]);
-    const ingridientsOptions = reactive([]);
-    const checkedIngridients = ref([]);
-    let category = ref("");
-
-    const changeFilters = () => {
-      category.value = toRaw(filters[[FilterType.CATEGORY]]);
-      checkedIngridients.value = toRaw(filters[[FilterType.INGRIDIENTS]]).split(
-        ","
-      );
-    };
-
+    // press on filter button
     const filter = () => {
       let routeQuery = Object.assign({}, route.query);
-      if (category.value != "") {
+
+      if (category.value && category.value != "") {
         routeQuery[[FilterType.CATEGORY]] = category.value;
       } else {
         delete routeQuery[[FilterType.CATEGORY]];
@@ -77,39 +79,78 @@ export default {
       router.push({ name: "meal", query: routeQuery });
     };
 
-    onMounted(async () => {
-      const catList = await FoodApi.getListCategories();
-      if (catList.ok && catList.data?.length > 0) {
-        catList.data.forEach((cat) => catOptions.push(cat.strCategory));
+    //to update category selects after deleting category filter in filter tags bar
+    watch(
+      () => props.initialCategory,
+      (first) => {
+        category.value = first;
       }
+    );
 
-      const ingridientList = await FoodApi.getIngridientsList();
-      if (ingridientList.ok && ingridientList.data?.length > 0) {
-        ingridientList.data.forEach((ing) =>
-          ingridientsOptions.push(ing.strIngredient)
-        );
+    //to update ingredient selects after deleting ingredient filter in filter tags bar
+    watch(
+      () => props.initialIngredientsOptions,
+      (first) => {
+        checkedIngridients.value = first;
       }
-
-      changeFilters();
-    });
-
-    watch(filters, () => changeFilters());
+    );
 
     return {
       category,
-      catOptions,
-      ingridientsOptions,
       checkedIngridients,
       filter,
     };
   },
 };
 </script>
+
 <style lang="scss">
-.filter-panel-box__cat-select {
-  margin: auto;
-  .vue-dropdown-item.highlighted {
-    background-color: $select-highlight;
+.filter-panel-box {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  flex-wrap: wrap;
+  &__category,
+  &__ingredients {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
   }
+  &__cat-title,
+  &__ingred-title {
+    font-size: 0.6em;
+    color: $select-title;
+  }
+  &__cat-select,
+  &__ingred-select {
+    margin: auto;
+  }
+  &__button {
+    background: $filter-button-background;
+    width: 100px;
+    border-radius: 4px;
+    border: 1px solid rgb(241, 241, 241);
+    box-shadow: 0px 2px 8px 0px rgba(153, 153, 153, 0.2);
+    font-size: 0.8rem;
+    padding: 4px;
+    color: $filter-button-text;
+    &:hover {
+      border: 1px solid $filter-button-border;
+    }
+  }
+}
+.v-select {
+  width: 200px;
+  font-size: 12px;
+}
+.vs__selected-options {
+  width: 150px;
+}
+.vs__search,
+.vs__search:focus {
+  font-size: 12px;
 }
 </style>

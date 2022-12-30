@@ -1,5 +1,8 @@
 <template>
-  <section class="filter-tags-panel" v-if="filtersToArray.length > 0">
+  <section
+    class="filter-tags-panel"
+    v-if="initialFilterTags && initialFilterTags.length > 0"
+  >
     <ul class="filter-tags-list">
       <li
         :class="[
@@ -13,7 +16,7 @@
           },
           'filter-tags-list-item',
         ]"
-        v-for="(tag, index) in filtersToArray"
+        v-for="(tag, index) in initialFilterTags"
         :key="index"
       >
         {{ tag.val }}
@@ -27,12 +30,15 @@
 </template>
 <script setup>
 import { FilterType } from "@/const/filterType";
-import { filters } from "@/filters";
 import { useRouter, useRoute } from "vue-router";
-import { computed } from "vue";
+import { defineProps } from "vue";
+defineProps({
+  initialFilterTags: Array,
+});
 
 const router = useRouter();
 const route = useRoute();
+
 const deleteFromFilters = (tag) => {
   let routeQuery = Object.assign({}, route.query);
   if (tag.type === FilterType.INGRIDIENTS) {
@@ -47,21 +53,6 @@ const deleteFromFilters = (tag) => {
 
   router.push({ name: "meal", query: routeQuery });
 };
-
-const filtersToArray = computed(() => {
-  let filtersArray = [];
-  for (let key in filters) {
-    if (key === FilterType.INGRIDIENTS && filters[key] != "") {
-      const ingridientsArr = filters[key].split(",");
-      ingridientsArr.forEach((ing) =>
-        filtersArray.push({ type: FilterType.INGRIDIENTS, val: ing })
-      );
-    } else if (filters[key] != "") {
-      filtersArray.push({ type: key, val: filters[key] });
-    }
-  }
-  return filtersArray;
-});
 </script>
 <style lang="scss">
 .filter-tags-list {

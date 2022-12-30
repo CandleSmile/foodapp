@@ -16,17 +16,17 @@
 import { defineProps, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { FilterType } from "../const/filterType";
-import { filters } from "../filters";
-
-defineProps({
+import { parseQueryStringToFilters } from "../helpers/filters";
+const props = defineProps({
   id: String,
   placeholder: String,
 });
 
-const query = ref("");
-
+const query = ref(props.initialQuery);
 const router = useRouter();
 const route = useRoute();
+
+//search function
 const onSearch = () => {
   if (route.name != "meal") {
     router.push({ name: "meal", query: { [FilterType.SEARCH]: query.value } });
@@ -36,10 +36,25 @@ const onSearch = () => {
     router.push({ name: "meal", query: routeQuery });
   }
 };
-watch(filters, (filters) => {
-  query.value =
-    filters[[FilterType.SEARCH]] != "" ? filters[[FilterType.SEARCH]] : "";
-});
+
+//to clean search field after leaving filter page
+watch(
+  () => route.name,
+  (newVaue) => {
+    if (newVaue != "meal") {
+      query.value = "";
+    }
+  }
+);
+
+//to set initial search query
+watch(
+  () => route.query,
+  (newval) => {
+    const filters = parseQueryStringToFilters(newval);
+    query.value = filters[[FilterType.SEARCH]];
+  }
+);
 </script>
 
 <style scoped lang="scss">
@@ -60,6 +75,7 @@ watch(filters, (filters) => {
     padding-bottom: 4px;
     font-size: 14px;
     color: $search-text-color;
+    //fixing probleams with autocomplete styles
     -webkit-background-clip: text;
     &::placeholder {
       color: $search-placeholder-color;

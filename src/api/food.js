@@ -98,6 +98,7 @@ export default {
 
   getAllCategoriesWithImages: async () => {
     const res = await getAxiosReq(`${conf.getCategoriesUrl}`);
+
     return {
       ok: res.ok,
       data: res.data?.categories,

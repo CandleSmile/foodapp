@@ -48,41 +48,14 @@
   </section>
 </template>
 <script>
-import { ref, onMounted } from "vue";
-import FoodApi from "../api/food.js";
 import { FilterType } from "../const/filterType";
 export default {
   name: "list-categories",
-  props: {},
+  props: { data: Array, error: Error, loading: Boolean },
   setup() {
-    const data = ref(null);
-    const loading = ref(true);
-    const error = ref(null);
     const catFilter = FilterType.CATEGORY;
-    const fetchData = async () => {
-      loading.value = true;
-      try {
-        let info = await FoodApi.getAllCategoriesWithImages();
-        loading.value = false;
-        if (!info.ok) {
-          error.value = info.error;
-        } else {
-          data.value = info.data ?? [];
-        }
-      } catch (err) {
-        loading.value = false;
-        error.value = err;
-      }
-    };
-
-    onMounted(() => {
-      fetchData();
-    });
 
     return {
-      data,
-      loading,
-      error,
       catFilter,
     };
   },
@@ -105,14 +78,12 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 35px 25px;
+  justify-content: flex-start;
+  gap: catGap("sizeL");
   padding: 0;
   &__item {
     display: flex;
-    width: calc(20% - 20px);
-
-    margin-bottom: 30px;
+    width: catWidth("sizeL");
     box-shadow: 0px 3px 3px 0px $food-item-border-color;
     border: 1px solid $food-item-border-color;
     border-radius: 5px;
@@ -157,35 +128,36 @@ export default {
     line-height: 1.3em;
   }
 }
-@media only screen and (min-width: 1024px) and (max-width: 1700px) {
+
+@media only screen and (min-width: 1700px) {
   .list-categories {
-    gap: 20px 16px;
+    gap: catGap("sizeSL");
     &__item {
-      width: calc(25% - 12px);
+      width: catWidth("sizeSL");
     }
   }
 }
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
   .list-categories {
-    gap: 20px 12px;
+    gap: catGap("sizeM1");
     &__item {
-      width: calc(33% - 8px);
+      width: catWidth("sizeM1");
     }
   }
 }
 @media only screen and (min-width: 481px) and (max-width: 767px) {
   .list-categories {
-    gap: 20px 10px;
+    gap: catGap("sizeM2");
     &__item {
-      width: calc(50% - 5px);
+      width: catWidth("sizeM2");
     }
   }
 }
 @media only screen and (max-width: 480px) {
   .list-categories {
-    justify-content: center;
+    gap: catGap("sizeS");
     &__item {
-      flex-basis: 100%;
+      width: catWidth("sizeS");
     }
   }
 }

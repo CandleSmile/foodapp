@@ -4,9 +4,9 @@
 
   <ul
     class="list-food main-block__list-food"
-    v-if="!loading && data && data.length"
+    v-if="!loading && meals && meals.length"
   >
-    <li class="list-food__item" v-for="(meal, index) in data" :key="index">
+    <li class="list-food__item" v-for="(meal, index) in meals" :key="index">
       <router-link
         :to="{ name: 'food', params: { id: meal.idMeal } }"
         class="list-food__link"
@@ -34,7 +34,7 @@
     </li>
   </ul>
 
-  <div class="no-cat-data" v-else-if="!loading && data && data.length == 0">
+  <div class="no-cat-data" v-else-if="!loading && meals && meals.length == 0">
     <p>Meals were not found</p>
   </div>
   <div class="error-cat-data" v-else-if="!loading && error">
@@ -44,49 +44,13 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from "vue";
-import FoodApi from "../api/food.js";
-import { filters } from "../filters";
-
 export default {
   name: "list-food",
-  props: { titleList: String, isLatestProducts: Boolean },
-  setup(props) {
-    const data = ref(null);
-    const loading = ref(true);
-    const error = ref(null);
-    const fetchData = async (filtersFromQuery) => {
-      loading.value = true;
-      try {
-        let info = props.isLatestProducts
-          ? await FoodApi.getInitialFood("")
-          : await FoodApi.getFoodByFilters(filtersFromQuery);
-
-        loading.value = false;
-        if (!info.ok) {
-          error.value = info.error;
-        } else {
-          data.value = info.data ?? [];
-        }
-      } catch (err) {
-        loading.value = false;
-        error.value = err;
-      }
-    };
-    watch(filters, async (newFilters) => {
-      fetchData(newFilters);
-    });
-
-    onMounted(() => {
-      fetchData(filters);
-    });
-
+  props: { titleList: String, meals: Array, loading: Boolean, error: Error },
+  setup() {
     const checkSpaces = (text) => text.replaceAll(/,(\S)/, ", $1");
 
     return {
-      data,
-      loading,
-      error,
       checkSpaces,
     };
   },
@@ -114,12 +78,12 @@ String.prototype.replaceAll = function (search, replacement) {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px 16px;
+  justify-content: flex-start;
+  gap: mealGap("sizeL");
   padding: 0;
   &__item {
     display: flex;
-    width: calc(25% - 12px);
+    width: mealWidth("sizeL");
     min-height: 200px;
     box-shadow: 0px 3px 3px 0px $food-item-border-color;
     border-radius: 5px;
@@ -187,34 +151,36 @@ String.prototype.replaceAll = function (search, replacement) {
 }
 @media only screen and (min-width: 1700px) {
   .list-food {
-    gap: 35px 25px;
+    gap: mealGap("sizeSL");
     &__item {
-      width: calc(20% - 20px);
+      width: mealWidth("sizeSL");
     }
   }
 }
+
 @media only screen and (max-width: 1024px) {
   .list-food {
-    gap: 20px 12px;
+    gap: mealGap("sizeM1");
     &__item {
-      width: calc(33% - 8px);
+      width: mealWidth("sizeM1");
     }
   }
 }
 
 @media only screen and (min-width: 481px) and (max-width: 767px) {
   .list-food {
-    gap: 20px 10px;
+    gap: mealGap("sizeM2");
     &__item {
-      width: calc(50% - 5px);
+      width: mealWidth("sizeM2");
     }
   }
 }
 @media only screen and (max-width: 480px) {
   .list-food {
     justify-content: center;
+    gap: mealGap("sizeS");
     &__item {
-      flex-basis: 100%;
+      width: mealWidth("sizeS");
     }
   }
 }
