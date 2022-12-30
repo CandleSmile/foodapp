@@ -10,14 +10,30 @@
     <div class="food-info food__food-info">
       <h1 class="food-info__name">{{ foodData.strMeal }}</h1>
       <div class="food-info__cat">
-        <span>Category: </span>{{ foodData.strCategory }}
+        <span>Category: </span>
+        <RouterLink
+          class="food-info__cat-link"
+          :to="{
+            name: 'meal',
+            query: { [catFilter]: foodData.strCategory },
+          }"
+          >{{ foodData.strCategory }}</RouterLink
+        >
       </div>
       <div class="food-info__instructions">{{ foodData.strInstructions }}</div>
       <div class="food-info__ingridients">
         <p class="food-info__ingridients-title">Ingredients:</p>
         <ul class="food-info__ingridients-list">
           <li v-for="(item, index) in getIngrdedients" :key="index">
-            {{ item }}
+            <RouterLink
+              class="food-info__ingredient-link"
+              :to="{
+                name: 'meal',
+                query: { [ingredientFilter]: item },
+              }"
+            >
+              {{ item }}</RouterLink
+            >
           </li>
         </ul>
       </div>
@@ -28,6 +44,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import FoodApi from "../api/food";
+import { FilterType } from "../const/filterType";
 export default {
   name: "FoodPage",
 
@@ -35,7 +52,8 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const foodData = ref("");
-    //const error = ref("");
+    const catFilter = FilterType.CATEGORY;
+    const ingredientFilter = FilterType.INGRIDIENTS;
     const getIngrdedients = computed(() => {
       if (!foodData.value) return [];
       const infoMeal = foodData.value;
@@ -75,6 +93,8 @@ export default {
     return {
       foodData,
       getIngrdedients,
+      catFilter,
+      ingredientFilter,
     };
   },
 };
@@ -106,13 +126,18 @@ export default {
   &__name {
     font-weight: 600;
     font-size: 2rem;
-    margin-bottom: 20px;
+    padding-bottom: 20px;
+    margin: 0;
   }
   &__cat {
-    margin-bottom: 20px;
+    padding-bottom: 20px;
     & span {
       font-weight: 600;
     }
+  }
+  &__cat-link {
+    color: $link-color;
+    text-decoration: none;
   }
   &__insrtuctions {
     font-size: 0.9 rem;
@@ -127,6 +152,10 @@ export default {
   &__ingridients-list {
     list-style: none;
     padding: 0;
+  }
+  &__ingredient-link {
+    color: $link-color;
+    text-decoration: none;
   }
 }
 

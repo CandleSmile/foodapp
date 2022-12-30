@@ -30,27 +30,22 @@ const getAxiosReq = async (url, parameters) => {
 
 export default {
   getFoodByFilters: async (filters) => {
-    const catFilters = filters[FilterType.CATEGORY];
+    const catFilter = filters[FilterType.CATEGORY];
     const searchFilter = filters[FilterType.SEARCH];
     const ingridientsFilter = filters[FilterType.INGRIDIENTS];
 
-    let url = "";
-    if (catFilters != "") url = `${conf.getProductsByCategoryUrl}${catFilters}`;
-    else if (ingridientsFilter != "")
-      url = `${conf.getFoodByIngridients}${ingridientsFilter}`;
-    else url = `${conf.getSearchProducts}${searchFilter}`;
-
-    const res = await getAxiosReq(url);
-
+    //1. Search query (in any case to get all info)
+    const res = await getAxiosReq(`${conf.getSearchProducts}${searchFilter}`);
     let meals = res.data?.meals;
-    // fix because this api don't return category name in the list of meals
-    if (catFilters != "")
-      meals.forEach((food) => {
-        food.strCategory = catFilters;
-      });
 
-    //case filter by ingridients after filtering by category
-    if (ingridientsFilter != "" && catFilters != "") {
+    //2. Filter by category if chosen
+    if (catFilter != "") {
+      meals = meals.filter((f) =>
+        f.strCategory.toLowerCase().includes(catFilter.toLowerCase())
+      );
+    }
+    //2. Filter by ingridients if chosen
+    if (ingridientsFilter != "") {
       const resByIngridients = await getAxiosReq(
         `${conf.getFoodByIngridients}${ingridientsFilter}`
       );
@@ -66,13 +61,6 @@ export default {
             ) >= 0
         );
       }
-    }
-
-    //case when filter category and/or ingridients -> search
-    if ((catFilters != "" || ingridientsFilter != "") && searchFilter != "") {
-      meals = meals.filter((f) =>
-        f.strMeal.toLowerCase().includes(searchFilter.toLowerCase())
-      );
     }
 
     return {

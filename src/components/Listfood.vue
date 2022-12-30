@@ -1,7 +1,6 @@
 <template>
   <section class="meals-block"></section>
   <h2 class="meals-title main-block__meals-title">{{ titleList }}</h2>
-
   <ul
     class="list-food main-block__list-food"
     v-if="!loading && meals && meals.length"
@@ -12,6 +11,12 @@
         class="list-food__link"
       >
         <div class="list-food__img-wrapper">
+          <div
+            v-if="meal.strTags && meal.strTags != ''"
+            class="list-food__tags"
+          >
+            {{ checkSpaces(meal.strTags) }}
+          </div>
           <img
             class="list-food__img"
             :src="meal.strMealThumb"
@@ -20,15 +25,16 @@
         </div>
         <div class="list-food__info-wrapper">
           <div class="list-food__name">{{ meal.strMeal }}</div>
-
-          <div class="list-food__insrtuctions">
-            <span>{{ meal.strInstructions }}</span>
-          </div>
         </div>
-        <div class="list-food__tags">
-          <span v-if="meal.strCategory && meal.strCategory != ''">{{
-            checkSpaces(meal.strCategory)
-          }}</span>
+        <div class="list-food__area-cat">
+          <div v-if="meal.strCategory && meal.strCategory != ''">
+            <span class="list-food__area-cat-title">Category: </span>
+            <span> {{ meal.strCategory }}</span>
+          </div>
+          <div v-if="meal.strArea && meal.strArea != ''">
+            <span class="list-food__area-cat-title">Area: </span>
+            <span>{{ meal.strArea }}</span>
+          </div>
         </div>
       </router-link>
     </li>
@@ -105,6 +111,7 @@ String.prototype.replaceAll = function (search, replacement) {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
   }
   &__img {
     width: 100%;
@@ -116,16 +123,6 @@ String.prototype.replaceAll = function (search, replacement) {
     padding: 10px;
     width: 100%;
   }
-  &__insrtuctions {
-    text-align: left;
-    color: $text-dark-color;
-    font-size: 0.6em;
-    min-height: 1.2em;
-    padding-top: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   &__name {
     flex-basis: 100%;
@@ -134,19 +131,35 @@ String.prototype.replaceAll = function (search, replacement) {
     font-size: 0.8em;
     font-weight: 700;
     line-height: 1.3em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  &__tags {
+  &__area-cat {
     flex-basis: 100%;
     color: $text-light-color;
     font-size: 0.6em;
     text-align: left;
     border-top: 1px dashed $text-light-color;
-    padding: 0 10px;
-    line-height: 2em;
+    padding: 5px 10px;
+    line-height: 1.5em;
     min-height: 20px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  &__area-cat-title {
+    font-weight: 700;
+  }
+  &__tags {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: $meal-tags-color-background;
+    border-end-start-radius: 5px;
+    padding: 0.3em 0.7em;
+    color: $meal-tags-color-text;
+    font-size: 0.7em;
   }
 }
 @media only screen and (min-width: 1700px) {

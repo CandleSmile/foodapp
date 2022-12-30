@@ -26,8 +26,6 @@
           </div>
           <div class="list-categories__info-wrapper">
             <div class="list-categories__name">{{ cat.strCategory }}</div>
-
-            <div class="list-categories__count">{{ cat.strCategory }}</div>
           </div>
         </router-link>
       </li>

@@ -4,6 +4,8 @@ $font-family:'Open Sans', Helvetica, Arial, sans-serif;
 $logo-color-main:#e12c21;
 $logo-color-second:#7fcb2a;
 
+$link-color:#7fcb2a;
+
 $search-background-color:#f4f6f6;
 $search-border-color:#ededed;
 $search-placeholder-color:#555;
@@ -29,10 +31,11 @@ $filter-button-border:#999;
 $filter-button-background:#7fcb2a;
 $filter-button-text:rgb(34, 34, 34);
 
-
+$meal-tags-color-background:#7fcb2a;
+$meal-tags-color-text:#fff;
 $max-content-width:1920px;
 
-
+//block for width and gaps of the lists with meals and categories
 @function itemWidth($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$common-gap-large,$common-gap-small) {
     $width: null;
    $item-count: null;
@@ -118,4 +121,5 @@ $meal-common-gap-small:20px;
 @function mealGap($breakpoint){
     @return itemGap($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-common-gap-large,$meal-common-gap-small );
 };
-   
+ 
+//end block for width and gaps of the lists with meals and categories

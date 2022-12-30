@@ -1,6 +1,14 @@
 <template>
   <section class="filter-panel">
-    <div class="filter-panel-box">
+    <div class="filter-panel-toggle-button-wrapper">
+      <button
+        class="filter-panel-toggle-button"
+        @click="toggleFilterPanelClass"
+      >
+        {{ showFilterPanel ? "Hide filters" : "Open filters" }}
+      </button>
+    </div>
+    <div :class="[showFilterPanel ? activeClass : '', 'filter-panel-box']">
       <div class="filter-panel-box__category">
         <span class="filter-panel-box__cat-title">Category</span>
 
@@ -25,12 +33,15 @@
           :close-on-select="true"
         ></v-select>
       </div>
-      <input
-        type="button"
-        @click="filter"
-        class="filter-panel-box__button"
-        value="Filter"
-      />
+      <div class="filter-panel-box__button-wrapper">
+        <span class="filter-panel-box__fix-span">&nbsp;</span>
+        <input
+          type="button"
+          @click="filter"
+          class="filter-panel-box__button"
+          value="Filter"
+        />
+      </div>
     </div>
   </section>
 </template>
@@ -60,7 +71,13 @@ export default {
     const route = useRoute();
     let checkedIngridients = ref(props.initialIngredientsOptions);
     let category = ref(props.initialCategory);
+    let showFilterPanel = ref(false);
+    let activeClass = "filter-panel-box--active";
 
+    const toggleFilterPanelClass = () => {
+      console.log("FSA");
+      showFilterPanel.value = !showFilterPanel.value;
+    };
     // press on filter button
     const filter = () => {
       let routeQuery = Object.assign({}, route.query);
@@ -98,6 +115,9 @@ export default {
     return {
       category,
       checkedIngridients,
+      showFilterPanel,
+      activeClass,
+      toggleFilterPanelClass,
       filter,
     };
   },
@@ -105,13 +125,39 @@ export default {
 </script>
 
 <style lang="scss">
-.filter-panel-box {
+.filter-panel-toggle-button-wrapper {
   display: flex;
+  justify-content: flex-start;
+  padding: 5px 0 15px;
+}
+.filter-panel-toggle-button {
+  border: 1px solid $filter-button-background;
+  width: 150px;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.8rem;
+  padding: 6px;
+  color: rgb(34, 34, 34);
+  text-align: left;
+  position: relative;
+
+  &::after {
+    content: "\21C5";
+    right: 0;
+    position: absolute;
+    padding-right: 5px;
+  }
+}
+.filter-panel-box {
+  display: none;
   gap: 10px;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: flex-start;
   padding-bottom: 10px;
   flex-wrap: wrap;
+  &--active {
+    display: flex;
+  }
   &__category,
   &__ingredients {
     display: flex;
@@ -128,6 +174,14 @@ export default {
   &__ingred-select {
     margin: auto;
   }
+  &__button-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  &__fix-span {
+    font-size: 0.6em;
+  }
   &__button {
     background: $filter-button-background;
     width: 100px;
@@ -135,7 +189,7 @@ export default {
     border: 1px solid rgb(241, 241, 241);
     box-shadow: 0px 2px 8px 0px rgba(153, 153, 153, 0.2);
     font-size: 0.8rem;
-    padding: 4px;
+    padding: 6px;
     color: $filter-button-text;
     &:hover {
       border: 1px solid $filter-button-border;
@@ -152,5 +206,10 @@ export default {
 .vs__search,
 .vs__search:focus {
   font-size: 12px;
+}
+@media only screen and (max-width: 480px) {
+  .filter-panel-box {
+    flex-direction: column;
+  }
 }
 </style>
