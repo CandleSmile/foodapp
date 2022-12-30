@@ -36,58 +36,58 @@ $meal-tags-color-text:#fff;
 $max-content-width:1920px;
 
 //block for width and gaps of the lists with meals and categories
-@function itemWidth($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$common-gap-large,$common-gap-small) {
+@function itemWidth($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$items-gap-large,$items-gap-small) {
     $width: null;
    $item-count: null;
-    $common-gap: null;
+    $items-gap: null;
     @if ($breakpoint == 'sizeSL') {
         $item-count:$item-count-supersize;
-        $common-gap:$common-gap-large;
+        $items-gap:$items-gap-large;
     }
     @else if ($breakpoint == 'sizeL') {
        $item-count:$item-count-large;
-        $common-gap:$common-gap-large;
+        $items-gap:$items-gap-large;
     }
     @else if ($breakpoint == 'sizeM1') {
        $item-count:$item-count-middle1;
-        $common-gap:$common-gap-large;
+        $items-gap:$items-gap-large;
     }
     @else if ($breakpoint =='sizeM2') {
        $item-count:$item-count-middle2;
-        $common-gap:$common-gap-small;
+        $items-gap:$items-gap-small;
     }
     @else {
        $item-count:$item-count-small;
-        $common-gap:$common-gap-small;
+        $items-gap:$items-gap-small;
     }
-    $width: calc((100% / #{$item-count}) - (#{$common-gap} / #{$item-count}));
+    $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
 
     @return #{$width};
 }
-@function itemGap($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$common-gap-large,$common-gap-small) {
+@function itemGap($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$items-gap-large,$items-gap-small) {
    $item-count: null;
-    $common-gap: null;
+    $items-gap: null;
     @if ($breakpoint == 'sizeSL') {
         $item-count:$item-count-supersize;
-        $common-gap:$common-gap-large;
+        $items-gap:$items-gap-large;
     }
     @else if  ($breakpoint == 'sizeL') {
        $item-count:$item-count-large;
-        $common-gap:$common-gap-large;
+        $items-gap:$items-gap-large;
     }
     @else if ($breakpoint == 'sizeM1') {
        $item-count:$item-count-middle1;
-        $common-gap:$common-gap-large;
+        $items-gap:$items-gap-large;
     }
     @else if ($breakpoint =='sizeM2') {
        $item-count:$item-count-middle2;
-        $common-gap:$common-gap-small;
+        $items-gap:$items-gap-small;
     }
     @else {
        $item-count:$item-count-small;
-        $common-gap:$common-gap-small;
+        $items-gap:$items-gap-small;
     }
-    $gap: calc(#{$common-gap} / (#{$item-count} - 1)) calc((#{$common-gap} / (#{$item-count} - 1)));
+    $gap: #{$items-gap} #{$items-gap} ;
 
     @return #{$gap};
 }
@@ -97,14 +97,14 @@ $cat-count-large: 8;
 $cat-count-middle1: 6;
 $cat-count-middle2: 3;
 $cat-count-small: 2;
-$cat-common-gap-large:60px;
-$cat-common-gap-small:20px;
+$cat-items-gap-large:15px;
+$cat-items-gap-small:10px;
 
 @function catWidth($breakpoint){
-    @return itemWidth($breakpoint,$cat-count-supersize,$cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-common-gap-large,$cat-common-gap-small );
+    @return itemWidth($breakpoint,$cat-count-supersize,$cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-items-gap-large,$cat-items-gap-small );
 };
 @function catGap($breakpoint){
-    @return itemGap($breakpoint,$cat-count-supersize, $cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-common-gap-large,$cat-common-gap-small );
+    @return itemGap($breakpoint,$cat-count-supersize, $cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-items-gap-large,$cat-items-gap-small );
 };
 
 $meal-count-supersize:6;
@@ -112,14 +112,14 @@ $meal-count-large: 4;
 $meal-count-middle1: 3;
 $meal-count-middle2: 2;
 $meal-count-small: 1;
-$meal-common-gap-large:60px;
-$meal-common-gap-small:20px;
+$meal-items-gap-large:15px;
+$meal-items-gap-small:10px;
 
 @function mealWidth($breakpoint){
-    @return itemWidth($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-common-gap-large,$meal-common-gap-small );
+    @return itemWidth($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-items-gap-large,$meal-items-gap-small );
 };
 @function mealGap($breakpoint){
-    @return itemGap($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-common-gap-large,$meal-common-gap-small );
+    @return itemGap($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-items-gap-large,$meal-items-gap-small );
 };
  
 //end block for width and gaps of the lists with meals and categories
