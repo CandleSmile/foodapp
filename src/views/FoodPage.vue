@@ -78,12 +78,9 @@ export default {
           foodData.value = info.data.meals[0];
         } else {
           router.push({ name: "404", replace: true });
-          //error.value = "The item wasn't found + " + info.error; //should be rewrite with 404
         }
       } catch (err) {
         router.push({ name: "404", replace: true });
-
-        //error.value = err; //should be rewrite with 404
       }
     };
     onMounted(() => {

@@ -8,41 +8,44 @@
         {{ showFilterPanel ? "Hide filters" : "Open filters" }}
       </button>
     </div>
-    <div :class="[showFilterPanel ? activeClass : '', 'filter-panel-box']">
-      <div class="filter-panel-box__category">
-        <span class="filter-panel-box__cat-title">Category</span>
 
-        <v-select
-          :options="catOptions"
-          v-model="category"
-          :filterable="true"
-          placeholder="Select category"
-          :clearable="true"
-          :close-on-select="true"
-        ></v-select>
+    <Transition name="fade">
+      <div v-if="showFilterPanel" class="filter-panel-box">
+        <div class="filter-panel-box__category">
+          <span class="filter-panel-box__cat-title">Category</span>
+
+          <v-select
+            :options="catOptions"
+            v-model="category"
+            :filterable="true"
+            placeholder="Select category"
+            :clearable="true"
+            :close-on-select="true"
+          ></v-select>
+        </div>
+        <div class="filter-panel-box__ingredients">
+          <span class="filter-panel-box__ingred-title">Ingredients</span>
+          <v-select
+            :options="ingridientsOptions"
+            v-model="checkedIngridients"
+            :filterable="true"
+            placeholder="Select ingredients"
+            :clearable="true"
+            :multiple="true"
+            :close-on-select="true"
+          ></v-select>
+        </div>
+        <div class="filter-panel-box__button-wrapper">
+          <span class="filter-panel-box__fix-span">&nbsp;</span>
+          <input
+            type="button"
+            @click="filter"
+            class="filter-panel-box__button"
+            value="Filter"
+          />
+        </div>
       </div>
-      <div class="filter-panel-box__ingredients">
-        <span class="filter-panel-box__ingred-title">Ingredients</span>
-        <v-select
-          :options="ingridientsOptions"
-          v-model="checkedIngridients"
-          :filterable="true"
-          placeholder="Select ingredients"
-          :clearable="true"
-          :multiple="true"
-          :close-on-select="true"
-        ></v-select>
-      </div>
-      <div class="filter-panel-box__button-wrapper">
-        <span class="filter-panel-box__fix-span">&nbsp;</span>
-        <input
-          type="button"
-          @click="filter"
-          class="filter-panel-box__button"
-          value="Filter"
-        />
-      </div>
-    </div>
+    </Transition>
   </section>
 </template>
 
@@ -149,7 +152,8 @@ export default {
   }
 }
 .filter-panel-box {
-  display: none;
+  // display: none;
+  display: flex;
   gap: 10px;
   justify-content: flex-start;
   align-items: flex-start;
@@ -206,6 +210,19 @@ export default {
 .vs__search,
 .vs__search:focus {
   font-size: 12px;
+}
+
+//transition  toggle filter panel
+.fade-enter-active {
+  transition: opacity 0.3s ease;
+}
+.fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 @media only screen and (max-width: 480px) {
   .filter-panel-box {
