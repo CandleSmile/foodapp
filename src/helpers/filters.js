@@ -5,7 +5,7 @@ const parseQueryStringToFilters = (query) => {
   let initialFiltersState = {
     [FilterType.CATEGORY]: "",
     [FilterType.SEARCH]: "",
-    [FilterType.INGRIDIENTS]: "",
+    [FilterType.INGREDIENTS]: "",
   };
 
   let filters = reactive(initialFiltersState);
