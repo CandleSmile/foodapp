@@ -21,10 +21,10 @@
         >
       </div>
       <div class="food-info__instructions">{{ foodData.strInstructions }}</div>
-      <div class="food-info__ingridients">
-        <p class="food-info__ingridients-title">Ingredients:</p>
-        <ul class="food-info__ingridients-list">
-          <li v-for="(item, index) in getIngrdedients" :key="index">
+      <div class="food-info__ingredients">
+        <p class="food-info__ingredients-title">Ingredients:</p>
+        <ul class="food-info__ingredients-list">
+          <li v-for="(item, index) in getIngredients" :key="index">
             <RouterLink
               class="food-info__ingredient-link"
               :to="{
@@ -43,7 +43,7 @@
 <script>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
-import FoodApi from "../api/food";
+import { foodApi } from "../api/index";
 import { FilterType } from "../const/filterType";
 export default {
   name: "FoodPage",
@@ -53,26 +53,26 @@ export default {
     const router = useRouter();
     const foodData = ref("");
     const catFilter = FilterType.CATEGORY;
-    const ingredientFilter = FilterType.INGRIDIENTS;
-    const getIngrdedients = computed(() => {
+    const ingredientFilter = FilterType.INGREDIENTS;
+    const getIngredients = computed(() => {
       if (!foodData.value) return [];
       const infoMeal = foodData.value;
-      let ingridients = [];
+      let ingredients = [];
       for (let key in infoMeal) {
         if (
           key.startsWith("strIngredient") &&
           infoMeal[key] &&
           infoMeal[key].length > 0
         ) {
-          ingridients.push(infoMeal[key]);
+          ingredients.push(infoMeal[key]);
         }
       }
-      return ingridients;
+      return ingredients;
     });
 
     const fetchDataFood = async (id) => {
       try {
-        let info = await FoodApi.getFoodById(id);
+        let info = await foodApi.food.get.foodById(id);
 
         if (info.ok) {
           foodData.value = info.data.meals[0];
@@ -89,7 +89,7 @@ export default {
 
     return {
       foodData,
-      getIngrdedients,
+      getIngredients,
       catFilter,
       ingredientFilter,
     };
@@ -139,14 +139,14 @@ export default {
   &__insrtuctions {
     font-size: 0.9 rem;
   }
-  &__ingridients {
+  &__ingredients {
     border: 1px #000;
     font-size: 0.9em;
   }
-  &__ingridients-title {
+  &__ingredients-title {
     font-weight: 600;
   }
-  &__ingridients-list {
+  &__ingredients-list {
     list-style: none;
     padding: 0;
   }

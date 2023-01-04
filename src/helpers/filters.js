@@ -20,7 +20,7 @@ const parseQueryStringToFilters = (query) => {
 
 const isFiltersChosen = (filters) => {
   filters[FilterType.SEARCH] != "" ||
-    filters[FilterType.INGRIDIENTS] != "" ||
+    filters[FilterType.INGREDIENTS] != "" ||
     filters[FilterType.CATEGORY] != "";
 };
 

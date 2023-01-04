@@ -67,7 +67,7 @@ watch(
   &__input {
     height: 25px;
     background: $search-background-color;
-    border: 2px solid $search-border-color;
+    border: 1px solid $search-border-color;
     border-radius: 50px;
     padding-left: 35px;
     padding-right: 10px;

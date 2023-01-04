@@ -7,12 +7,12 @@
       <li
         :class="[
           {
-            'filter-tags-list-item--catecory-theme':
+            'filter-tags-list-item--category-theme':
               tag.type == FilterType.CATEGORY,
             'filter-tags-list-item--search-theme':
               tag.type == FilterType.SEARCH,
-            'filter-tags-list-item--ingridients-theme':
-              tag.type == FilterType.INGRIDIENTS,
+            'filter-tags-list-item--ingredients-theme':
+              tag.type == FilterType.INGREDIENTS,
           },
           'filter-tags-list-item',
         ]"
@@ -41,13 +41,13 @@ const route = useRoute();
 
 const deleteFromFilters = (tag) => {
   let routeQuery = Object.assign({}, route.query);
-  if (tag.type === FilterType.INGRIDIENTS) {
-    let ingridientsArr = routeQuery[[tag.type]]
+  if (tag.type === FilterType.INGREDIENTS) {
+    let ingredientsArr = routeQuery[[tag.type]]
       ? routeQuery[[tag.type]].split(",")
       : [];
-    ingridientsArr = ingridientsArr.filter((ing) => ing != tag.val);
-    ingridientsArr.length > 0
-      ? (routeQuery[[tag.type]] = ingridientsArr.join(","))
+    ingredientsArr = ingredientsArr.filter((ing) => ing != tag.val);
+    ingredientsArr.length > 0
+      ? (routeQuery[[tag.type]] = ingredientsArr.join(","))
       : delete routeQuery[[tag.type]];
   } else delete routeQuery[[tag.type]];
 
@@ -85,7 +85,7 @@ const deleteFromFilters = (tag) => {
       left: 50%;
       width: 0.8rem;
       height: 0.11rem;
-      background-color: #e12c21;
+      background-color: #fff;
       margin: -0.05rem 0 0 -0.2rem;
       transform: rotate(-45deg);
     }
@@ -93,14 +93,14 @@ const deleteFromFilters = (tag) => {
       transform: rotate(45deg);
     }
   }
-  &--catecory-theme {
+  &--category-theme {
     background: $filter-tag-cat-background;
   }
   &--search-theme {
     background: $filter-tag-search-background;
   }
-  &--ingridients-theme {
-    background: $filter-tag-ingridients-background;
+  &--ingredients-theme {
+    background: $filter-tag-ingredients-background;
   }
 }
 </style>

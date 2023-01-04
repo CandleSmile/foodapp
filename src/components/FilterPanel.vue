@@ -21,18 +21,20 @@
             placeholder="Select category"
             :clearable="true"
             :close-on-select="true"
+            class="custom-select"
           ></v-select>
         </div>
         <div class="filter-panel-box__ingredients">
           <span class="filter-panel-box__ingred-title">Ingredients</span>
           <v-select
-            :options="ingridientsOptions"
-            v-model="checkedIngridients"
+            :options="ingredientsOptions"
+            v-model="checkedIngredients"
             :filterable="true"
             placeholder="Select ingredients"
             :clearable="true"
             :multiple="true"
             :close-on-select="true"
+            class="custom-select"
           ></v-select>
         </div>
         <div class="filter-panel-box__button-wrapper">
@@ -63,7 +65,7 @@ export default {
     vSelect,
   },
   props: {
-    ingridientsOptions: Array,
+    ingredientsOptions: Array,
     catOptions: Array,
     initialCategory: String,
     initialIngredientsOptions: Array,
@@ -72,7 +74,7 @@ export default {
   setup(props) {
     const router = useRouter();
     const route = useRoute();
-    let checkedIngridients = ref(props.initialIngredientsOptions);
+    let checkedIngredients = ref(props.initialIngredientsOptions);
     let category = ref(props.initialCategory);
     let showFilterPanel = ref(false);
     let activeClass = "filter-panel-box--active";
@@ -91,10 +93,10 @@ export default {
         delete routeQuery[[FilterType.CATEGORY]];
       }
 
-      if (checkedIngridients.value != "")
-        routeQuery[[FilterType.INGRIDIENTS]] =
-          checkedIngridients.value.join(",");
-      else delete routeQuery[[FilterType.INGRIDIENTS]];
+      if (checkedIngredients.value != "")
+        routeQuery[[FilterType.INGREDIENTS]] =
+          checkedIngredients.value.join(",");
+      else delete routeQuery[[FilterType.INGREDIENTS]];
 
       router.push({ name: "meal", query: routeQuery });
     };
@@ -111,13 +113,13 @@ export default {
     watch(
       () => props.initialIngredientsOptions,
       (first) => {
-        checkedIngridients.value = first;
+        checkedIngredients.value = first;
       }
     );
 
     return {
       category,
-      checkedIngridients,
+      checkedIngredients,
       showFilterPanel,
       activeClass,
       toggleFilterPanelClass,
@@ -140,7 +142,7 @@ export default {
   background: #fff;
   font-size: 0.8rem;
   padding: 6px;
-  color: rgb(34, 34, 34);
+  color: $filter-panel-toggle-button-color;
   text-align: left;
   position: relative;
 

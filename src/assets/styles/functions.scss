@@ -1,0 +1,76 @@
+//previous block for width and gaps of the lists with meals and categories
+/* @function itemWidth($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$items-gap-large,$items-gap-small) {
+    $width: null;
+   $item-count: null;
+    $items-gap: null;
+    @if ($breakpoint == 'sizeSL') {
+        $item-count:$item-count-supersize;
+        $items-gap:$items-gap-large;
+    }
+    @else if ($breakpoint == 'sizeL') {
+       $item-count:$item-count-large;
+        $items-gap:$items-gap-large;
+    }
+    @else if ($breakpoint == 'sizeM1') {
+       $item-count:$item-count-middle1;
+        $items-gap:$items-gap-large;
+    }
+    @else if ($breakpoint =='sizeM2') {
+       $item-count:$item-count-middle2;
+        $items-gap:$items-gap-small;
+    }
+    @else {
+       $item-count:$item-count-small;
+        $items-gap:$items-gap-small;
+    }
+    $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
+
+    @return #{$width};
+}
+@function itemGap($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$items-gap-large,$items-gap-small) {
+   $item-count: null;
+    $items-gap: null;
+    @if ($breakpoint == 'sizeSL') {
+        $item-count:$item-count-supersize;
+        $items-gap:$items-gap-large;
+    }
+    @else if  ($breakpoint == 'sizeL') {
+       $item-count:$item-count-large;
+        $items-gap:$items-gap-large;
+    }
+    @else if ($breakpoint == 'sizeM1') {
+       $item-count:$item-count-middle1;
+        $items-gap:$items-gap-large;
+    }
+    @else if ($breakpoint =='sizeM2') {
+       $item-count:$item-count-middle2;
+        $items-gap:$items-gap-small;
+    }
+    @else {
+       $item-count:$item-count-small;
+        $items-gap:$items-gap-small;
+    }
+    $gap: #{$items-gap} #{$items-gap} ;
+
+    @return #{$gap};
+}
+
+@function catWidth($breakpoint){
+    @return itemWidth($breakpoint,$cat-count-supersize,$cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-items-gap-large,$cat-items-gap-small );
+};
+@function catGap($breakpoint){
+    @return itemGap($breakpoint,$cat-count-supersize, $cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-items-gap-large,$cat-items-gap-small );
+};
+
+@function mealWidth($breakpoint){
+    @return itemWidth($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-items-gap-large,$meal-items-gap-small );
+};
+@function mealGap($breakpoint){
+    @return itemGap($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-items-gap-large,$meal-items-gap-small );
+};
+  */
+
+@function itemWidth($item-count, $items-gap) {
+    $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
+    @return #{$width};
+}

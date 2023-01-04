@@ -15,7 +15,7 @@
 <script>
 import Listfood from "../components/Listfood.vue";
 import ListCategories from "../components/ListCategories.vue";
-import FoodApi from "../api/food.js";
+import { foodApi } from "../api/index.js";
 import { ref } from "vue";
 export default {
   name: "HomePage",
@@ -32,7 +32,8 @@ export default {
     let loadingCat = ref(true);
     let errorCat = ref(null);
 
-    FoodApi.getInitialFood()
+    foodApi.food.get
+      .initialFoods()
       .then((info) => {
         loading.value = false;
         if (!info.ok) {
@@ -45,7 +46,9 @@ export default {
         loading.value = false;
         error.value = err;
       });
-    FoodApi.getAllCategoriesWithImages()
+
+    foodApi.category.get
+      .allCategoriesWithImages()
       .then((info) => {
         loadingCat.value = false;
         if (!info.ok) {

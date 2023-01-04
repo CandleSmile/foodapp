@@ -77,15 +77,16 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: catGap("sizeL");
+  gap: $cat-items-gap-large;
   padding: 0;
   &__item {
     display: flex;
-    width: catWidth("sizeL");
+    width: itemWidth($cat-count-large, $cat-items-gap-large);
     box-shadow: 0px 3px 3px 0px $food-item-border-color;
     border: 1px solid $food-item-border-color;
     border-radius: 5px;
     overflow: hidden;
+    background-color: $cat-item-background;
     flex-direction: row;
     align-content: flex-start;
     flex-wrap: wrap;
@@ -122,40 +123,40 @@ export default {
     color: $text-dark-color;
     text-align: left;
     font-size: 0.8em;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.3em;
   }
 }
 
 @media only screen and (min-width: 1700px) {
   .list-categories {
-    gap: catGap("sizeSL");
+    gap: $cat-items-gap-large;
     &__item {
-      width: catWidth("sizeSL");
+      width: itemWidth($cat-count-supersize, $cat-items-gap-large);
     }
   }
 }
 @media only screen and (min-width: 768px) and (max-width: 1200px) {
   .list-categories {
-    gap: catGap("sizeM1");
+    gap: $cat-items-gap-large;
     &__item {
-      width: catWidth("sizeM1");
+      width: itemWidth($cat-count-middle1, $cat-items-gap-large);
     }
   }
 }
 @media only screen and (min-width: 481px) and (max-width: 767px) {
   .list-categories {
-    gap: catGap("sizeM2");
+    gap: $cat-items-gap-small;
     &__item {
-      width: catWidth("sizeM2");
+      width: itemWidth($cat-count-middle2, $cat-items-gap-small);
     }
   }
 }
 @media only screen and (max-width: 480px) {
   .list-categories {
-    gap: catGap("sizeS");
+    gap: $cat-items-gap-small;
     &__item {
-      width: catWidth("sizeS");
+      width: itemWidth($cat-count-small, $cat-items-gap-small);
     }
   }
 }

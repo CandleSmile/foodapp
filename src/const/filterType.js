@@ -1,6 +1,6 @@
 const FilterType = Object.freeze({
   CATEGORY: "cat",
   SEARCH: "search",
-  INGRIDIENTS: "INGRIDIENTS",
+  INGREDIENTS: "INGREDIENTS",
 });
 export { FilterType };

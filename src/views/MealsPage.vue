@@ -1,7 +1,7 @@
 <template>
-  <FilterTags :initial-filter-tags="selectedFilterTages"></FilterTags>
+  <FilterTags :initial-filter-tags="selectedFilterTags"></FilterTags>
   <FilterPanel
-    :ingridients-options="ingridientsOptions"
+    :ingredients-options="ingredientsOptions"
     :cat-options="catOptions"
     :initial-category="selectedCategory"
     :initial-ingredients-options="selectedIngredients"
@@ -20,7 +20,7 @@ import FilterPanel from "../components/FilterPanel.vue";
 import { watch, ref, toRaw } from "vue";
 import { useRoute } from "vue-router";
 import { parseQueryStringToFilters } from "../helpers/filters";
-import FoodApi from "../api/food.js";
+import { foodApi } from "../api/index.js";
 import { FilterType } from "@/const/filterType";
 export default {
   name: "MealsPage",
@@ -37,16 +37,17 @@ export default {
     const loading = ref(true);
     const error = ref(null);
     const catOptions = ref([]);
-    const ingridientsOptions = ref([]);
+    const ingredientsOptions = ref([]);
     const selectedCategory = ref("");
     const selectedIngredients = ref([]);
-    const selectedFilterTages = ref([]);
+    const selectedFilterTags = ref([]);
     let filters = parseQueryStringToFilters(route.query);
 
     //getting data of meals by parsed filters
     const fetchData = (filtersFromQuery) => {
       loading.value = true;
-      FoodApi.getFoodByFilters(filtersFromQuery)
+      foodApi.food.get
+        .foodByFilters(filtersFromQuery)
         .then((info) => {
           loading.value = false;
           if (!info.ok) {
@@ -63,16 +64,16 @@ export default {
 
     //getting filter's options
     const fetchFiltersOptions = () => {
-      FoodApi.getListCategories().then((catList) => {
+      foodApi.category.get.listCategories().then((catList) => {
         if (catList.ok && catList.data?.length > 0) {
           catList.data.forEach((cat) => catOptions.value.push(cat.strCategory));
         }
       });
 
-      FoodApi.getIngridientsList().then((ingridientList) => {
-        if (ingridientList.ok & (ingridientList.data?.length > 0)) {
-          ingridientList.data.forEach((ing) =>
-            ingridientsOptions.value.push(ing.strIngredient)
+      foodApi.ingredients.get.ingredientsList().then((ingredientList) => {
+        if (ingredientList.ok & (ingredientList.data?.length > 0)) {
+          ingredientList.data.forEach((ing) =>
+            ingredientsOptions.value.push(ing.strIngredient)
           );
         }
       });
@@ -82,25 +83,26 @@ export default {
     const updateSelectedFilters = (filtersFromQuery) => {
       selectedCategory.value = toRaw(filtersFromQuery[[FilterType.CATEGORY]]);
       selectedIngredients.value =
-        filtersFromQuery[[FilterType.INGRIDIENTS]] != ""
-          ? toRaw(filtersFromQuery[[FilterType.INGRIDIENTS]]).split(",")
+        filtersFromQuery[[FilterType.INGREDIENTS]] &&
+        filtersFromQuery[[FilterType.INGREDIENTS]] != ""
+          ? toRaw(filtersFromQuery[[FilterType.INGREDIENTS]]).split(",")
           : [];
     };
 
     //update selectedFilterTages with parsed filters
     const updateSelectedFilterTags = (filtersFromQuery) => {
-      selectedFilterTages.value = [];
+      selectedFilterTags.value = [];
       for (let key in filters) {
-        if (key === FilterType.INGRIDIENTS && filtersFromQuery[key] != "") {
-          const ingridientsArr = filtersFromQuery[key].split(",");
-          ingridientsArr.forEach((ing) =>
-            selectedFilterTages.value.push({
-              type: FilterType.INGRIDIENTS,
+        if (key === FilterType.INGREDIENTS && filtersFromQuery[key] != "") {
+          const ingredientsArr = filtersFromQuery[key].split(",");
+          ingredientsArr.forEach((ing) =>
+            selectedFilterTags.value.push({
+              type: FilterType.INGREDIENTS,
               val: ing,
             })
           );
         } else if (filtersFromQuery[key] != "") {
-          selectedFilterTages.value.push({
+          selectedFilterTags.value.push({
             type: key,
             val: filtersFromQuery[key],
           });
@@ -117,8 +119,8 @@ export default {
     //get and set info and filters after changes in url
     watch(
       () => route.query,
-      (newVaue) => {
-        filters = parseQueryStringToFilters(newVaue);
+      (newValue) => {
+        filters = parseQueryStringToFilters(newValue);
         fetchData(filters);
         updateSelectedFilters(filters);
         updateSelectedFilterTags(filters);
@@ -130,10 +132,10 @@ export default {
       loading,
       error,
       catOptions,
-      ingridientsOptions,
+      ingredientsOptions,
       selectedCategory,
       selectedIngredients,
-      selectedFilterTages,
+      selectedFilterTags,
     };
   },
 };
