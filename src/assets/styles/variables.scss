@@ -1,54 +1,51 @@
-$main-colors: (
-    lightest: #f9f9ff,
-    light: #ffa577,
-    dark: #d55448,
-    darkest: #896e69
-);
-
+//begin main-colors-block
+$primary-dark-color: #d55448;
+$primary-light-color: #ffa577;
+$secondary-dark-color: #896e69;
+$secondary-light-color: #f9f9ff;
+//end main-colors-block
 
 $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
 
 //colors
-$logo-color-main: map_get($main-colors, 'dark');
-$logo-color-second: map_get($main-colors, 'light');
+$logo-color-main: $primary-dark-color;
+$logo-color-second: $primary-light-color;
 
-$link-color: map_get($main-colors, 'darkest');
+$link-color: $secondary-dark-color ;
+$cat-item-background: $secondary-light-color;
+$meal-item-background: $secondary-light-color;
 
-$cat-item-background: map_get($main-colors, 'lightest');
-$meal-item-background: map_get($main-colors, 'lightest');
-
-$search-background-color: map_get($main-colors, 'lightest');
-$search-border-color: map_get($main-colors, 'darkest');
-$search-placeholder-color: map_get($main-colors, 'darkest');
+$search-background-color: $secondary-light-color;
+$search-border-color: $secondary-dark-color;
+$search-placeholder-color: $secondary-dark-color;
 $search-text-color: #000;
-$search-icon-color: map_get($main-colors, 'darkest');
+$search-icon-color: $secondary-dark-color;
+$food-item-border-color: rgba($secondary-dark-color, .17);
 
-$food-item-border-color: rgba(map_get($main-colors, 'darkest'), .17);
-
-$text-light-color: map_get($main-colors, 'darkest');
+$text-light-color: $secondary-dark-color;
 $text-dark-color: #000;
 
-$filter-tag-cat-background: map_get($main-colors, 'light');
-$filter-tag-search-background: map_get($main-colors, 'dark');
-$filter-tag-ingredients-background: map_get($main-colors, 'darkest');
+$filter-tag-cat-background: $primary-light-color;
+$filter-tag-search-background: $primary-dark-color;
+$filter-tag-ingredients-background: $secondary-dark-color;
 $filter-tag-text: #fff;
 $filter-tag-del: #e12c21;
 
-$select-highlight: map_get($main-colors, 'darkest');
-$select-title: map_get($main-colors, 'darkest');
-$select-text: map_get($main-colors, 'darkest');
-$select-border: map_get($main-colors, 'darkest');
+$select-highlight: $secondary-dark-color;
+$select-title: $secondary-dark-color;
+$select-text: $secondary-dark-color;
+$select-border: $secondary-dark-color;
 
 
 
-$filter-button-border: map_get($main-colors, 'light');
-$filter-button-background: map_get($main-colors, 'light');
+$filter-button-border: $primary-light-color;
+$filter-button-background: $primary-light-color;
 $filter-button-text: #fff;
-$filter-panel-toggle-button-color: map_get($main-colors, 'darkest');
+$filter-panel-toggle-button-color: $secondary-dark-color;
 
 
-$meal-tags-color-background: map_get($main-colors, 'dark');
+$meal-tags-color-background: $primary-dark-color;
 $meal-tags-color-text: #fff;
 
 $max-content-width: 1920px;

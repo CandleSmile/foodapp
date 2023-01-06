@@ -1,13 +1,12 @@
 <template>
-  <ListCategories
-    :data="categories"
-    :loading="loadingCat"
-    :error="errorCat"
-  ></ListCategories>
+  <LoadingContent v-if="loadingCat" />
+
+  <ListCategories v-else :data="categories" :error="errorCat"></ListCategories>
+  <LoadingContent v-if="loading" />
   <Listfood
-    title-list="Latest Products"
+    v-else
+    title-list="Latest Meals"
     :meals="meals"
-    :loading="loading"
     :error="error"
   ></Listfood>
 </template>
@@ -15,6 +14,7 @@
 <script>
 import Listfood from "../components/Listfood.vue";
 import ListCategories from "../components/ListCategories.vue";
+import LoadingContent from "../components/general/LoadingContent.vue";
 import { foodApi } from "../api/index.js";
 import { ref } from "vue";
 export default {
@@ -22,8 +22,9 @@ export default {
   components: {
     Listfood,
     ListCategories,
+    LoadingContent,
   },
-  setup() {
+  async setup() {
     let meals = ref(null);
     let loading = ref(true);
     let error = ref(null);
@@ -32,35 +33,31 @@ export default {
     let loadingCat = ref(true);
     let errorCat = ref(null);
 
-    foodApi.food.get
-      .initialFoods()
-      .then((info) => {
-        loading.value = false;
-        if (!info.ok) {
-          error.value = info.error;
-        } else {
-          meals.value = info.data ?? [];
-        }
-      })
-      .catch((err) => {
-        loading.value = false;
-        error.value = err;
-      });
+    try {
+      const catInfo = await foodApi.category.get.allCategoriesWithImages();
+      if (!catInfo.ok) {
+        errorCat.value = catInfo.error?.message;
+      } else {
+        categories.value = catInfo.data ?? [];
+      }
+    } catch (err) {
+      errorCat.value = err.message;
+    } finally {
+      loadingCat.value = false;
+    }
 
-    foodApi.category.get
-      .allCategoriesWithImages()
-      .then((info) => {
-        loadingCat.value = false;
-        if (!info.ok) {
-          errorCat.value = info.error;
-        } else {
-          categories.value = info.data ?? [];
-        }
-      })
-      .catch((err) => {
-        loadingCat.value = false;
-        errorCat.value = err;
-      });
+    try {
+      const info = await foodApi.food.get.initialFoods();
+      if (!info.ok) {
+        error.value = info.error?.message;
+      } else {
+        meals.value = info.data ?? [];
+      }
+    } catch (err) {
+      error.value = err.message;
+    } finally {
+      loading.value = false;
+    }
 
     return {
       meals,

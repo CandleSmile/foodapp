@@ -13,6 +13,13 @@ li {
   box-sizing: border-box;
 }
 
+ul,
+h1,
+h2 {
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
+
 #app {
   font-family: $font-family;
   text-align: center;
@@ -40,21 +47,18 @@ li {
 
   &__site-title {
     margin-left: 10px;
+    color: $logo-color-main;
+      font-size: 1.2em;
+    
+      & span {
+        color: $logo-color-second;
+      }
   }
+    &__logo {
+      width: 40px;
+    }
 }
 
-.logo {
-  width: 40px;
-}
-
-.site-title {
-  color: $logo-color-main;
-  font-size: 1.2em;
-
-  & span {
-    color: $logo-color-second;
-  }
-}
 
 .main-block {
   padding: 25px 20px;
@@ -67,29 +71,7 @@ li {
   margin-left: auto;
 }
 
-.custom-select {
-  .vs__dropdown-toggle {
-    border-color: $select-border;
-  }
 
-  .vs__selected {
-    color: $select-text;
-  }
-
-  .vs__clear,
-  .vs__open-indicator {
-    fill: $select-text;
-  }
-
-  .vs__dropdown-menu li {
-    color: $select-text ;
-  }
-
-  .vs__search,
-  .vs__search:focus {
-    color: $select-text;
-  }
-}
 
 @media only screen and (max-width: 767px) {
   .header-info-wrapper {

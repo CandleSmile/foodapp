@@ -3,20 +3,17 @@
   <FilterPanel
     :ingredients-options="ingredientsOptions"
     :cat-options="catOptions"
-    :initial-category="selectedCategory"
-    :initial-ingredients-options="selectedIngredients"
+    v-model:initial-category="selectedCategory"
+    v-model:initial-ingredients-options="selectedIngredients"
   ></FilterPanel>
-  <Listfood
-    title-list="Products"
-    :meals="meals"
-    :loading="loading"
-    :error="error"
-  ></Listfood>
+  <LoadingContent v-if="loading" />
+  <Listfood v-else title-list="Meals" :meals="meals" :error="error"></Listfood>
 </template>
 <script>
 import Listfood from "../components/Listfood.vue";
 import FilterTags from "../components/FilterTags.vue";
 import FilterPanel from "../components/FilterPanel.vue";
+import LoadingContent from "../components/general/LoadingContent.vue";
 import { watch, ref, toRaw } from "vue";
 import { useRoute } from "vue-router";
 import { parseQueryStringToFilters } from "../helpers/filters";
@@ -28,9 +25,10 @@ export default {
     Listfood,
     FilterTags,
     FilterPanel,
+    LoadingContent,
   },
 
-  setup() {
+  async setup() {
     const route = useRoute();
 
     const meals = ref(null);
@@ -44,39 +42,46 @@ export default {
     let filters = parseQueryStringToFilters(route.query);
 
     //getting data of meals by parsed filters
-    const fetchData = (filtersFromQuery) => {
+    const fetchData = async (filtersFromQuery) => {
       loading.value = true;
-      foodApi.food.get
-        .foodByFilters(filtersFromQuery)
-        .then((info) => {
-          loading.value = false;
-          if (!info.ok) {
-            error.value = info.error;
-          } else {
-            meals.value = info.data ?? [];
-          }
-        })
-        .catch((err) => {
-          loading.value = false;
-          error.value = err;
-        });
+      try {
+        const info = await foodApi.food.get.foodByFilters(filtersFromQuery);
+        if (!info.ok) {
+          error.value = info.error?.message;
+        } else {
+          meals.value = info.data ?? [];
+        }
+      } catch (err) {
+        error.value = err.message;
+      } finally {
+        loading.value = false;
+      }
     };
 
     //getting filter's options
-    const fetchFiltersOptions = () => {
-      foodApi.category.get.listCategories().then((catList) => {
+    const fetchFiltersOptions = async () => {
+      try {
+        const catList = await foodApi.category.get.listCategories();
         if (catList.ok && catList.data?.length > 0) {
           catList.data.forEach((cat) => catOptions.value.push(cat.strCategory));
+        } else if (!catList.ok) {
+          catOptions.value.push("can't load categories");
         }
-      });
-
-      foodApi.ingredients.get.ingredientsList().then((ingredientList) => {
+      } catch (err) {
+        catOptions.value.push("can't load categories");
+      }
+      const ingredientList = await foodApi.ingredients.get.ingredientsList();
+      try {
         if (ingredientList.ok & (ingredientList.data?.length > 0)) {
           ingredientList.data.forEach((ing) =>
             ingredientsOptions.value.push(ing.strIngredient)
           );
+        } else if (!ingredientList.ok) {
+          ingredientsOptions.value.push("can't load ingredients");
         }
-      });
+      } catch (err) {
+        ingredientsOptions.value.push("can't load ingredients");
+      }
     };
 
     //update selected filters with parsed filters
@@ -109,23 +114,22 @@ export default {
         }
       }
     };
-
-    //get and set initial info and filters
-    fetchFiltersOptions();
-    fetchData(filters);
-    updateSelectedFilters(filters);
-    updateSelectedFilterTags(filters);
-
-    //get and set info and filters after changes in url
     watch(
       () => route.query,
       (newValue) => {
         filters = parseQueryStringToFilters(newValue);
-        fetchData(filters);
         updateSelectedFilters(filters);
         updateSelectedFilterTags(filters);
+        fetchData(filters);
       }
     );
+    //get and set initial info and filters
+    await fetchFiltersOptions();
+    await fetchData(filters);
+    updateSelectedFilters(filters);
+    updateSelectedFilterTags(filters);
+
+    //get and set info and filters after changes in url
 
     return {
       meals,

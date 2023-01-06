@@ -15,7 +15,9 @@ const api = {
         );
 
         let meals = res.data?.meals;
-
+        if (!meals) {
+          return { ok: res.ok, data: [], error: null };
+        }
         //2. Filter by category if chosen
         if (catFilter != "") {
           meals = meals.filter((f) =>

@@ -1,5 +1,5 @@
 <template>
-  <div class="search-form header__search-form">
+  <div class="search-form">
     <input
       type="text"
       :placeholder="placeholder"
@@ -13,48 +13,27 @@
 </template>
 
 <script setup>
-import { defineProps, ref, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { FilterType } from "../const/filterType";
-import { parseQueryStringToFilters } from "../helpers/filters";
+import { defineProps, defineEmits, computed } from "vue";
+const emit = defineEmits(["onSearch", "update:modelValue"]);
 const props = defineProps({
   id: String,
   placeholder: String,
+  modelValue: String,
 });
 
-const query = ref(props.initialQuery);
-const router = useRouter();
-const route = useRoute();
+const query = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(value) {
+    emit("update:modelValue", value);
+  },
+});
 
-//search function
 const onSearch = () => {
-  if (route.name != "meal") {
-    router.push({ name: "meal", query: { [FilterType.SEARCH]: query.value } });
-  } else {
-    let routeQuery = Object.assign({}, route.query);
-    routeQuery[[FilterType.SEARCH]] = query.value;
-    router.push({ name: "meal", query: routeQuery });
-  }
+  console.log(query);
+  emit("onSearch", query.value);
 };
-
-//to clean search field after leaving filter page
-watch(
-  () => route.name,
-  (newVaue) => {
-    if (newVaue != "meal") {
-      query.value = "";
-    }
-  }
-);
-
-//to set initial search query
-watch(
-  () => route.query,
-  (newval) => {
-    const filters = parseQueryStringToFilters(newval);
-    query.value = filters[[FilterType.SEARCH]];
-  }
-);
 </script>
 
 <style scoped lang="scss">

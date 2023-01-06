@@ -1,6 +1,12 @@
 <template>
   <component :is="route.meta.layoutComponent">
-    <RouterView />
+    <router-view v-slot="{ Component }">
+      <suspense timeout="0">
+        <component :is="Component" />
+        <!-- loading state -->
+        <template #fallback> Loading... </template>
+      </suspense>
+    </router-view>
   </component>
 </template>
 
