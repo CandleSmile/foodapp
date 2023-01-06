@@ -1,18 +1,19 @@
 <template>
-  <article class="food main-block__food">
-    <div class="food-picture food__food-picture">
+  <LoadingContent v-if="loading" />
+  <article v-else class="food">
+    <div class="food__picture">
       <img
-        class="food_picture__image"
+        class="food__picture-image"
         :src="foodData.strMealThumb"
         :alt="foodData.strMeal"
       />
     </div>
-    <div class="food-info food__food-info">
-      <h1 class="food-info__name">{{ foodData.strMeal }}</h1>
-      <div class="food-info__cat">
+    <div class="food__info">
+      <h1 class="food__info-name">{{ foodData.strMeal }}</h1>
+      <div class="food__info-cat">
         <span>Category: </span>
         <RouterLink
-          class="food-info__cat-link"
+          class="food__info-cat-link"
           :to="{
             name: 'meal',
             query: { [catFilter]: foodData.strCategory },
@@ -20,13 +21,13 @@
           >{{ foodData.strCategory }}</RouterLink
         >
       </div>
-      <div class="food-info__instructions">{{ foodData.strInstructions }}</div>
-      <div class="food-info__ingridients">
-        <p class="food-info__ingridients-title">Ingredients:</p>
-        <ul class="food-info__ingridients-list">
-          <li v-for="(item, index) in getIngrdedients" :key="index">
+      <div class="food__info-instructions">{{ foodData.strInstructions }}</div>
+      <div class="food__info-ingredients">
+        <p class="food__info-ingredients-title">Ingredients:</p>
+        <ul class="food__info-ingredients-list">
+          <li v-for="(item, index) in getIngredients" :key="index">
             <RouterLink
-              class="food-info__ingredient-link"
+              class="food__info-ingredient-link"
               :to="{
                 name: 'meal',
                 query: { [ingredientFilter]: item },
@@ -43,37 +44,40 @@
 <script>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
-import FoodApi from "../api/food";
+import { foodApi } from "../api/index";
 import { FilterType } from "../const/filterType";
+import LoadingContent from "@/components/general/LoadingContent.vue";
 export default {
   name: "FoodPage",
-
+  components: { LoadingContent },
   setup() {
     const route = useRoute();
     const router = useRouter();
     const foodData = ref("");
     const catFilter = FilterType.CATEGORY;
-    const ingredientFilter = FilterType.INGRIDIENTS;
-    const getIngrdedients = computed(() => {
+    const ingredientFilter = FilterType.INGREDIENTS;
+    const getIngredients = computed(() => {
       if (!foodData.value) return [];
       const infoMeal = foodData.value;
-      let ingridients = [];
+      let ingredients = [];
       for (let key in infoMeal) {
         if (
           key.startsWith("strIngredient") &&
           infoMeal[key] &&
           infoMeal[key].length > 0
         ) {
-          ingridients.push(infoMeal[key]);
+          ingredients.push(infoMeal[key]);
         }
       }
-      return ingridients;
+      return ingredients;
     });
 
+    const loading = ref(false);
     const fetchDataFood = async (id) => {
       try {
-        let info = await FoodApi.getFoodById(id);
-
+        loading.value = true;
+        let info = await foodApi.food.get.foodById(id);
+        loading.value = false;
         if (info.ok) {
           foodData.value = info.data.meals[0];
         } else {
@@ -89,9 +93,10 @@ export default {
 
     return {
       foodData,
-      getIngrdedients,
+      getIngredients,
       catFilter,
       ingredientFilter,
+      loading,
     };
   },
 };
@@ -102,74 +107,66 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
 
-  &__food-picture {
+  &__picture {
     flex-basis: 30%;
-  }
-  &__food-info {
-    flex-basis: 70%;
-  }
-}
-
-.food_picture {
-  &__image {
-    width: 100%;
-  }
-}
-.food-info {
-  display: flex;
-  flex-direction: column;
-  padding: 0 20px;
-  text-align: left;
-  &__name {
-    font-weight: 600;
-    font-size: 2rem;
-    padding-bottom: 20px;
-    margin: 0;
-  }
-  &__cat {
-    padding-bottom: 20px;
-    & span {
-      font-weight: 600;
+    &-image {
+      width: 100%;
     }
   }
-  &__cat-link {
-    color: $link-color;
-    text-decoration: none;
-  }
-  &__insrtuctions {
-    font-size: 0.9 rem;
-  }
-  &__ingridients {
-    border: 1px #000;
-    font-size: 0.9em;
-  }
-  &__ingridients-title {
-    font-weight: 600;
-  }
-  &__ingridients-list {
-    list-style: none;
-    padding: 0;
-  }
-  &__ingredient-link {
-    color: $link-color;
-    text-decoration: none;
+  &__info {
+    flex-basis: 70%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+    text-align: left;
+    &-name {
+      font-weight: 600;
+      font-size: 2rem;
+      padding-bottom: 20px;
+      margin: 0;
+    }
+    &-cat {
+      padding-bottom: 20px;
+      & span {
+        font-weight: 600;
+      }
+    }
+    &-cat-link {
+      color: $link-color;
+      text-decoration: none;
+    }
+    &-insrtuctions {
+      font-size: 0.9 rem;
+    }
+    &-ingredients {
+      border: 1px #000;
+      font-size: 0.9em;
+    }
+    &-ingredients-title {
+      font-weight: 600;
+    }
+    &-ingredients-list {
+      list-style: none;
+      padding: 0;
+    }
+    &-ingredient-link {
+      color: $link-color;
+      text-decoration: none;
+    }
   }
 }
 
 @media only screen and (max-width: 480px) {
   .food {
     flex-direction: column;
-    &__food-picture {
+    &__picture {
       width: 100%;
       margin: auto;
     }
-  }
-
-  .food-info {
-    padding-top: 20px;
-  }
-  .food__food-info {
-    text-align: center;
+    &__info {
+      padding-top: 20px;
+      text-align: center;
+    }
   }
 }
 </style>

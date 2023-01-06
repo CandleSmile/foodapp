@@ -1,125 +1,72 @@
-$font-family:'Open Sans', Helvetica, Arial, sans-serif;
+//begin main-colors-block
+$primary-dark-color: #d55448;
+$primary-light-color: #ffa577;
+$secondary-dark-color: #896e69;
+$secondary-light-color: #f9f9ff;
+//end main-colors-block
+
+$font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+
 
 //colors
-$logo-color-main:#e12c21;
-$logo-color-second:#7fcb2a;
+$logo-color-main: $primary-dark-color;
+$logo-color-second: $primary-light-color;
 
-$link-color:#7fcb2a;
+$link-color: $secondary-dark-color ;
+$cat-item-background: $secondary-light-color;
+$meal-item-background: $secondary-light-color;
 
-$search-background-color:#f4f6f6;
-$search-border-color:#ededed;
-$search-placeholder-color:#555;
-$search-text-color:#000;
-$search-icon-color:#999;
+$search-background-color: $secondary-light-color;
+$search-border-color: $secondary-dark-color;
+$search-placeholder-color: $secondary-dark-color;
+$search-text-color: #000;
+$search-icon-color: $secondary-dark-color;
+$food-item-border-color: rgba($secondary-dark-color, .17);
 
-$food-item-border-color:rgba(0, 0, 0, 0.17) ;
-
-$text-light-color: #9a9a9a;;
+$text-light-color: $secondary-dark-color;
 $text-dark-color: #000;
 
-$filter-tag-cat-background:#801711;
-$filter-tag-search-background:#7fcb2a;
-$filter-tag-ingridients-background:#999;
-$filter-tag-text:#fff;
-$filter-tag-del:#e12c21;
+$filter-tag-cat-background: $primary-light-color;
+$filter-tag-search-background: $primary-dark-color;
+$filter-tag-ingredients-background: $secondary-dark-color;
+$filter-tag-text: #fff;
+$filter-tag-del: #e12c21;
 
-$select-highlight: #f4f6f6;
-$select-title:#999;
-$select-text:#999;
+$select-highlight: $secondary-dark-color;
+$select-title: $secondary-dark-color;
+$select-text: $secondary-dark-color;
+$select-border: $secondary-dark-color;
 
-$filter-button-border:#999;
-$filter-button-background:#7fcb2a;
-$filter-button-text:rgb(34, 34, 34);
 
-$meal-tags-color-background:#7fcb2a;
-$meal-tags-color-text:#fff;
-$max-content-width:1920px;
 
-//block for width and gaps of the lists with meals and categories
-@function itemWidth($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$items-gap-large,$items-gap-small) {
-    $width: null;
-   $item-count: null;
-    $items-gap: null;
-    @if ($breakpoint == 'sizeSL') {
-        $item-count:$item-count-supersize;
-        $items-gap:$items-gap-large;
-    }
-    @else if ($breakpoint == 'sizeL') {
-       $item-count:$item-count-large;
-        $items-gap:$items-gap-large;
-    }
-    @else if ($breakpoint == 'sizeM1') {
-       $item-count:$item-count-middle1;
-        $items-gap:$items-gap-large;
-    }
-    @else if ($breakpoint =='sizeM2') {
-       $item-count:$item-count-middle2;
-        $items-gap:$items-gap-small;
-    }
-    @else {
-       $item-count:$item-count-small;
-        $items-gap:$items-gap-small;
-    }
-    $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
+$filter-button-border: $primary-light-color;
+$filter-button-background: $primary-light-color;
+$filter-button-text: #fff;
+$filter-panel-toggle-button-color: $secondary-dark-color;
 
-    @return #{$width};
-}
-@function itemGap($breakpoint, $item-count-supersize, $item-count-large, $item-count-middle1,$item-count-middle2,$item-count-small,$items-gap-large,$items-gap-small) {
-   $item-count: null;
-    $items-gap: null;
-    @if ($breakpoint == 'sizeSL') {
-        $item-count:$item-count-supersize;
-        $items-gap:$items-gap-large;
-    }
-    @else if  ($breakpoint == 'sizeL') {
-       $item-count:$item-count-large;
-        $items-gap:$items-gap-large;
-    }
-    @else if ($breakpoint == 'sizeM1') {
-       $item-count:$item-count-middle1;
-        $items-gap:$items-gap-large;
-    }
-    @else if ($breakpoint =='sizeM2') {
-       $item-count:$item-count-middle2;
-        $items-gap:$items-gap-small;
-    }
-    @else {
-       $item-count:$item-count-small;
-        $items-gap:$items-gap-small;
-    }
-    $gap: #{$items-gap} #{$items-gap} ;
 
-    @return #{$gap};
-}
+$meal-tags-color-background: $primary-dark-color;
+$meal-tags-color-text: #fff;
+
+$max-content-width: 1920px;
 
 $cat-count-supersize: 9;
 $cat-count-large: 8;
 $cat-count-middle1: 6;
 $cat-count-middle2: 3;
 $cat-count-small: 2;
-$cat-items-gap-large:15px;
-$cat-items-gap-small:10px;
+$cat-items-gap-large: 15px;
+$cat-items-gap-small: 10px;
 
-@function catWidth($breakpoint){
-    @return itemWidth($breakpoint,$cat-count-supersize,$cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-items-gap-large,$cat-items-gap-small );
-};
-@function catGap($breakpoint){
-    @return itemGap($breakpoint,$cat-count-supersize, $cat-count-large, $cat-count-middle1,$cat-count-middle2,$cat-count-small,$cat-items-gap-large,$cat-items-gap-small );
-};
-
-$meal-count-supersize:6;
+$meal-count-supersize: 6;
 $meal-count-large: 4;
 $meal-count-middle1: 3;
 $meal-count-middle2: 2;
 $meal-count-small: 1;
-$meal-items-gap-large:15px;
-$meal-items-gap-small:10px;
+$meal-items-gap-large: 15px;
+$meal-items-gap-small: 10px;
 
-@function mealWidth($breakpoint){
-    @return itemWidth($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-items-gap-large,$meal-items-gap-small );
-};
-@function mealGap($breakpoint){
-    @return itemGap($breakpoint,$meal-count-supersize,$meal-count-large, $meal-count-middle1,$meal-count-middle2,$meal-count-small,$meal-items-gap-large,$meal-items-gap-small );
-};
- 
-//end block for width and gaps of the lists with meals and categories
+@function itemWidth($item-count, $items-gap ) {
+    $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
+    @return #{$width};
+}
