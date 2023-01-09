@@ -1,0 +1,48 @@
+import { foodApi } from "@/api/index";
+
+// initial state
+const state = {
+  meals: [],
+  error: null,
+  loading: false,
+};
+
+// getters
+const getters = {};
+
+// actions
+const actions = {
+  getLatestMeals({ commit }) {
+    commit("setLoading", true);
+    foodApi.food.get.latestMeals((res) => {
+      commit("setMeals", res);
+      commit("setLoading", false);
+    });
+  },
+  getFilteringMeals({ commit }, filtersFromQuery) {
+    commit("setLoading", true);
+    foodApi.food.get.foodByFilters(filtersFromQuery, (res) => {
+      commit("setMeals", res);
+      commit("setLoading", false);
+    });
+  },
+};
+
+// mutations
+const mutations = {
+  setMeals(state, payload) {
+    state.meals = payload.meals;
+    state.error = payload.error?.message;
+  },
+  setLoading(state, isLoading) {
+    state.loading = isLoading;
+  },
+};
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations,
+};

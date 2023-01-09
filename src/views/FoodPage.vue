@@ -25,7 +25,7 @@
       <div class="food__info-ingredients">
         <p class="food__info-ingredients-title">Ingredients:</p>
         <ul class="food__info-ingredients-list">
-          <li v-for="(item, index) in getIngredients" :key="index">
+          <li v-for="item in ingredientsList" :key="item">
             <RouterLink
               class="food__info-ingredient-link"
               :to="{
@@ -56,7 +56,7 @@ export default {
     const foodData = ref("");
     const catFilter = FilterType.CATEGORY;
     const ingredientFilter = FilterType.INGREDIENTS;
-    const getIngredients = computed(() => {
+    const ingredientsList = computed(() => {
       if (!foodData.value) return [];
       const infoMeal = foodData.value;
       let ingredients = [];
@@ -93,7 +93,7 @@ export default {
 
     return {
       foodData,
-      getIngredients,
+      ingredientsList,
       catFilter,
       ingredientFilter,
       loading,
@@ -156,7 +156,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $mediaMinWidth) {
   .food {
     flex-direction: column;
     &__picture {

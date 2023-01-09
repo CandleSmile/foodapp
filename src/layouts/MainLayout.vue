@@ -18,7 +18,7 @@
       ></SearchInput>
     </div>
   </header>
-  <main class="main-block"><slot /></main>
+  <main class="main-block"><RouterView></RouterView></main>
 </template>
 <script setup>
 import SearchInput from "@/components/general/SearchInput.vue";

@@ -1,6 +1,6 @@
 <template>
   <div class="select-container">
-    <span class="select-container__title">{{ title }}</span>
+    <label class="select-container__title">{{ title }}</label>
     <v-select
       :options="options"
       v-model="vModel"
@@ -15,6 +15,7 @@
 </template>
 <script setup>
 import vSelect from "vue-select";
+
 import { defineEmits, defineProps, computed } from "vue";
 
 const emit = defineEmits(["update:modelValue"]);

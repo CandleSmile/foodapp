@@ -4,58 +4,68 @@ import { FilterType } from "../const/filterType";
 const api = {
   food: {
     get: {
-      foodByFilters: async (filters) => {
+      foodByFilters: async (filters, callBack) => {
         const catFilter = filters[FilterType.CATEGORY];
         const searchFilter = filters[FilterType.SEARCH];
         const ingredientsFilter = filters[FilterType.INGREDIENTS];
 
-        //1. Search query (in any case to get all info)
-        const res = await getAxiosReq(
-          `${apiUrls.getSearchProducts}${searchFilter}`
-        );
-
-        let meals = res.data?.meals;
-        if (!meals) {
-          return { ok: res.ok, data: [], error: null };
+        //1. Search and ingredients query
+        // set urls that we need for information
+        let urls = [`${apiUrls.getSearchProducts}${searchFilter}`];
+        if (ingredientsFilter != "") {
+          urls.push(`${apiUrls.getFoodByIngredients}${ingredientsFilter}`);
         }
+        //set results variables
+
+        //make requests
+        const requests = urls.map((url) => getAxiosReq(url));
+        const response = await Promise.all(requests);
+
+        //get responses and union it in a proper way
+        let {
+          data: { meals },
+          ok,
+          error,
+        } = response[0];
+
+        if (meals && meals.length > 0 && response.length > 1) {
+          for (let numReq = 1; numReq < response.length; numReq++) {
+            const {
+              data: { meals: mealReq },
+              ok: okReq,
+              error: errorReq,
+            } = response[numReq];
+            ok &= okReq;
+            error = error ? error.concat(errorReq, " ,") : errorReq;
+            if (mealReq?.length > 0) {
+              meals = meals.filter(
+                (meal) =>
+                  mealReq.findIndex((mealR) => mealR.idMeal == meal.idMeal) >= 0
+              );
+            } else {
+              meals = [];
+              break;
+            }
+          }
+        } else if (meals == null) {
+          meals = [];
+        }
+
         //2. Filter by category if chosen
         if (catFilter != "") {
-          meals = meals.filter((f) =>
-            f.strCategory.toLowerCase().includes(catFilter.toLowerCase())
+          meals = meals.filter((meal) =>
+            meal.strCategory.toLowerCase().includes(catFilter.toLowerCase())
           );
         }
-        //2. Filter by ingredients if chosen
-        if (ingredientsFilter != "") {
-          const resByIngredients = await getAxiosReq(
-            `${apiUrls.getFoodByIngredients}${ingredientsFilter}`
-          );
-
-          if (resByIngredients.ok && resByIngredients.data) {
-            if (!resByIngredients.data.meals) {
-              meals = [];
-            }
-            meals = meals.filter(
-              (meal) =>
-                resByIngredients.data.meals.findIndex(
-                  (mbi) => mbi.idMeal == meal.idMeal
-                ) >= 0
-            );
-          }
-        }
-
-        return {
-          ok: res.ok,
-          data: meals,
-          error: res.error,
-        };
+        callBack({ ok, meals, error });
       },
-      initialFoods: async () => {
-        const res = await getAxiosReq(`${apiUrls.getLatestProducts}`);
-        return {
-          ok: res.ok,
-          data: res.data?.meals,
-          error: res.error,
-        };
+      latestMeals: async (callBack) => {
+        const {
+          ok,
+          data: { meals },
+          error,
+        } = await getAxiosReq(`${apiUrls.getLatestMeals}`);
+        callBack({ ok, meals, error });
       },
 
       foodById: async (id) => {
@@ -64,35 +74,43 @@ const api = {
       },
     },
   },
-  category: {
+  categories: {
     get: {
-      allCategoriesWithImages: async () => {
-        const res = await getAxiosReq(`${apiUrls.getCategoriesUrl}`);
+      allCategoriesWithImages: async (callBack) => {
+        const {
+          ok,
+          data: { categories },
+          error,
+        } = await getAxiosReq(`${apiUrls.getCategoriesUrl}`);
 
-        return {
-          ok: res.ok,
-          data: res.data?.categories,
-          error: res.error,
-        };
+        callBack({ ok, categories, error });
       },
       listCategories: async () => {
-        const res = await getAxiosReq(`${apiUrls.getListCategories}`);
+        const {
+          ok,
+          data: { meals },
+          error,
+        } = await getAxiosReq(`${apiUrls.getListCategories}`);
         return {
-          ok: res.ok,
-          data: res.data?.meals,
-          error: res.error,
+          ok: ok,
+          data: meals,
+          error: error,
         };
       },
     },
   },
   ingredients: {
     get: {
-      ingredientsList: async () => {
-        const res = await getAxiosReq(`${apiUrls.getIngredientsList}`);
+      ingredients: async () => {
+        const {
+          ok,
+          data: { meals },
+          error,
+        } = await getAxiosReq(`${apiUrls.getIngredientsList}`);
         return {
-          ok: res.ok,
-          data: res.data?.meals,
-          error: res.error,
+          ok: ok,
+          data: meals,
+          error: error,
         };
       },
     },

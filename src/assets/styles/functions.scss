@@ -1,5 +1,0 @@
-
-@function itemWidth($item-count, $items-gap) {
-    $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
-    @return #{$width};
-}

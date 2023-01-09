@@ -149,7 +149,7 @@ export default {
   opacity: 0;
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $mediaMinWidth) {
   .filter-panel-box {
     flex-direction: column;
   }
