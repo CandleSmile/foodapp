@@ -31,7 +31,6 @@ const query = computed({
 });
 
 const onSearch = () => {
-  console.log(query);
   emit("onSearch", query.value);
 };
 </script>

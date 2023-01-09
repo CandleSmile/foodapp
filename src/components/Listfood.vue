@@ -1,11 +1,11 @@
 <template>
   <section class="list-food">
     <h2 class="list-food__title">{{ titleList }}</h2>
-    <ul class="list-food__meals" v-if="meals && meals.length > 0">
+    <ul class="list-food__meals" v-if="mealsList && mealsList.length > 0">
       <li
         class="list-food__meals-item"
-        v-for="(meal, index) in meals"
-        :key="index"
+        v-for="meal in mealsList"
+        :key="meal.idMeal"
       >
         <router-link
           :to="{ name: 'food', params: { id: meal.idMeal } }"
@@ -16,7 +16,7 @@
               v-if="meal.strTags && meal.strTags != ''"
               class="list-food__meals-item-tags"
             >
-              {{ checkSpaces(meal.strTags) }}
+              {{ meal.checkSpacesTags }}
             </div>
             <img
               class="list-food__meals-item-img"
@@ -45,7 +45,7 @@
 
     <div
       class="list-food__no-meals-data"
-      v-else-if="meals && meals.length == 0"
+      v-else-if="mealsList && mealsList.length == 0"
     >
       <p>Meals were not found</p>
     </div>
@@ -56,15 +56,27 @@
 </template>
 
 <script>
-import "@/helpers/stringHelper";
+import { checkSpaces } from "@/helpers/stringHelper";
+import { computed } from "vue";
+import { useStore } from "vuex";
 export default {
-  name: "list-food",
-  props: { titleList: String, meals: Array, error: Error },
+  name: "ListFood",
+  props: { titleList: String, isLatestMeals: Boolean },
   setup() {
-    const checkSpaces = (text) => text.replaceAll(/,(\S)/, ", $1");
+    const store = useStore();
+    const mealsList = computed(() =>
+      store.state.meals.meals.map((meal) => {
+        return {
+          ...meal,
+          checkSpacesTags: checkSpaces(meal.strTags ?? ""),
+        };
+      })
+    );
+    const error = computed(() => store.state.meals.error);
 
     return {
-      checkSpaces,
+      mealsList,
+      error,
     };
   },
 };
@@ -87,7 +99,7 @@ export default {
     padding: 20px 0;
     &-item {
       display: flex;
-      width: itemWidth($meal-count-large, $meal-items-gap-large);
+      width: itemWidth($meal-count-supersize, $meal-items-gap-large);
       background-color: $meal-item-background;
       min-height: 200px;
       box-shadow: 0px 3px 3px 0px $food-item-border-color;
@@ -163,16 +175,16 @@ export default {
     }
   }
 }
-@media only screen and (min-width: 1700px) {
+@media only screen and (max-width: $mediaMaxWidth) {
   .list-food__meals {
     gap: $meal-items-gap-large;
     &-item {
-      width: itemWidth($meal-count-supersize, $meal-items-gap-large);
+      width: itemWidth($meal-count-large, $meal-items-gap-large);
     }
   }
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: $mediaBp1Width) {
   .list-food__meals {
     gap: $meal-items-gap-large;
     &-item {
@@ -181,7 +193,7 @@ export default {
   }
 }
 
-@media only screen and (min-width: 481px) and (max-width: 767px) {
+@media only screen and (max-width: $mediaBp2Width) {
   .list-food__meals {
     gap: $meal-items-gap-small;
     &-item {
@@ -189,7 +201,7 @@ export default {
     }
   }
 }
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $mediaMinWidth) {
   .list-food__meals {
     justify-content: center;
     gap: $meal-items-gap-small;

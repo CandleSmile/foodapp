@@ -73,7 +73,7 @@ h2 {
 
 
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: $mediaBp2Width) {
   .header-info-wrapper {
     flex-direction: column;
     padding-bottom: 20px;
