@@ -5,7 +5,8 @@
       :placeholder="placeholder"
       class="search-form__input"
       :id="id"
-      v-model="query"
+      :value="query"
+      @input="updateQuery"
       @keyup.enter="onSearch"
     />
     <span class="search-form__icon" @click="onSearch"></span>
@@ -14,21 +15,19 @@
 
 <script setup>
 import { defineProps, defineEmits, computed } from "vue";
-const emit = defineEmits(["onSearch", "update:modelValue"]);
-const props = defineProps({
+import { useStore } from "vuex";
+import { SET_SEARCH_STRING } from "@/store/storeConstants";
+const emit = defineEmits(["onSearch"]);
+const store = useStore();
+defineProps({
   id: String,
   placeholder: String,
-  modelValue: String,
 });
 
-const query = computed({
-  get() {
-    return props.modelValue;
-  },
-  set(value) {
-    emit("update:modelValue", value);
-  },
-});
+const query = computed(() => store.state.filters.selectedFilters.searchString);
+const updateQuery = (e) => {
+  store.commit(`filters/${SET_SEARCH_STRING}`, e.target.value);
+};
 
 const onSearch = () => {
   emit("onSearch", query.value);

@@ -4,7 +4,7 @@ import { FilterType } from "../const/filterType";
 const api = {
   food: {
     get: {
-      foodByFilters: async (filters, callBack) => {
+      foodByFilters: async (filters) => {
         const catFilter = filters[FilterType.CATEGORY];
         const searchFilter = filters[FilterType.SEARCH];
         const ingredientsFilter = filters[FilterType.INGREDIENTS];
@@ -15,6 +15,7 @@ const api = {
         if (ingredientsFilter != "") {
           urls.push(`${apiUrls.getFoodByIngredients}${ingredientsFilter}`);
         }
+
         //set results variables
 
         //make requests
@@ -57,15 +58,15 @@ const api = {
             meal.strCategory.toLowerCase().includes(catFilter.toLowerCase())
           );
         }
-        callBack({ ok, meals, error });
+        return { ok, meals, error };
       },
-      latestMeals: async (callBack) => {
+      latestMeals: async () => {
         const {
           ok,
           data: { meals },
           error,
         } = await getAxiosReq(`${apiUrls.getLatestMeals}`);
-        callBack({ ok, meals, error });
+        return { ok, meals, error };
       },
 
       foodById: async (id) => {
@@ -76,14 +77,14 @@ const api = {
   },
   categories: {
     get: {
-      allCategoriesWithImages: async (callBack) => {
+      allCategoriesWithImages: async () => {
         const {
           ok,
           data: { categories },
           error,
         } = await getAxiosReq(`${apiUrls.getCategoriesUrl}`);
 
-        callBack({ ok, categories, error });
+        return { ok, categories, error };
       },
       listCategories: async () => {
         const {

@@ -14,7 +14,6 @@
         @on-search="onSearch"
         placeholder="Search products"
         class="header__search-form"
-        v-model="searchQuery"
       ></SearchInput>
     </div>
   </header>
@@ -22,29 +21,12 @@
 </template>
 <script setup>
 import SearchInput from "@/components/general/SearchInput.vue";
-import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { FilterType } from "@/const/filterType";
 
 const router = useRouter();
 const route = useRoute();
 
-const searchQuery = ref(
-  route.query && route.name == "meal"
-    ? route.query[[FilterType.SEARCH]] || ""
-    : ""
-);
-
-//clear search
-watch(
-  () => route.query,
-  () => {
-    searchQuery.value =
-      route.query && route.name == "meal"
-        ? route.query[[FilterType.SEARCH]] || ""
-        : "";
-  }
-);
 const onSearch = (searchString) => {
   if (route.name != "meal") {
     router.push({ name: "meal", query: { [FilterType.SEARCH]: searchString } });

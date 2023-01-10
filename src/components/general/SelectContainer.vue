@@ -22,7 +22,7 @@ const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   title: String,
   options: Array,
-  modelValue: Object,
+  modelValue: [String, Object],
   filterable: Boolean,
   placeholder: String,
   multiple: Boolean,

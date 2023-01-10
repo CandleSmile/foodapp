@@ -42,20 +42,24 @@
   </article>
 </template>
 <script>
-import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted, computed } from "vue";
-import { foodApi } from "../api/index";
+import { useRoute } from "vue-router";
+import { onMounted, computed } from "vue";
+import { useStore } from "vuex";
 import { FilterType } from "../const/filterType";
+import { GET_FOOD_ACTION } from "@/store/storeConstants";
 import LoadingContent from "@/components/general/LoadingContent.vue";
 export default {
   name: "FoodPage",
   components: { LoadingContent },
   setup() {
     const route = useRoute();
-    const router = useRouter();
-    const foodData = ref("");
+    const store = useStore();
+    const foodData = computed(() => store.state.meals.foodData ?? []);
+    const loading = computed(() => store.state.meals.loading);
+
     const catFilter = FilterType.CATEGORY;
     const ingredientFilter = FilterType.INGREDIENTS;
+
     const ingredientsList = computed(() => {
       if (!foodData.value) return [];
       const infoMeal = foodData.value;
@@ -72,23 +76,8 @@ export default {
       return ingredients;
     });
 
-    const loading = ref(false);
-    const fetchDataFood = async (id) => {
-      try {
-        loading.value = true;
-        let info = await foodApi.food.get.foodById(id);
-        loading.value = false;
-        if (info.ok) {
-          foodData.value = info.data.meals[0];
-        } else {
-          router.push({ name: "404", replace: true });
-        }
-      } catch (err) {
-        router.push({ name: "404", replace: true });
-      }
-    };
     onMounted(() => {
-      fetchDataFood(route.params.id);
+      store.dispatch(`meals/${GET_FOOD_ACTION}`, route.params.id);
     });
 
     return {

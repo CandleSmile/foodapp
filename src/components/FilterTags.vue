@@ -17,12 +17,10 @@
 </template>
 <script setup>
 import { FilterType } from "@/const/filterType";
-import { defineProps, defineEmits, computed } from "vue";
-const props = defineProps({
-  initialFilterTags: Array,
-});
-
+import { defineEmits, computed } from "vue";
+import { useStore } from "vuex";
 defineEmits(["onDelete"]);
+const store = useStore();
 
 const classByTagType = (tagType) => {
   let className = "";
@@ -40,7 +38,7 @@ const classByTagType = (tagType) => {
 };
 
 const filterTags = computed(() =>
-  props.initialFilterTags.map((tag) => {
+  store.state.filters.existingFiltersTags?.map((tag) => {
     return { ...tag, className: classByTagType(tag.type) };
   })
 );

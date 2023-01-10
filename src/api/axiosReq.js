@@ -1,6 +1,6 @@
 import { axios } from "./configapi";
 
-const getAxiosReq = async (url, params, callBack = undefined) => {
+const getAxiosReq = async (url, params) => {
   let result = {
     ok: false,
     data: null,
@@ -10,9 +10,6 @@ const getAxiosReq = async (url, params, callBack = undefined) => {
     const response = await axios.get(url, { params });
     result.ok = true;
     result.data = response.data;
-    if (callBack) {
-      callBack();
-    }
   } catch (error) {
     if (error.response) {
       result.Error = new Error(error.response.data);

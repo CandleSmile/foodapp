@@ -11,7 +11,10 @@ import { useStore } from "vuex";
 import ListFood from "../components/ListFood.vue";
 import ListCategories from "../components/ListCategories.vue";
 import LoadingContent from "../components/general/LoadingContent.vue";
-
+import {
+  GET_LATEST_MEAL_ACTION,
+  GET_CATEGORIES_ACTION,
+} from "@/store/storeConstants";
 export default {
   name: "HomePage",
   components: {
@@ -24,8 +27,8 @@ export default {
     const loading = computed(() => store.state.meals.loading);
     const loadingCat = computed(() => store.state.categories.loading);
     onMounted(() => {
-      store.dispatch("categories/getCategories");
-      store.dispatch("meals/getLatestMeals");
+      store.dispatch(`categories/${GET_CATEGORIES_ACTION}`);
+      store.dispatch(`meals/${GET_LATEST_MEAL_ACTION}`);
     });
 
     return {

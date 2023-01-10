@@ -42,44 +42,47 @@
 
 <script>
 import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import ActionButton from "@/components/general/ActionButton.vue";
 import SelectContainer from "@/components/general/SelectContainer.vue";
-
+import {
+  SET_SELECTED_CATEGORY,
+  SET_SELECTED_INGREDIENTS,
+} from "@/store/storeConstants";
 export default {
   name: "FilterPanel",
   components: {
     ActionButton,
     SelectContainer,
   },
-  props: {
-    ingredientsOptions: Array,
-    catOptions: Array,
-    initialCategory: String,
-    initialIngredientsOptions: Array,
-  },
-  emits: [
-    "update:initialIngredientsOptions",
-    "update:initialCategory",
-    "onFilter",
-  ],
+
+  emits: ["onFilter"],
   setup(props, { emit }) {
+    const store = useStore();
     let showFilterPanel = ref(false);
     let activeClass = "filter-panel-box--active";
+
+    const ingredientsOptions = computed(
+      () => store.state.filters.ingredientsOptions
+    );
+
+    const catOptions = computed(() => store.state.filters.categoryOptions);
+
     const checkedIngredients = computed({
       get() {
-        return props.initialIngredientsOptions;
+        return store.state.filters.selectedFilters.ingredients;
       },
       set(value) {
-        emit("update:initialIngredientsOptions", value);
+        store.commit(`filters/${SET_SELECTED_INGREDIENTS}`, value);
       },
     });
 
     const category = computed({
       get() {
-        return props.initialCategory;
+        return store.state.filters.selectedFilters.category;
       },
       set(value) {
-        emit("update:initialCategory", value);
+        store.commit(`filters/${SET_SELECTED_CATEGORY}`, value);
       },
     });
 
@@ -93,6 +96,8 @@ export default {
     return {
       category,
       checkedIngredients,
+      catOptions,
+      ingredientsOptions,
       showFilterPanel,
       activeClass,
       onToggleFilterPanelClass,
