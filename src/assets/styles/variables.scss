@@ -76,3 +76,10 @@ $meal-items-gap-small: 10px;
     $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
     @return #{$width};
 }
+
+$login-link-color: $primary-light-color;
+
+$input-field-border-color: $secondary-dark-color;
+$input-field-border-error-color: $primary-dark-color;
+$input-field-color: #000;
+$errors-color: $primary-dark-color;
