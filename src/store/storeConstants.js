@@ -27,3 +27,11 @@ export const UPDATE_SELECTED_FILTERS_ACTION = "updateSelectedFilters";
 export const UPDATE_FILTER_TAGS_ACTION = "updateExistingFiltersTags";
 export const GET_INGREDIENTS_OPTIONS_ACTION = "getIngredientsOptions";
 export const GET_CATEGORY_OPTIONS_ACTION = "getCategoryOptions";
+
+//auth mutations
+export const LOGIN_SUCCESS = "LoginSuccess";
+export const LOGIN_FAILURE = "LoginFailure";
+export const LOGOUT = "Logout";
+//auth actions
+export const LOGIN_ACTION = "DoLogin";
+export const LOGOUT_ACTION = "DoLogout";
