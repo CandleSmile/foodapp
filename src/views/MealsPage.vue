@@ -19,6 +19,7 @@
     v-else
     title-list="Meals"
     :is-latest-meals="false"
+    @change-quantity="updateQuantity"
   ></ListFood>
 </template>
 <script>
@@ -48,6 +49,7 @@ import {
   SELECTED_INGREDIENTS,
   UPDATE_SELECTED_CATEGORY_ACTION,
   UPDATE_SELECTED_INGREDIENTS_ACTION,
+  UPDATE_QUANTITY_OF_MEAL_ACTION,
 } from "@/store/storeConstants";
 
 const { useGetters: useMealsGetters, useActions: useMealsActions } =
@@ -73,8 +75,12 @@ export default {
       [ERROR]: error,
       [LOADING]: loading,
     } = useMealsGetters([MEALS, ERROR, LOADING]);
-    const { [GET_FILTERING_MEAL_ACTION]: getMeals } = useMealsActions([
+    const {
+      [GET_FILTERING_MEAL_ACTION]: getMeals,
+      [UPDATE_QUANTITY_OF_MEAL_ACTION]: updateQuantity,
+    } = useMealsActions([
       GET_FILTERING_MEAL_ACTION,
+      UPDATE_QUANTITY_OF_MEAL_ACTION,
     ]);
 
     const {
@@ -171,6 +177,7 @@ export default {
       checkedIngredients,
       updateSelectedCat,
       updateSelectedIngredients,
+      updateQuantity,
     };
   },
 };

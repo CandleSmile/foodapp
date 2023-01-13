@@ -10,6 +10,8 @@ import {
   GET_FOOD_ACTION,
   MEALS,
   FOOD,
+  SET_QUANTITY_OF_MEAL,
+  UPDATE_QUANTITY_OF_MEAL_ACTION,
 } from "@/store/storeConstants";
 
 // initial state
@@ -38,6 +40,9 @@ const actions = {
     commit(SET_LOADING, true);
     try {
       const res = await foodApi.food.get.latestMeals();
+      res.meals = res.meals.map((meal) => {
+        return { ...meal, quantity: 0 };
+      });
       commit(SET_MEALS, res.meals);
       commit(SET_ERROR, res.error);
     } catch (err) {
@@ -51,6 +56,9 @@ const actions = {
     commit(SET_LOADING, true);
     try {
       const res = await foodApi.food.get.foodByFilters(filters);
+      res.meals = res.meals.map((meal) => {
+        return { ...meal, quantity: 0 };
+      });
       commit(SET_MEALS, res.meals);
       commit(SET_ERROR, res.error);
     } catch (err) {
@@ -72,6 +80,10 @@ const actions = {
       commit(SET_LOADING, false);
     }
   },
+  async [UPDATE_QUANTITY_OF_MEAL_ACTION]({ commit }, { id, value }) {
+    console.log(value);
+    commit(SET_QUANTITY_OF_MEAL, { id, value });
+  },
 };
 
 // mutations
@@ -87,6 +99,10 @@ const mutations = {
   },
   [SET_FOOD](state, foodData) {
     state.foodData = foodData;
+  },
+  [SET_QUANTITY_OF_MEAL](state, { id, value }) {
+    let food = state.meals.find((meal) => meal.idMeal == id);
+    food.quantity = value;
   },
 };
 

@@ -12,6 +12,7 @@
     :is-latest-meals="true"
     :error="errorMeal"
     :meals-list="mealsList"
+    @change-quantity="updateQuantity"
   ></ListFood>
 </template>
 
@@ -29,6 +30,7 @@ import {
   LOADING,
   ERROR,
   MEALS,
+  UPDATE_QUANTITY_OF_MEAL_ACTION,
 } from "@/store/storeConstants";
 
 const { useGetters: useCategoriesGetters, useActions: useCategoriesActions } =
@@ -60,8 +62,12 @@ export default {
       GET_CATEGORIES_ACTION,
     ]);
 
-    const { [GET_LATEST_MEAL_ACTION]: getMeals } = useMealsActions([
+    const {
+      [GET_LATEST_MEAL_ACTION]: getMeals,
+      [UPDATE_QUANTITY_OF_MEAL_ACTION]: updateQuantity,
+    } = useMealsActions([
       GET_LATEST_MEAL_ACTION,
+      UPDATE_QUANTITY_OF_MEAL_ACTION,
     ]);
 
     onMounted(() => {
@@ -76,6 +82,7 @@ export default {
       errorCat,
       mealsList,
       errorMeal,
+      updateQuantity,
     };
   },
 };
