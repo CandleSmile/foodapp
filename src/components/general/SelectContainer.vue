@@ -10,6 +10,7 @@
       :multiple="multiple"
       :close-on-select="true"
       class="select-container__custom-select"
+      :id="id"
     ></v-select>
   </div>
 </template>
@@ -26,6 +27,7 @@ const props = defineProps({
   filterable: Boolean,
   placeholder: String,
   multiple: Boolean,
+  id: String,
 });
 
 const vModel = computed({

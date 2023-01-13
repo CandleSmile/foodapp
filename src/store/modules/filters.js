@@ -12,7 +12,31 @@ import {
   UPDATE_FILTER_TAGS_ACTION,
   GET_INGREDIENTS_OPTIONS_ACTION,
   GET_CATEGORY_OPTIONS_ACTION,
+  INGREDIENT_OPTIONS,
+  CATEGORY_OPTIONS,
+  FILTER_TAGS,
+  SELECTED_CATEGORY,
+  SELECTED_INGREDIENTS,
+  UPDATE_SELECTED_CATEGORY_ACTION,
+  UPDATE_SELECTED_INGREDIENTS_ACTION,
+  UPDATE_SEARCH_ACTION,
+  SEARCH_STRING,
 } from "@/store/storeConstants";
+
+const classByTagType = (tagType) => {
+  let className = "";
+  switch (tagType) {
+    case FilterType.CATEGORY:
+      className = "filter-tags-panel__list-item--category-theme";
+      break;
+    case FilterType.SEARCH:
+      className = "filter-tags-panel__list-item--search-theme";
+      break;
+    default:
+      className = "filter-tags-panel__list-item--ingredients-theme";
+  }
+  return className;
+};
 
 // initial state
 const state = {
@@ -28,10 +52,29 @@ const state = {
 };
 
 // getters
-const getters = {};
+const getters = {
+  [INGREDIENT_OPTIONS]: (state) => state.ingredientsOptions,
+  [CATEGORY_OPTIONS]: (state) => state.categoryOptions,
+  [FILTER_TAGS]: (state) =>
+    state.existingFiltersTags?.map((tag) => {
+      return { ...tag, className: classByTagType(tag.type) };
+    }),
+  [SELECTED_CATEGORY]: (state) => state.selectedFilters.category,
+  [SELECTED_INGREDIENTS]: (state) => state.selectedFilters.ingredients,
+  [SEARCH_STRING]: (state) => state.selectedFilters.searchString,
+};
 
 // actions
 const actions = {
+  [UPDATE_SELECTED_CATEGORY_ACTION]({ commit }, categoryValue) {
+    commit(SET_SELECTED_CATEGORY, categoryValue);
+  },
+  [UPDATE_SELECTED_INGREDIENTS_ACTION]({ commit }, ingredientsValue) {
+    commit(SET_SELECTED_INGREDIENTS, ingredientsValue);
+  },
+  [UPDATE_SEARCH_ACTION]({ commit }, searchString) {
+    commit(SET_SEARCH_STRING, searchString);
+  },
   [UPDATE_SELECTED_FILTERS_ACTION]({ commit }, filters) {
     commit(
       SET_SELECTED_INGREDIENTS,
@@ -93,8 +136,9 @@ const actions = {
       }
     } catch (err) {
       catOptions.push("can't load categories");
+    } finally {
+      commit(SET_CATEGORY_OPTIONS, catOptions);
     }
-    commit(SET_CATEGORY_OPTIONS, catOptions);
   },
 };
 

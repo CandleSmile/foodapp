@@ -56,29 +56,15 @@
 </template>
 
 <script>
-import { checkSpaces } from "@/helpers/stringHelper";
-import { computed } from "vue";
-import { useStore } from "vuex";
 export default {
   name: "ListFood",
-  props: { titleList: String, isLatestMeals: Boolean },
-  setup() {
-    const store = useStore();
-    const mealsList = computed(() =>
-      store.state.meals.meals.map((meal) => {
-        return {
-          ...meal,
-          checkSpacesTags: checkSpaces(meal.strTags ?? ""),
-        };
-      })
-    );
-    const error = computed(() => store.state.meals.error);
-
-    return {
-      mealsList,
-      error,
-    };
+  props: {
+    titleList: String,
+    isLatestMeals: Boolean,
+    mealsList: Array,
+    error: String,
   },
+  setup() {},
 };
 </script>
 
@@ -175,7 +161,7 @@ export default {
     }
   }
 }
-@media only screen and (max-width: $mediaMaxWidth) {
+@media only screen and (max-width: $mediaExtraLarge) {
   .list-food__meals {
     gap: $meal-items-gap-large;
     &-item {
@@ -184,7 +170,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: $mediaBp1Width) {
+@media only screen and (max-width: $mediaSmallScreen) {
   .list-food__meals {
     gap: $meal-items-gap-large;
     &-item {
@@ -193,7 +179,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: $mediaBp2Width) {
+@media only screen and (max-width: $mediaTablets) {
   .list-food__meals {
     gap: $meal-items-gap-small;
     &-item {
@@ -201,7 +187,7 @@ export default {
     }
   }
 }
-@media only screen and (max-width: $mediaMinWidth) {
+@media only screen and (max-width: $mediaMobile) {
   .list-food__meals {
     justify-content: center;
     gap: $meal-items-gap-small;

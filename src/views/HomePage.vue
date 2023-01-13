@@ -1,20 +1,41 @@
 <template>
   <LoadingContent v-if="loadingCat" />
-  <ListCategories v-else></ListCategories>
+  <ListCategories
+    :error="errorCat"
+    :categories-list="categoriesList"
+    v-else
+  ></ListCategories>
   <LoadingContent v-if="loading" />
-  <ListFood v-else title-list="Latest Meals" :is-latest-meals="true"></ListFood>
+  <ListFood
+    v-else
+    title-list="Latest Meals"
+    :is-latest-meals="true"
+    :error="errorMeal"
+    :meals-list="mealsList"
+  ></ListFood>
 </template>
 
 <script>
-import { computed, onMounted } from "vue";
-import { useStore } from "vuex";
+import { onMounted } from "vue";
 import ListFood from "../components/ListFood.vue";
 import ListCategories from "../components/ListCategories.vue";
 import LoadingContent from "../components/general/LoadingContent.vue";
+
+import { createNamespacedHelpers } from "vuex-composition-helpers";
 import {
   GET_LATEST_MEAL_ACTION,
   GET_CATEGORIES_ACTION,
+  CATEGORIES,
+  LOADING,
+  ERROR,
+  MEALS,
 } from "@/store/storeConstants";
+
+const { useGetters: useCategoriesGetters, useActions: useCategoriesActions } =
+  createNamespacedHelpers("categories");
+const { useGetters: useMealsGetters, useActions: useMealsActions } =
+  createNamespacedHelpers("meals");
+
 export default {
   name: "HomePage",
   components: {
@@ -23,17 +44,38 @@ export default {
     LoadingContent,
   },
   setup() {
-    const store = useStore();
-    const loading = computed(() => store.state.meals.loading);
-    const loadingCat = computed(() => store.state.categories.loading);
+    const {
+      [CATEGORIES]: categoriesList,
+      [ERROR]: errorCat,
+      [LOADING]: loadingCat,
+    } = useCategoriesGetters([CATEGORIES, ERROR, LOADING]);
+
+    const {
+      [MEALS]: mealsList,
+      [ERROR]: errorMeal,
+      [LOADING]: loading,
+    } = useMealsGetters([MEALS, ERROR, LOADING]);
+
+    const { [GET_CATEGORIES_ACTION]: getCategories } = useCategoriesActions([
+      GET_CATEGORIES_ACTION,
+    ]);
+
+    const { [GET_LATEST_MEAL_ACTION]: getMeals } = useMealsActions([
+      GET_LATEST_MEAL_ACTION,
+    ]);
+
     onMounted(() => {
-      store.dispatch(`categories/${GET_CATEGORIES_ACTION}`);
-      store.dispatch(`meals/${GET_LATEST_MEAL_ACTION}`);
+      getCategories();
+      getMeals();
     });
 
     return {
       loading,
       loadingCat,
+      categoriesList,
+      errorCat,
+      mealsList,
+      errorMeal,
     };
   },
 };

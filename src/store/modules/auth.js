@@ -4,6 +4,8 @@ import {
   LOGOUT,
   LOGIN_ACTION,
   LOGOUT_ACTION,
+  LOGGED_IN,
+  USER,
 } from "@/store/storeConstants";
 const user = localStorage.getItem("user");
 
@@ -13,7 +15,10 @@ const state = user
   : { status: { loggedIn: false }, user: "" };
 
 // getters
-const getters = {};
+const getters = {
+  [LOGGED_IN]: (state) => state.status.loggedIn,
+  [USER]: (state) => state.user,
+};
 
 // actions
 const actions = {

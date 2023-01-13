@@ -1,4 +1,5 @@
 import { foodApi } from "@/api/index";
+import { checkSpaces } from "@/helpers/stringHelper";
 import {
   SET_MEALS,
   SET_ERROR,
@@ -7,6 +8,8 @@ import {
   GET_LATEST_MEAL_ACTION,
   GET_FILTERING_MEAL_ACTION,
   GET_FOOD_ACTION,
+  MEALS,
+  FOOD,
 } from "@/store/storeConstants";
 
 // initial state
@@ -18,7 +21,16 @@ const state = {
 };
 
 // getters
-const getters = {};
+const getters = {
+  [MEALS]: (state) =>
+    state.meals?.map((meal) => {
+      return {
+        ...meal,
+        checkSpacesTags: checkSpaces(meal.strTags ?? ""),
+      };
+    }),
+  [FOOD]: (state) => state.foodData ?? [],
+};
 
 // actions
 const actions = {
@@ -30,8 +42,9 @@ const actions = {
       commit(SET_ERROR, res.error);
     } catch (err) {
       commit(SET_ERROR, err);
+    } finally {
+      commit(SET_LOADING, false);
     }
-    commit(SET_LOADING, false);
   },
 
   async [GET_FILTERING_MEAL_ACTION]({ commit }, filters) {
@@ -42,8 +55,9 @@ const actions = {
       commit(SET_ERROR, res.error);
     } catch (err) {
       commit(SET_ERROR, err);
+    } finally {
+      commit(SET_LOADING, false);
     }
-    commit(SET_LOADING, false);
   },
 
   async [GET_FOOD_ACTION]({ commit }, id) {
@@ -54,9 +68,9 @@ const actions = {
       commit(SET_ERROR, res.error);
     } catch (err) {
       commit(SET_ERROR, err);
+    } finally {
+      commit(SET_LOADING, false);
     }
-
-    commit(SET_LOADING, false);
   },
 };
 

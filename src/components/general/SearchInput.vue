@@ -4,9 +4,8 @@
       type="text"
       :placeholder="placeholder"
       class="search-form__input"
-      :id="id"
       :value="query"
-      @input="updateQuery"
+      @input="$emit('onUpdateQuery', $event.target.value)"
       @keyup.enter="onSearch"
     />
     <span class="search-form__icon" @click="onSearch"></span>
@@ -14,23 +13,15 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from "vue";
-import { useStore } from "vuex";
-import { SET_SEARCH_STRING } from "@/store/storeConstants";
-const emit = defineEmits(["onSearch"]);
-const store = useStore();
-defineProps({
-  id: String,
+import { defineProps, defineEmits } from "vue";
+const emit = defineEmits(["onSearch", "onUpdateQuery"]);
+const props = defineProps({
   placeholder: String,
+  query: String,
 });
 
-const query = computed(() => store.state.filters.selectedFilters.searchString);
-const updateQuery = (e) => {
-  store.commit(`filters/${SET_SEARCH_STRING}`, e.target.value);
-};
-
 const onSearch = () => {
-  emit("onSearch", query.value);
+  emit("onSearch", props.query);
 };
 </script>
 

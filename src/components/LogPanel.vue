@@ -5,13 +5,13 @@
   <a class="logout-link" v-else @click="$emit('onLogout')">Logout</a>
 </template>
 <script setup>
-import { computed, defineEmits } from "vue";
-import { useStore } from "vuex";
-const store = useStore();
+import { defineEmits } from "vue";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+import { LOGGED_IN } from "@/store/storeConstants";
+
+const { useGetters } = createNamespacedHelpers("auth");
 defineEmits(["onLogout"]);
-const loggedIn = computed(() => {
-  return store.state.auth.status.loggedIn;
-});
+const { [LOGGED_IN]: loggedIn } = useGetters([LOGGED_IN]);
 </script>
 <style lang="scss">
 .login-link,

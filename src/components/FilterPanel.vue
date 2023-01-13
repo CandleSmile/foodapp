@@ -13,20 +13,26 @@
       <div v-if="showFilterPanel" class="filter-panel__box">
         <SelectContainer
           :options="catOptions"
-          v-model="category"
+          :modelValue="category"
           :filterable="true"
           placeholder="Select category"
           :multiple="false"
+          @update:modelValue="(newValue) => $emit('onUpdateCategory', newValue)"
           title="Category"
+          id="catFilter"
         ></SelectContainer>
 
         <SelectContainer
           :options="ingredientsOptions"
-          v-model="checkedIngredients"
+          :modelValue="checkedIngredients"
           :filterable="true"
           placeholder="Select ingredients"
           :multiple="true"
           title="Ingredients"
+          @update:modelValue="
+            (newValue) => $emit('onUpdateIngredients', newValue)
+          "
+          id="ingFilter"
         ></SelectContainer>
 
         <div class="filter-panel__button-wrapper">
@@ -41,63 +47,35 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
-import { useStore } from "vuex";
+import { ref } from "vue";
 import ActionButton from "@/components/general/ActionButton.vue";
 import SelectContainer from "@/components/general/SelectContainer.vue";
-import {
-  SET_SELECTED_CATEGORY,
-  SET_SELECTED_INGREDIENTS,
-} from "@/store/storeConstants";
+
 export default {
   name: "FilterPanel",
   components: {
     ActionButton,
     SelectContainer,
   },
-
-  emits: ["onFilter"],
+  props: {
+    ingredientsOptions: Array,
+    catOptions: Array,
+    checkedIngredients: Array,
+    category: String,
+  },
+  emits: ["onFilter", "onUpdateCategory", "onUpdateIngredients"],
   setup(props, { emit }) {
-    const store = useStore();
     let showFilterPanel = ref(false);
     let activeClass = "filter-panel-box--active";
-
-    const ingredientsOptions = computed(
-      () => store.state.filters.ingredientsOptions
-    );
-
-    const catOptions = computed(() => store.state.filters.categoryOptions);
-
-    const checkedIngredients = computed({
-      get() {
-        return store.state.filters.selectedFilters.ingredients;
-      },
-      set(value) {
-        store.commit(`filters/${SET_SELECTED_INGREDIENTS}`, value);
-      },
-    });
-
-    const category = computed({
-      get() {
-        return store.state.filters.selectedFilters.category;
-      },
-      set(value) {
-        store.commit(`filters/${SET_SELECTED_CATEGORY}`, value);
-      },
-    });
 
     const onToggleFilterPanelClass = () => {
       showFilterPanel.value = !showFilterPanel.value;
     };
     const onFilter = () => {
-      emit("onFilter", category.value, checkedIngredients.value);
+      emit("onFilter", props.category, props.checkedIngredients);
     };
 
     return {
-      category,
-      checkedIngredients,
-      catOptions,
-      ingredientsOptions,
       showFilterPanel,
       activeClass,
       onToggleFilterPanelClass,
@@ -154,7 +132,7 @@ export default {
   opacity: 0;
 }
 
-@media only screen and (max-width: $mediaMinWidth) {
+@media only screen and (max-width: $mediaMobile) {
   .filter-panel-box {
     flex-direction: column;
   }

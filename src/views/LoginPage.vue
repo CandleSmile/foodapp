@@ -15,17 +15,21 @@
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
-import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
-import { LOGIN_ACTION } from "@/store/storeConstants";
+import { LOGIN_ACTION, LOGGED_IN } from "@/store/storeConstants";
+
 import ActionButton from "@/components/general/ActionButton.vue";
 import InputField from "@/components/general/InputField.vue";
-const store = useStore();
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useGetters, useActions } = createNamespacedHelpers("auth");
+
 const router = useRouter();
 const route = useRoute();
 const user = ref("");
+const { [LOGIN_ACTION]: doLogin } = useActions([LOGIN_ACTION]);
+const { [LOGGED_IN]: isLoggedIn } = useGetters([LOGGED_IN]);
 const rules = {
   user: { required, email },
 };
@@ -35,11 +39,11 @@ const onSubmit = async () => {
   if (!isFormCorrect) {
     return;
   }
-  store.dispatch(`auth/${LOGIN_ACTION}`, user.value);
+  doLogin(user.value);
   router.push(route.query.redirect ?? "/");
 };
 onMounted(() => {
-  if (store.state.auth.status.loggedIn) {
+  if (isLoggedIn.value) {
     router.push("/");
   }
 });

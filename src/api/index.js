@@ -1,6 +1,38 @@
 import { getAxiosReq } from "./axiosReq";
 import apiUrls from "./consts/apiUrls.js";
 import { FilterType } from "../const/filterType";
+const handleResponses = (response) => {
+  let {
+    data: { meals },
+    ok,
+    error,
+  } = response[0];
+
+  if (meals && meals.length > 0 && response.length > 1) {
+    for (let numReq = 1; numReq < response.length; numReq++) {
+      const {
+        data: { meals: mealReq },
+        ok: okReq,
+        error: errorReq,
+      } = response[numReq];
+      ok &= okReq;
+      error = error ? error.concat(errorReq, " ,") : errorReq;
+      if (mealReq?.length > 0) {
+        meals = meals.filter(
+          (meal) =>
+            mealReq.findIndex((mealR) => mealR.idMeal == meal.idMeal) >= 0
+        );
+      } else {
+        meals = [];
+        break;
+      }
+    }
+  } else if (meals == null) {
+    meals = [];
+  }
+  return { meals, error, ok };
+};
+
 const api = {
   food: {
     get: {
@@ -11,46 +43,17 @@ const api = {
 
         //1. Search and ingredients query
         // set urls that we need for information
-        let urls = [`${apiUrls.getSearchProducts}${searchFilter}`];
+        let urls = [apiUrls.getSearchProducts.concat(searchFilter)];
         if (ingredientsFilter != "") {
-          urls.push(`${apiUrls.getFoodByIngredients}${ingredientsFilter}`);
+          urls.push(apiUrls.getFoodByIngredients.concat(ingredientsFilter));
         }
-
-        //set results variables
 
         //make requests
         const requests = urls.map((url) => getAxiosReq(url));
         const response = await Promise.all(requests);
 
-        //get responses and union it in a proper way
-        let {
-          data: { meals },
-          ok,
-          error,
-        } = response[0];
-
-        if (meals && meals.length > 0 && response.length > 1) {
-          for (let numReq = 1; numReq < response.length; numReq++) {
-            const {
-              data: { meals: mealReq },
-              ok: okReq,
-              error: errorReq,
-            } = response[numReq];
-            ok &= okReq;
-            error = error ? error.concat(errorReq, " ,") : errorReq;
-            if (mealReq?.length > 0) {
-              meals = meals.filter(
-                (meal) =>
-                  mealReq.findIndex((mealR) => mealR.idMeal == meal.idMeal) >= 0
-              );
-            } else {
-              meals = [];
-              break;
-            }
-          }
-        } else if (meals == null) {
-          meals = [];
-        }
+        //handle in a proper way
+        let { meals, error, ok } = handleResponses(response);
 
         //2. Filter by category if chosen
         if (catFilter != "") {
@@ -58,19 +61,19 @@ const api = {
             meal.strCategory.toLowerCase().includes(catFilter.toLowerCase())
           );
         }
-        return { ok, meals, error };
+        return { meals, error, ok };
       },
       latestMeals: async () => {
         const {
           ok,
           data: { meals },
           error,
-        } = await getAxiosReq(`${apiUrls.getLatestMeals}`);
+        } = await getAxiosReq(apiUrls.getLatestMeals);
         return { ok, meals, error };
       },
 
       foodById: async (id) => {
-        const url = `${apiUrls.getFoodByIdUrl}${id}`;
+        const url = apiUrls.getFoodByIdUrl.concat(id);
         return await getAxiosReq(url);
       },
     },
@@ -82,7 +85,7 @@ const api = {
           ok,
           data: { categories },
           error,
-        } = await getAxiosReq(`${apiUrls.getCategoriesUrl}`);
+        } = await getAxiosReq(apiUrls.getCategoriesUrl);
 
         return { ok, categories, error };
       },
@@ -91,7 +94,7 @@ const api = {
           ok,
           data: { meals },
           error,
-        } = await getAxiosReq(`${apiUrls.getListCategories}`);
+        } = await getAxiosReq(apiUrls.getListCategories);
         return {
           ok: ok,
           data: meals,
@@ -107,7 +110,7 @@ const api = {
           ok,
           data: { meals },
           error,
-        } = await getAxiosReq(`${apiUrls.getIngredientsList}`);
+        } = await getAxiosReq(apiUrls.getIngredientsList);
         return {
           ok: ok,
           data: meals,

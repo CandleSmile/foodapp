@@ -1,8 +1,25 @@
 <template>
-  <FilterTags @on-delete="onDeleteFromFilters"></FilterTags>
-  <FilterPanel @on-filter="onFilter"></FilterPanel>
+  <FilterTags
+    @on-delete="onDeleteFromFilters"
+    :filter-tags="filterTags"
+  ></FilterTags>
+  <FilterPanel
+    :ingredients-options="ingredientsOptions"
+    :checked-ingredients="checkedIngredients"
+    :cat-options="catOptions"
+    :category="category"
+    @on-filter="onFilter"
+    @on-update-category="updateSelectedCat"
+    @on-update-ingredients="updateSelectedIngredients"
+  ></FilterPanel>
   <LoadingContent v-if="loading" />
-  <ListFood v-else title-list="Meals" :is-latest-meals="false"></ListFood>
+  <ListFood
+    :error="error"
+    :meals-list="mealsList"
+    v-else
+    title-list="Meals"
+    :is-latest-meals="false"
+  ></ListFood>
 </template>
 <script>
 import ListFood from "../components/ListFood.vue";
@@ -10,18 +27,33 @@ import FilterTags from "../components/FilterTags.vue";
 import FilterPanel from "../components/FilterPanel.vue";
 import LoadingContent from "../components/general/LoadingContent.vue";
 import { FilterType } from "@/const/filterType";
-import { watch, onMounted, computed } from "vue";
+import { watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { parseQueryStringToFilters } from "../helpers/filters";
-import { useStore } from "vuex";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+
 import {
   GET_FILTERING_MEAL_ACTION,
   UPDATE_SELECTED_FILTERS_ACTION,
   UPDATE_FILTER_TAGS_ACTION,
   GET_INGREDIENTS_OPTIONS_ACTION,
   GET_CATEGORY_OPTIONS_ACTION,
+  LOADING,
+  ERROR,
+  MEALS,
+  FILTER_TAGS,
+  INGREDIENT_OPTIONS,
+  CATEGORY_OPTIONS,
+  SELECTED_CATEGORY,
+  SELECTED_INGREDIENTS,
+  UPDATE_SELECTED_CATEGORY_ACTION,
+  UPDATE_SELECTED_INGREDIENTS_ACTION,
 } from "@/store/storeConstants";
 
+const { useGetters: useMealsGetters, useActions: useMealsActions } =
+  createNamespacedHelpers("meals");
+const { useActions: useFiltersActions, useGetters: useFiltersGetters } =
+  createNamespacedHelpers("filters");
 export default {
   name: "MealsPage",
   components: {
@@ -32,12 +64,47 @@ export default {
   },
 
   setup() {
-    const store = useStore();
     const router = useRouter();
     const route = useRoute();
 
     let filters = parseQueryStringToFilters(route.query);
-    const loading = computed(() => store.state.meals.loading);
+    const {
+      [MEALS]: mealsList,
+      [ERROR]: error,
+      [LOADING]: loading,
+    } = useMealsGetters([MEALS, ERROR, LOADING]);
+    const { [GET_FILTERING_MEAL_ACTION]: getMeals } = useMealsActions([
+      GET_FILTERING_MEAL_ACTION,
+    ]);
+
+    const {
+      [FILTER_TAGS]: filterTags,
+      [INGREDIENT_OPTIONS]: ingredientsOptions,
+      [CATEGORY_OPTIONS]: catOptions,
+      [SELECTED_CATEGORY]: category,
+      [SELECTED_INGREDIENTS]: checkedIngredients,
+    } = useFiltersGetters([
+      FILTER_TAGS,
+      INGREDIENT_OPTIONS,
+      CATEGORY_OPTIONS,
+      SELECTED_CATEGORY,
+      SELECTED_INGREDIENTS,
+    ]);
+    const {
+      [UPDATE_SELECTED_FILTERS_ACTION]: updateSelectedFilters,
+      [UPDATE_FILTER_TAGS_ACTION]: updateFilterTags,
+      [GET_INGREDIENTS_OPTIONS_ACTION]: getIngredientsOptions,
+      [GET_CATEGORY_OPTIONS_ACTION]: getCategoryOptions,
+      [UPDATE_SELECTED_CATEGORY_ACTION]: updateSelectedCat,
+      [UPDATE_SELECTED_INGREDIENTS_ACTION]: updateSelectedIngredients,
+    } = useFiltersActions([
+      UPDATE_SELECTED_FILTERS_ACTION,
+      UPDATE_FILTER_TAGS_ACTION,
+      GET_INGREDIENTS_OPTIONS_ACTION,
+      GET_CATEGORY_OPTIONS_ACTION,
+      UPDATE_SELECTED_CATEGORY_ACTION,
+      UPDATE_SELECTED_INGREDIENTS_ACTION,
+    ]);
 
     // press on filter button
     const onFilter = (category, checkedIngredients) => {
@@ -76,26 +143,34 @@ export default {
       () => route.query,
       (newValue) => {
         filters = parseQueryStringToFilters(newValue);
-
-        store.dispatch(`filters/${UPDATE_SELECTED_FILTERS_ACTION}`, filters);
-        store.dispatch(`filters/${UPDATE_FILTER_TAGS_ACTION}`, filters);
-        store.dispatch(`meals/${GET_FILTERING_MEAL_ACTION}`, filters);
+        updateSelectedFilters(filters);
+        updateFilterTags(filters);
+        getMeals(filters);
       }
     );
 
     //get and set initial info and filter's object
     onMounted(() => {
-      store.dispatch(`filters/${GET_INGREDIENTS_OPTIONS_ACTION}`, filters);
-      store.dispatch(`filters/${GET_CATEGORY_OPTIONS_ACTION}`, filters);
-      store.dispatch(`filters/${UPDATE_SELECTED_FILTERS_ACTION}`, filters);
-      store.dispatch(`filters/${UPDATE_FILTER_TAGS_ACTION}`, filters);
-      store.dispatch(`meals/${GET_FILTERING_MEAL_ACTION}`, filters);
+      getIngredientsOptions(filters);
+      getCategoryOptions(filters);
+      updateSelectedFilters(filters);
+      updateFilterTags(filters);
+      getMeals(filters);
     });
 
     return {
       loading,
+      mealsList,
+      error,
+      filterTags,
       onFilter,
       onDeleteFromFilters,
+      ingredientsOptions,
+      catOptions,
+      category,
+      checkedIngredients,
+      updateSelectedCat,
+      updateSelectedIngredients,
     };
   },
 };

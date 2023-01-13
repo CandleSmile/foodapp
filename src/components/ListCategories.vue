@@ -1,6 +1,7 @@
 <template>
   <section class="list-categories">
     <h2 class="list-categories__title">Categories</h2>
+
     <ul
       class="list-categories__categories"
       v-if="categoriesList && categoriesList.length > 0"
@@ -34,7 +35,7 @@
     </ul>
     <div
       class="categories-item__input-request-meal-block"
-      v-else-if="categoriesList == null && error == null"
+      v-else-if="categoriesList == null && error == ''"
     >
       <p>Something went wrong</p>
     </div>
@@ -50,20 +51,14 @@
   </section>
 </template>
 <script>
-import { computed } from "vue";
-import { useStore } from "vuex";
 import { FilterType } from "../const/filterType";
 export default {
   name: "list-categories",
+  props: ["categoriesList", "error"],
   setup() {
-    const store = useStore();
     const catFilter = FilterType.CATEGORY;
-    const categoriesList = computed(() => store.state.categories.categories);
-    const error = computed(() => store.state.categories.error);
     return {
       catFilter,
-      categoriesList,
-      error,
     };
   },
 };
@@ -129,7 +124,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: $mediaMaxWidth) {
+@media only screen and (max-width: $mediaExtraLarge) {
   .list-categories__categories {
     gap: $cat-items-gap-large;
     &-item {
@@ -138,7 +133,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: $mediaBp1Width) {
+@media only screen and (max-width: $mediaSmallScreen) {
   .list-categories__categories {
     gap: $cat-items-gap-large;
     &-item {
@@ -146,7 +141,7 @@ export default {
     }
   }
 }
-@media only screen and (max-width: $mediaBp2Width) {
+@media only screen and (max-width: $mediaTablets) {
   .list-categories__categories {
     gap: $cat-items-gap-small;
     &-item {
@@ -154,7 +149,7 @@ export default {
     }
   }
 }
-@media only screen and (max-width: $mediaMinWidth) {
+@media only screen and (max-width: $mediaMobile) {
   .list-categories__categories {
     gap: $cat-items-gap-small;
     &-item {

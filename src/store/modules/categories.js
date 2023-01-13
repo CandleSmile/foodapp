@@ -4,17 +4,30 @@ import {
   SET_ERROR,
   SET_LOADING,
   GET_CATEGORIES_ACTION,
+  CATEGORIES,
+  ERROR,
+  LOADING,
 } from "@/store/storeConstants";
 
 // initial state
 const state = {
   categories: [],
-  error: null,
+  error: "",
   loading: false,
 };
 
 // getters
-const getters = {};
+const getters = {
+  [CATEGORIES]: (state) => {
+    return state.categories;
+  },
+  [ERROR]: (state) => {
+    return state.error;
+  },
+  [LOADING]: (state) => {
+    return state.loading;
+  },
+};
 
 // actions
 const actions = {
@@ -26,8 +39,9 @@ const actions = {
       commit(SET_ERROR, res.error);
     } catch (err) {
       commit(SET_ERROR, err);
+    } finally {
+      commit(SET_LOADING, false);
     }
-    commit(SET_LOADING, false);
   },
 };
 

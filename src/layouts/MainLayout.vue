@@ -14,6 +14,8 @@
           id="searchQuery"
           @on-search="onSearch"
           placeholder="Search products"
+          :query="searchString"
+          @on-update-query="updateQuery"
           class="header__search-form"
         ></SearchInput>
         <LogPanel v-if="isLogPanelShown" @on-logout="LogOut"></LogPanel>
@@ -25,14 +27,26 @@
 <script setup>
 import SearchInput from "@/components/general/SearchInput.vue";
 import LogPanel from "@/components/LogPanel.vue";
-import { LOGOUT_ACTION } from "@/store/storeConstants";
+import {
+  LOGOUT_ACTION,
+  SEARCH_STRING,
+  UPDATE_SEARCH_ACTION,
+} from "@/store/storeConstants";
 import { useRouter, useRoute } from "vue-router";
 import { FilterType } from "@/const/filterType";
-import { useStore } from "vuex";
 import { computed } from "@vue/runtime-core";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
 const router = useRouter();
 const route = useRoute();
-const store = useStore();
+const { useActions: useAuthActions } = createNamespacedHelpers("auth");
+const { useGetters: useFilterGetters, useActions: useFilterActions } =
+  createNamespacedHelpers("filters");
+const { [LOGOUT_ACTION]: logOutAction } = useAuthActions([LOGOUT_ACTION]);
+
+const { [SEARCH_STRING]: searchString } = useFilterGetters([SEARCH_STRING]);
+const { [UPDATE_SEARCH_ACTION]: updateQuery } = useFilterActions([
+  UPDATE_SEARCH_ACTION,
+]);
 
 const onSearch = (searchString) => {
   if (route.name != "meal") {
@@ -44,8 +58,9 @@ const onSearch = (searchString) => {
   }
 };
 const isLogPanelShown = computed(() => route.name != "login");
+
 const LogOut = () => {
-  store.dispatch(`auth/${LOGOUT_ACTION}`);
+  logOutAction();
   router.push({ name: "home" });
 };
 </script>
@@ -55,7 +70,7 @@ const LogOut = () => {
   gap: 10px 20px;
   font-size: 12px;
 }
-@media only screen and (max-width: $mediaBp2Width) {
+@media only screen and (max-width: $mediaTablets) {
   .header__search-log-wrapper {
     justify-content: center;
   }

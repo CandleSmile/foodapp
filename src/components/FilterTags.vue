@@ -15,34 +15,14 @@
     </ul>
   </section>
 </template>
+
 <script setup>
-import { FilterType } from "@/const/filterType";
-import { defineEmits, computed } from "vue";
-import { useStore } from "vuex";
+import { defineEmits, defineProps } from "vue";
+
 defineEmits(["onDelete"]);
-const store = useStore();
-
-const classByTagType = (tagType) => {
-  let className = "";
-  switch (tagType) {
-    case FilterType.CATEGORY:
-      className = "filter-tags-panel__list-item--category-theme";
-      break;
-    case FilterType.SEARCH:
-      className = "filter-tags-panel__list-item--search-theme";
-      break;
-    default:
-      className = "filter-tags-panel__list-item--ingredients-theme";
-  }
-  return className;
-};
-
-const filterTags = computed(() =>
-  store.state.filters.existingFiltersTags?.map((tag) => {
-    return { ...tag, className: classByTagType(tag.type) };
-  })
-);
+defineProps(["filterTags"]);
 </script>
+
 <style lang="scss">
 .filter-tags-panel__list {
   display: flex;

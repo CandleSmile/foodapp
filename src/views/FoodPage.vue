@@ -44,19 +44,22 @@
 <script>
 import { useRoute } from "vue-router";
 import { onMounted, computed } from "vue";
-import { useStore } from "vuex";
 import { FilterType } from "../const/filterType";
-import { GET_FOOD_ACTION } from "@/store/storeConstants";
+import { GET_FOOD_ACTION, FOOD, LOADING } from "@/store/storeConstants";
 import LoadingContent from "@/components/general/LoadingContent.vue";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useGetters, useActions } = createNamespacedHelpers("meals");
 export default {
   name: "FoodPage",
   components: { LoadingContent },
   setup() {
     const route = useRoute();
-    const store = useStore();
-    const foodData = computed(() => store.state.meals.foodData ?? []);
-    const loading = computed(() => store.state.meals.loading);
 
+    const { [FOOD]: foodData, [LOADING]: loading } = useGetters([
+      FOOD,
+      LOADING,
+    ]);
+    const { [GET_FOOD_ACTION]: getFood } = useActions([GET_FOOD_ACTION]);
     const catFilter = FilterType.CATEGORY;
     const ingredientFilter = FilterType.INGREDIENTS;
 
@@ -77,7 +80,7 @@ export default {
     });
 
     onMounted(() => {
-      store.dispatch(`meals/${GET_FOOD_ACTION}`, route.params.id);
+      getFood(route.params.id);
     });
 
     return {
@@ -145,7 +148,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: $mediaMinWidth) {
+@media only screen and (max-width: $mediaMobile) {
   .food {
     flex-direction: column;
     &__picture {
