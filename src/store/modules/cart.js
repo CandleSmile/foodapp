@@ -1,17 +1,23 @@
-//import { foodApi } from "@/api/index";
+import { roundNumber } from "@/helpers/mathHelpers";
 import {
   MEALS_IN_CART,
   CART_TOTAL_PRICE,
   ADD_MEAL_TO_CART,
-  INCREMENT_MEAL_QUANTITY,
+  CHANGE_MEAL_QUANTITY,
   ADD_TO_CART_ACTION,
   SET_CHECKOUT_STATUS,
+  CART_COUNT,
 } from "@/store/storeConstants";
 
 // initial state
 // shape: [{ id, quantity, title, price }]
+const mealItems =
+  localStorage.getItem("mealItems") != null
+    ? JSON.parse(localStorage.getItem("mealItems"))
+    : [];
+
 const state = {
-  items: [],
+  items: mealItems,
   checkoutStatus: null,
 };
 
@@ -22,23 +28,32 @@ const getters = {
   },
 
   [CART_TOTAL_PRICE]: (state, getters) => {
-    return getters.MEALS_IN_CART.reduce((total, product) => {
-      return total + product.price * product.quantity;
+    return getters[[MEALS_IN_CART]].reduce((total, product) => {
+      return roundNumber(total + product.price * product.quantity, 2);
+    }, 0);
+  },
+  [CART_COUNT]: (state, getters) => {
+    return getters[[MEALS_IN_CART]].reduce((total, product) => {
+      return total + product.quantity;
     }, 0);
   },
 };
 
 // actions
 const actions = {
-  [ADD_TO_CART_ACTION]({ state, commit }, meal) {
+  [ADD_TO_CART_ACTION]({ commit, getters }, meal) {
     commit(SET_CHECKOUT_STATUS, null);
 
-    const itemInCart = state.items.find((item) => item.id === meal.id);
+    const itemInCart = getters[[MEALS_IN_CART]].find(
+      (item) => item.id === meal.idMeal
+    );
     if (!itemInCart) {
       commit(ADD_MEAL_TO_CART, meal);
     } else {
-      commit(INCREMENT_MEAL_QUANTITY, itemInCart.id);
+      commit(CHANGE_MEAL_QUANTITY, { itemInCart, quantity: meal.quantity });
     }
+
+    localStorage.setItem("mealItems", JSON.stringify(getters[[MEALS_IN_CART]]));
   },
 };
 
@@ -49,16 +64,15 @@ const mutations = {
   },
   [ADD_MEAL_TO_CART](state, meal) {
     state.items.push({
-      id: meal.id,
+      id: meal.idMeal,
       title: meal.strMeal,
       price: meal.price,
-      quantity: 1,
+      quantity: meal.quantity,
     });
   },
 
-  [INCREMENT_MEAL_QUANTITY](state, id) {
-    const cartItem = state.items.find((item) => item.id === id);
-    cartItem.quantity++;
+  [CHANGE_MEAL_QUANTITY](state, { itemInCart, quantity }) {
+    itemInCart.quantity = quantity;
   },
 };
 

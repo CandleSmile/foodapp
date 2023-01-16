@@ -61,11 +61,12 @@ export const USER = "user";
 
 //shop mutations
 export const ADD_MEAL_TO_CART = "addMealToCart";
-export const INCREMENT_MEAL_QUANTITY = "incMealQuantityInCart";
+export const CHANGE_MEAL_QUANTITY = "changeMealQuantityInCart";
 export const SET_CHECKOUT_STATUS = "setCheckoutStatus";
 //shop getters
 export const MEALS_IN_CART = "mealsInCart";
 export const CART_TOTAL_PRICE = "total_Price";
+export const CART_COUNT = "total_Cart";
 
 //shop actions
 export const ADD_TO_CART_ACTION = "addToCartAction";

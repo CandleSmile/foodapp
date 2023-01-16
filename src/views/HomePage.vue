@@ -13,6 +13,7 @@
     :error="errorMeal"
     :meals-list="mealsList"
     @change-quantity="updateQuantity"
+    @on-add-to-cart="addToCart"
   ></ListFood>
 </template>
 
@@ -31,13 +32,14 @@ import {
   ERROR,
   MEALS,
   UPDATE_QUANTITY_OF_MEAL_ACTION,
+  ADD_TO_CART_ACTION,
 } from "@/store/storeConstants";
 
 const { useGetters: useCategoriesGetters, useActions: useCategoriesActions } =
   createNamespacedHelpers("categories");
 const { useGetters: useMealsGetters, useActions: useMealsActions } =
   createNamespacedHelpers("meals");
-
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "HomePage",
   components: {
@@ -69,6 +71,9 @@ export default {
       GET_LATEST_MEAL_ACTION,
       UPDATE_QUANTITY_OF_MEAL_ACTION,
     ]);
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
+    ]);
 
     onMounted(() => {
       getCategories();
@@ -83,6 +88,7 @@ export default {
       mealsList,
       errorMeal,
       updateQuantity,
+      addToCart,
     };
   },
 };

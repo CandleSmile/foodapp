@@ -11,6 +11,7 @@
     @on-filter="onFilter"
     @on-update-category="updateSelectedCat"
     @on-update-ingredients="updateSelectedIngredients"
+    @on-add-to-cart="addToCart"
   ></FilterPanel>
   <LoadingContent v-if="loading" />
   <ListFood
@@ -20,6 +21,7 @@
     title-list="Meals"
     :is-latest-meals="false"
     @change-quantity="updateQuantity"
+    @on-add-to-cart="addToCart"
   ></ListFood>
 </template>
 <script>
@@ -50,12 +52,14 @@ import {
   UPDATE_SELECTED_CATEGORY_ACTION,
   UPDATE_SELECTED_INGREDIENTS_ACTION,
   UPDATE_QUANTITY_OF_MEAL_ACTION,
+  ADD_TO_CART_ACTION,
 } from "@/store/storeConstants";
 
 const { useGetters: useMealsGetters, useActions: useMealsActions } =
   createNamespacedHelpers("meals");
 const { useActions: useFiltersActions, useGetters: useFiltersGetters } =
   createNamespacedHelpers("filters");
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "MealsPage",
   components: {
@@ -110,6 +114,9 @@ export default {
       GET_CATEGORY_OPTIONS_ACTION,
       UPDATE_SELECTED_CATEGORY_ACTION,
       UPDATE_SELECTED_INGREDIENTS_ACTION,
+    ]);
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
     ]);
 
     // press on filter button
@@ -178,6 +185,7 @@ export default {
       updateSelectedCat,
       updateSelectedIngredients,
       updateQuantity,
+      addToCart,
     };
   },
 };

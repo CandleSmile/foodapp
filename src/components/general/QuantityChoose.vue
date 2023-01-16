@@ -6,7 +6,8 @@
         class="quantity-choose__quantity"
         type="text"
         :value="modelValue"
-        @input="updateAfterCheck($event.target.value)"
+        @keypress="updateAfterCheck($event)"
+        @input="$emit('update:modelValue', Number($event.target.value))"
       />
       <button @click="onIncrement" class="quantity-choose__btn-plus">+</button>
     </div>
@@ -16,9 +17,12 @@
 import { defineProps, defineEmits } from "vue";
 const props = defineProps(["modelValue"]);
 const emit = defineEmits(["update:modelValue"]);
-const updateAfterCheck = (value) => {
-  if (!isNaN(value) && value >= 0) {
-    emit("update:modelValue", value);
+const updateAfterCheck = (ev) => {
+  var charCode = ev.which ? ev.which : ev.keyCode;
+  if (charCode >= 48 && charCode <= 57) {
+    return true;
+  } else {
+    ev.preventDefault();
   }
 };
 const onDecrement = () => {
@@ -32,7 +36,6 @@ const onIncrement = () => {
 .quantity-choose {
   display: flex;
   flex-direction: row;
-  padding: 10px 10px;
   color: $secondary-dark-color;
   &__wrapper {
     display: flex;

@@ -12,6 +12,7 @@ import {
   FOOD,
   SET_QUANTITY_OF_MEAL,
   UPDATE_QUANTITY_OF_MEAL_ACTION,
+  MEALS_IN_CART,
 } from "@/store/storeConstants";
 
 // initial state
@@ -36,12 +37,15 @@ const getters = {
 
 // actions
 const actions = {
-  async [GET_LATEST_MEAL_ACTION]({ commit }) {
+  async [GET_LATEST_MEAL_ACTION]({ commit, rootGetters }) {
     commit(SET_LOADING, true);
     try {
+      const itemsInCart = rootGetters[`cart/${MEALS_IN_CART}`];
       const res = await foodApi.food.get.latestMeals();
       res.meals = res.meals.map((meal) => {
-        return { ...meal, quantity: 0 };
+        const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
+
+        return { ...meal, quantity: foundItem ? foundItem.quantity : 0 };
       });
       commit(SET_MEALS, res.meals);
       commit(SET_ERROR, res.error);
@@ -52,12 +56,14 @@ const actions = {
     }
   },
 
-  async [GET_FILTERING_MEAL_ACTION]({ commit }, filters) {
+  async [GET_FILTERING_MEAL_ACTION]({ commit, rootGetters }, filters) {
     commit(SET_LOADING, true);
     try {
+      const itemsInCart = rootGetters[`cart/${MEALS_IN_CART}`];
       const res = await foodApi.food.get.foodByFilters(filters);
       res.meals = res.meals.map((meal) => {
-        return { ...meal, quantity: 0 };
+        const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
+        return { ...meal, quantity: foundItem ? foundItem.quantity : 0 };
       });
       commit(SET_MEALS, res.meals);
       commit(SET_ERROR, res.error);
@@ -81,7 +87,6 @@ const actions = {
     }
   },
   async [UPDATE_QUANTITY_OF_MEAL_ACTION]({ commit }, { id, value }) {
-    console.log(value);
     commit(SET_QUANTITY_OF_MEAL, { id, value });
   },
 };
