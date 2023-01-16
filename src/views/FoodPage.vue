@@ -10,13 +10,13 @@
     </div>
     <div class="food__info">
       <h1 class="food__info-name">{{ foodData.strMeal }}</h1>
-      <div class="food__info-cat">
+      <div class="food__info-category">
         <span>Category: </span>
         <RouterLink
-          class="food__info-cat-link"
+          class="food__info-category-link"
           :to="{
             name: 'meal',
-            query: { [catFilter]: foodData.strCategory },
+            query: { [categoryFilter]: foodData.strCategory },
           }"
           >{{ foodData.strCategory }}</RouterLink
         >
@@ -27,7 +27,7 @@
         <ul class="food__info-ingredients-list">
           <li v-for="item in ingredientsList" :key="item">
             <RouterLink
-              class="food__info-ingredient-link"
+              class="food__info-ingredients-list-link"
               :to="{
                 name: 'meal',
                 query: { [ingredientFilter]: item },
@@ -60,7 +60,7 @@ export default {
       LOADING,
     ]);
     const { [GET_FOOD_ACTION]: getFood } = useActions([GET_FOOD_ACTION]);
-    const catFilter = FilterType.CATEGORY;
+    const categoryFilter = FilterType.CATEGORY;
     const ingredientFilter = FilterType.INGREDIENTS;
 
     const ingredientsList = computed(() => {
@@ -86,7 +86,7 @@ export default {
     return {
       foodData,
       ingredientsList,
-      catFilter,
+      categoryFilter,
       ingredientFilter,
       loading,
     };
@@ -117,17 +117,17 @@ export default {
       padding-bottom: 20px;
       margin: 0;
     }
-    &-cat {
+    &-category {
       padding-bottom: 20px;
       & span {
         font-weight: 600;
       }
     }
-    &-cat-link {
+    &-category-link {
       color: $link-color;
       text-decoration: none;
     }
-    &-insrtuctions {
+    &-instructions {
       font-size: 0.9 rem;
     }
     &-ingredients {
@@ -141,7 +141,7 @@ export default {
       list-style: none;
       padding: 0;
     }
-    &-ingredient-link {
+    &-ingredients-list-link {
       color: $link-color;
       text-decoration: none;
     }

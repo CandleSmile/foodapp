@@ -8,57 +8,42 @@
     >
       <li
         class="list-categories__categories-item"
-        v-for="cat in categoriesList"
-        :key="cat.strCategory"
+        v-for="category in categoriesList"
+        :key="category.strCategory"
       >
         <router-link
           class="list-categories__categories-item-link"
           :to="{
             name: 'meal',
-            query: { [catFilter]: cat.strCategory },
+            query: { [categoryFilter]: category.strCategory },
           }"
         >
           <div class="list-categories__categories-item-img-wrapper">
             <img
               class="list-categories__categories-item-img"
-              :src="cat.strCategoryThumb"
-              :alt="cat.strCategory"
+              :src="category.strCategoryThumb"
+              :alt="category.strCategory"
             />
           </div>
           <div class="list-categories__categories-item-info-wrapper">
             <div class="list-categories__categories-item-name">
-              {{ cat.strCategory }}
+              {{ category.strCategory }}
             </div>
           </div>
         </router-link>
       </li>
     </ul>
-    <div
-      class="categories-item__input-request-meal-block"
-      v-else-if="categoriesList == null && error == ''"
-    >
-      <p>Something went wrong</p>
-    </div>
-    <div
-      class="categories-item__no-cat-data"
-      v-else-if="categoriesList && categoriesList.length == 0"
-    >
-      <p>Categories were not found</p>
-    </div>
-    <div class="categories-item__error-cat-data" v-else>
-      <p>There war an error {{ error }}</p>
-    </div>
   </section>
 </template>
 <script>
 import { FilterType } from "../const/filterType";
 export default {
   name: "list-categories",
-  props: ["categoriesList", "error"],
+  props: ["categoriesList"],
   setup() {
-    const catFilter = FilterType.CATEGORY;
+    const categoryFilter = FilterType.CATEGORY;
     return {
-      catFilter,
+      categoryFilter,
     };
   },
 };

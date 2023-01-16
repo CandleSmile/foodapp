@@ -12,13 +12,13 @@
       <div class="header__search-log-wrapper">
         <SearchInput
           id="searchQuery"
-          @on-search="onSearch"
+          @search="onSearch"
           placeholder="Search products"
           :query="searchString"
-          @on-update-query="updateQuery"
+          @update-query="updateQuery"
           class="header__search-form"
         ></SearchInput>
-        <LogPanel v-if="isLogPanelShown" @on-logout="LogOut"></LogPanel>
+        <LogPanel v-if="isLogPanelShown" @logout="logOut"></LogPanel>
       </div>
     </div>
   </header>
@@ -59,12 +59,15 @@ const onSearch = (searchString) => {
 };
 const isLogPanelShown = computed(() => route.name != "login");
 
-const LogOut = () => {
+const logOut = () => {
   logOutAction();
   router.push({ name: "home" });
 };
 </script>
 <style lang="scss">
+.header__search-form {
+  align-self: center;
+}
 .header__search-log-wrapper {
   display: flex;
   gap: 10px 20px;

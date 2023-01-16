@@ -1,5 +1,5 @@
 <template>
-  <div class="input-field" :class="{ error: errors.length }">
+  <div class="input-field" :class="{ 'input-field--error': errors.length }">
     <input
       class="input-field__input"
       :placeholder="placeholder"
@@ -9,7 +9,7 @@
     />
 
     <div class="input-field__errors" v-for="error of errors" :key="error.$uid">
-      <div class="input-field__errors__error-msg">{{ error.$message }}</div>
+      <div class="input-field__errors-error-msg">{{ error.$message }}</div>
     </div>
   </div>
 </template>
@@ -30,18 +30,21 @@ defineEmits(["update:modelValue"]);
     width: 100px;
     border-radius: 4px;
     border: 1px solid $input-field-border-color;
+    outline: none;
     color: $input-field-color;
   }
   &__errors {
-    &__error-msg {
+    &-error-msg {
       color: $primary-dark-color;
       font-size: 0.7rem;
     }
   }
-}
-.error .input-field {
-  &__input {
-    border-color: $input-field-border-error-color;
+  &--error {
+    .input-field {
+      &__input {
+        border-color: $input-field-border-error-color;
+      }
+    }
   }
 }
 </style>

@@ -42,16 +42,6 @@
         </router-link>
       </li>
     </ul>
-
-    <div
-      class="list-food__no-meals-data"
-      v-else-if="mealsList && mealsList.length == 0"
-    >
-      <p>Meals were not found</p>
-    </div>
-    <div class="list-food__error-meal-data" v-else>
-      <p>There war an error {{ error }}</p>
-    </div>
   </section>
 </template>
 
@@ -60,9 +50,7 @@ export default {
   name: "ListFood",
   props: {
     titleList: String,
-    isLatestMeals: Boolean,
     mealsList: Array,
-    error: String,
   },
   setup() {},
 };

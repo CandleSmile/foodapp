@@ -1,6 +1,6 @@
 <template>
   <FilterTags
-    @on-delete="onDeleteFromFilters"
+    @delete-tag="deleteFromFilters"
     :filter-tags="filterTags"
   ></FilterTags>
   <FilterPanel
@@ -8,18 +8,25 @@
     :checked-ingredients="checkedIngredients"
     :cat-options="catOptions"
     :category="category"
-    @on-filter="onFilter"
-    @on-update-category="updateSelectedCat"
-    @on-update-ingredients="updateSelectedIngredients"
+    @filter="onFilter"
+    @update-category="updateSelectedCat"
+    @update-ingredients="updateSelectedIngredients"
   ></FilterPanel>
   <LoadingContent v-if="loading" />
   <ListFood
-    :error="error"
+    v-else-if="mealsList && mealsList.length > 0"
     :meals-list="mealsList"
-    v-else
     title-list="Meals"
-    :is-latest-meals="false"
   ></ListFood>
+  <div
+    class="list-food__no-meals-data"
+    v-else-if="mealsList && mealsList.length == 0"
+  >
+    <p>Meals were not found</p>
+  </div>
+  <div class="list-food__error" v-else>
+    <p>There war an error {{ error }}</p>
+  </div>
 </template>
 <script>
 import ListFood from "../components/ListFood.vue";
@@ -124,7 +131,7 @@ export default {
     };
 
     //press on delete icon in filter tags
-    const onDeleteFromFilters = (tag) => {
+    const deleteFromFilters = (tag) => {
       let routeQuery = Object.assign({}, route.query);
       if (tag.type === FilterType.INGREDIENTS) {
         let ingredientsArr = routeQuery[[tag.type]]
@@ -164,7 +171,7 @@ export default {
       error,
       filterTags,
       onFilter,
-      onDeleteFromFilters,
+      deleteFromFilters,
       ingredientsOptions,
       catOptions,
       category,

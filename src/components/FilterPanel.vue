@@ -1,12 +1,12 @@
 <template>
   <section class="filter-panel">
     <div class="filter-panel__toggle-button-wrapper">
-      <ActionButton
+      <action-button
         class="action-button--theme-light action-button--filter-icon filter-panel__action-button"
         @click="onToggleFilterPanelClass"
       >
         {{ showFilterPanel ? "Hide filters" : "Open filters" }}
-      </ActionButton>
+      </action-button>
     </div>
 
     <Transition name="fade">
@@ -17,7 +17,7 @@
           :filterable="true"
           placeholder="Select category"
           :multiple="false"
-          @update:modelValue="(newValue) => $emit('onUpdateCategory', newValue)"
+          @update:modelValue="(newValue) => $emit('updateCategory', newValue)"
           title="Category"
           id="catFilter"
         ></SelectContainer>
@@ -30,16 +30,16 @@
           :multiple="true"
           title="Ingredients"
           @update:modelValue="
-            (newValue) => $emit('onUpdateIngredients', newValue)
+            (newValue) => $emit('updateIngredients', newValue)
           "
           id="ingFilter"
         ></SelectContainer>
 
         <div class="filter-panel__button-wrapper">
           <span class="filter-panel__fix-span">&nbsp;</span>
-          <ActionButton class="action-button--theme-dark" @click="onFilter"
+          <action-button class="action-button--theme-dark" @click="onFilter"
             >Filter
-          </ActionButton>
+          </action-button>
         </div>
       </div>
     </Transition>
@@ -63,7 +63,7 @@ export default {
     checkedIngredients: Array,
     category: String,
   },
-  emits: ["onFilter", "onUpdateCategory", "onUpdateIngredients"],
+  emits: ["filter", "updateCategory", "updateIngredients"],
   setup(props, { emit }) {
     let showFilterPanel = ref(false);
     let activeClass = "filter-panel-box--active";
@@ -72,7 +72,7 @@ export default {
       showFilterPanel.value = !showFilterPanel.value;
     };
     const onFilter = () => {
-      emit("onFilter", props.category, props.checkedIngredients);
+      emit("filter", props.category, props.checkedIngredients);
     };
 
     return {

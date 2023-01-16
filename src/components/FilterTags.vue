@@ -9,7 +9,7 @@
         {{ tag.val }}
         <span
           class="filter-tags-panel__list-item-remove-filter"
-          @click="$emit('onDelete', tag)"
+          @click="$emit('deleteTag', tag)"
         ></span>
       </li>
     </ul>
@@ -19,7 +19,7 @@
 <script setup>
 import { defineEmits, defineProps } from "vue";
 
-defineEmits(["onDelete"]);
+defineEmits(["deleteTag"]);
 defineProps(["filterTags"]);
 </script>
 

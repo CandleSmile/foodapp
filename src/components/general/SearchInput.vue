@@ -5,30 +5,23 @@
       :placeholder="placeholder"
       class="search-form__input"
       :value="query"
-      @input="$emit('onUpdateQuery', $event.target.value)"
-      @keyup.enter="onSearch"
+      @input="$emit('updateQuery', $event.target.value)"
+      @keyup.enter="$emit('search', $event.target.value)"
     />
-    <span class="search-form__icon" @click="onSearch"></span>
+    <span class="search-form__icon" @click="$emit('search', query)"></span>
   </div>
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from "vue";
-const emit = defineEmits(["onSearch", "onUpdateQuery"]);
-const props = defineProps({
+defineEmits(["search", "updateQuery"]);
+defineProps({
   placeholder: String,
   query: String,
 });
-
-const onSearch = () => {
-  emit("onSearch", props.query);
-};
 </script>
 
 <style scoped lang="scss">
-.header__search-form {
-  align-self: center;
-}
 .search-form {
   position: relative;
 

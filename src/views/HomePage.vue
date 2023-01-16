@@ -1,18 +1,34 @@
 <template>
   <LoadingContent v-if="loadingCat" />
   <ListCategories
-    :error="errorCat"
     :categories-list="categoriesList"
-    v-else
+    v-else-if="categoriesList && categoriesList.length > 0"
   ></ListCategories>
+  <div
+    class="categories-item__no-category-data"
+    v-else-if="categoriesList && categoriesList.length == 0"
+  >
+    <p>Categories were not found</p>
+  </div>
+  <div class="categories-item__error" v-else>
+    <p>There war an error {{ errorCat }}</p>
+  </div>
+
   <LoadingContent v-if="loading" />
   <ListFood
-    v-else
+    v-else-if="mealsList && mealsList.length > 0"
     title-list="Latest Meals"
-    :is-latest-meals="true"
-    :error="errorMeal"
     :meals-list="mealsList"
   ></ListFood>
+  <div
+    class="list-food__no-meals-data"
+    v-else-if="mealsList && mealsList.length == 0"
+  >
+    <p>Meals were not found</p>
+  </div>
+  <div class="list-food__error" v-else>
+    <p>There war an error {{ errorMeal }}</p>
+  </div>
 </template>
 
 <script>

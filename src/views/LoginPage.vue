@@ -1,15 +1,17 @@
 <template>
   <article class="login">
-    <h2>Please input your email to log in</h2>
-    <form @submit.prevent="onSubmit">
+    <h2 class="login-title">Please input your email to log in</h2>
+    <form class="login-form" @submit.prevent="onSubmit">
       <input-field
         placeholder="Enter your email"
         v-model="user"
         :errors="v$.user.$errors"
-        class="login__email"
+        class="login-form__email"
       >
       </input-field>
-      <ActionButton class="login__button">Login</ActionButton>
+      <ActionButton class="login-form__button action-button--theme-dark"
+        >Login</ActionButton
+      >
     </form>
   </article>
 </template>
@@ -49,11 +51,16 @@ onMounted(() => {
 });
 </script>
 <style lang="scss">
-.login,
-.login form {
+.login {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
+  &-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
 }
 </style>
