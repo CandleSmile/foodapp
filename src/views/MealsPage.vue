@@ -17,6 +17,7 @@
     v-else-if="mealsList && mealsList.length > 0"
     :meals-list="mealsList"
     title-list="Meals"
+    @change-quantity="updateQuantity"
     @add-to-cart="addToCart"
   ></ListFood>
   <div
