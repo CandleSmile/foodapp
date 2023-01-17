@@ -38,6 +38,17 @@
           </li>
         </ul>
       </div>
+      <div class="food__info-item-to-cart">
+        <quantity-choose
+          class="food__info-item-to-cart-quantity"
+          :modelValue="foodData.quantity"
+          @update:modelValue="(newValue) => updateQuantity(newValue)"
+        />
+        <add-to-cart-button
+          class="food__info-item-to-cart-button"
+          @add-to-cart="addToCart(foodData)"
+        ></add-to-cart-button>
+      </div>
     </div>
   </article>
 </template>
@@ -45,13 +56,23 @@
 import { useRoute } from "vue-router";
 import { onMounted, computed } from "vue";
 import { FilterType } from "../const/filterType";
-import { GET_FOOD_ACTION, FOOD, LOADING } from "@/store/storeConstants";
+import {
+  GET_FOOD_ACTION,
+  FOOD,
+  LOADING,
+  ADD_TO_CART_ACTION,
+  UPDATE_QUANTITY_OF_FOOD_ACTION,
+} from "@/store/storeConstants";
 import LoadingContent from "@/components/general/LoadingContent.vue";
+import AddToCartButton from "@/components/AddToCartButton.vue";
+import QuantityChoose from "@/components/general/QuantityChoose";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useGetters, useActions } = createNamespacedHelpers("meals");
+
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "FoodPage",
-  components: { LoadingContent },
+  components: { LoadingContent, AddToCartButton, QuantityChoose },
   setup() {
     const route = useRoute();
 
@@ -59,7 +80,13 @@ export default {
       FOOD,
       LOADING,
     ]);
-    const { [GET_FOOD_ACTION]: getFood } = useActions([GET_FOOD_ACTION]);
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
+    ]);
+    const {
+      [GET_FOOD_ACTION]: getFood,
+      [UPDATE_QUANTITY_OF_FOOD_ACTION]: updateQuantity,
+    } = useActions([GET_FOOD_ACTION, UPDATE_QUANTITY_OF_FOOD_ACTION]);
     const catFilter = FilterType.CATEGORY;
     const ingredientFilter = FilterType.INGREDIENTS;
 
@@ -89,6 +116,8 @@ export default {
       catFilter,
       ingredientFilter,
       loading,
+      addToCart,
+      updateQuantity,
     };
   },
 };
@@ -145,6 +174,13 @@ export default {
       color: $link-color;
       text-decoration: none;
     }
+    &-item-to-cart {
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      justify-content: flex-start;
+      align-items: center;
+    }
   }
 }
 
@@ -158,6 +194,9 @@ export default {
     &__info {
       padding-top: 20px;
       text-align: center;
+      &-item-to-cart {
+        justify-content: center;
+      }
     }
   }
 }

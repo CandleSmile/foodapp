@@ -3,7 +3,7 @@
     <action-button class="cart-button-btn" @click="onViewCart"
       ><i class="cart-button-btn-icon"></i
     ></action-button>
-    <div class="cart-button-count">{{ countItems }}</div>
+    <div class="cart-button-count" v-if="countItems > 0">{{ countItems }}</div>
   </div>
 </template>
 

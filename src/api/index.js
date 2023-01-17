@@ -130,5 +130,32 @@ const api = {
       },
     },
   },
+  shop: {
+    post: {
+      buy: async (items) => {
+        const pr = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            // simulate random buy failure
+            console.log("call shop api");
+            console.log(items);
+            if (Math.random() > 0.5 || navigator.webdriver) {
+              resolve({ isDone: true, error: "" });
+            } else {
+              reject(new Error("API ERROR!!!"));
+            }
+          }, 3000);
+        });
+        try {
+          const res = await pr;
+          return res;
+        } catch (err) {
+          return {
+            isDone: false,
+            error: err.message,
+          };
+        }
+      },
+    },
+  },
 };
 export { api as foodApi };

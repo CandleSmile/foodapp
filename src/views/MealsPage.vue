@@ -21,7 +21,7 @@
     title-list="Meals"
     :is-latest-meals="false"
     @change-quantity="updateQuantity"
-    @on-add-to-cart="addToCart"
+    @add-to-cart="addToCart"
   ></ListFood>
 </template>
 <script>

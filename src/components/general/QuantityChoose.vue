@@ -1,7 +1,7 @@
 <template>
   <div class="quantity-choose">
     <div class="quantity-choose__wrapper">
-      <button @click="onDecrement" class="quantity-choose__btn-minus">-</button>
+      <button @click="decrement" class="quantity-choose__btn-minus">-</button>
       <input
         class="quantity-choose__quantity"
         type="text"
@@ -9,7 +9,7 @@
         @keypress="updateAfterCheck($event)"
         @input="$emit('update:modelValue', Number($event.target.value))"
       />
-      <button @click="onIncrement" class="quantity-choose__btn-plus">+</button>
+      <button @click="increment" class="quantity-choose__btn-plus">+</button>
     </div>
   </div>
 </template>
@@ -25,10 +25,10 @@ const updateAfterCheck = (ev) => {
     ev.preventDefault();
   }
 };
-const onDecrement = () => {
+const decrement = () => {
   if (props.modelValue > 0) emit("update:modelValue", props.modelValue - 1);
 };
-const onIncrement = () => {
+const increment = () => {
   emit("update:modelValue", props.modelValue + 1);
 };
 </script>

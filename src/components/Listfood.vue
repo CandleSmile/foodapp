@@ -54,11 +54,9 @@
               (newValue) => updateQuant(meal.idMeal, newValue)
             "
           />
-          <ActionButton
-            class="list-food__meals-item-to-cart-btn"
-            @click="addToCart(meal)"
-            ><i class="list-food__meals-item-to-cart-btn-icon"></i>
-          </ActionButton>
+          <add-to-cart-button
+            @add-to-cart="$emit('addToCart', meal)"
+          ></add-to-cart-button>
         </div>
       </li>
     </ul>
@@ -77,8 +75,7 @@
 
 <script>
 import QuantityChoose from "@/components/general/QuantityChoose";
-import ActionButton from "@/components/general/ActionButton";
-
+import AddToCartButton from "@/components/AddToCartButton.vue";
 export default {
   name: "ListFood",
   props: {
@@ -87,21 +84,18 @@ export default {
     mealsList: Array,
     error: String,
   },
-  emits: ["changeQuantity", "OnAddToCart"],
+  emits: ["changeQuantity", "addToCart"],
   components: {
     QuantityChoose: QuantityChoose,
-    ActionButton: ActionButton,
+    AddToCartButton: AddToCartButton,
   },
   setup(props, ctx) {
     const updateQuant = (id, value) => {
       ctx.emit("changeQuantity", { id, value });
     };
-    const addToCart = (meal) => {
-      ctx.emit("OnAddToCart", meal);
-    };
+
     return {
       updateQuant,
-      addToCart,
     };
   },
 };
@@ -213,30 +207,6 @@ export default {
         justify-content: space-between;
         align-items: center;
         padding: 10px 10px;
-        &-btn {
-          background-color: $add-to-cart-background-color;
-          width: 40px;
-          height: 25px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 4px;
-          border: none;
-          &-icon {
-            content: "";
-            background: url("@/assets/images/addToCartWhite.png");
-            background-size: 20px 20px;
-            width: 20px;
-            height: 20px;
-          }
-          &:hover {
-            transform: scale(1.05);
-            cursor: pointer;
-          }
-          &--in-cart {
-            background-color: $in-cart-background-color;
-          }
-        }
       }
     }
   }

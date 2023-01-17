@@ -13,7 +13,7 @@
     :error="errorMeal"
     :meals-list="mealsList"
     @change-quantity="updateQuantity"
-    @on-add-to-cart="addToCart"
+    @add-to-cart="addToCart"
   ></ListFood>
 </template>
 
