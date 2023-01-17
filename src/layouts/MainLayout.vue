@@ -18,7 +18,9 @@
           @update-query="updateQuery"
           class="header__search-form"
         ></SearchInput>
+
         <LogPanel v-if="isLogPanelShown" @logout="logOut"></LogPanel>
+        <CartButton>Cart</CartButton>
       </div>
     </div>
   </header>
@@ -36,6 +38,7 @@ import { useRouter, useRoute } from "vue-router";
 import { FilterType } from "@/const/filterType";
 import { computed } from "@vue/runtime-core";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
+import CartButton from "@/components/CartButton.vue";
 const router = useRouter();
 const route = useRoute();
 const { useActions: useAuthActions } = createNamespacedHelpers("auth");
@@ -72,6 +75,7 @@ const logOut = () => {
   display: flex;
   gap: 10px 20px;
   font-size: 12px;
+  align-items: center;
 }
 @media only screen and (max-width: $mediaTablets) {
   .header__search-log-wrapper {

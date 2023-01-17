@@ -1,6 +1,9 @@
 import { getAxiosReq } from "./axiosReq";
 import apiUrls from "./consts/apiUrls.js";
 import { FilterType } from "../const/filterType";
+import { roundNumber } from "@/helpers/mathHelpers";
+const calcPriceOnID = (id) =>
+  roundNumber((id % 10) + roundNumber(id / 10000, 2), 2);
 const handleResponses = (response) => {
   let {
     data: { meals },
@@ -61,14 +64,22 @@ const api = {
             meal.strCategory.toLowerCase().includes(catFilter.toLowerCase())
           );
         }
+        //map prices;
+        meals = meals.map((meal) => {
+          return { ...meal, price: calcPriceOnID(meal.idMeal) };
+        });
         return { meals, error, ok };
       },
       latestMeals: async () => {
-        const {
+        let {
           ok,
           data: { meals },
           error,
         } = await getAxiosReq(apiUrls.getLatestMeals);
+
+        meals = meals.map((meal) => {
+          return { ...meal, price: calcPriceOnID(meal.idMeal) };
+        });
         return { ok, meals, error };
       },
 
@@ -116,6 +127,33 @@ const api = {
           data: meals,
           error: error,
         };
+      },
+    },
+  },
+  shop: {
+    post: {
+      buy: async (items) => {
+        const pr = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            // simulate random buy failure
+            console.log("call shop api");
+            console.log(items);
+            if (Math.random() > 0.5 || navigator.webdriver) {
+              resolve({ isDone: true, error: "" });
+            } else {
+              reject(new Error("API ERROR!!!"));
+            }
+          }, 3000);
+        });
+        try {
+          const res = await pr;
+          return res;
+        } catch (err) {
+          return {
+            isDone: false,
+            error: err.message,
+          };
+        }
       },
     },
   },

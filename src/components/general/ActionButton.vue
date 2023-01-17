@@ -1,5 +1,5 @@
 <template>
-  <button class="action-button" @click="$emit('click')">
+  <button :disabled="disabled" class="action-button" @click="$emit('click')">
     <slot></slot>
   </button>
 </template>
@@ -9,6 +9,7 @@ export default {
   emits: ["click"],
   props: {
     title: String,
+    disabled: Boolean,
   },
   setup() {},
 };
@@ -21,6 +22,7 @@ export default {
   width: 100px;
   &:hover {
     border: 1px solid $filter-button-border;
+    cursor: pointer;
   }
   &--theme-light {
     border: 1px solid $filter-button-background;

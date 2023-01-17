@@ -19,6 +19,8 @@
     v-else-if="mealsList && mealsList.length > 0"
     title-list="Latest Meals"
     :meals-list="mealsList"
+    @change-quantity="updateQuantity"
+    @add-to-cart="addToCart"
   ></ListFood>
   <div
     class="list-food__no-meals-data"
@@ -45,13 +47,15 @@ import {
   LOADING,
   ERROR,
   MEALS,
+  UPDATE_QUANTITY_OF_MEAL_ACTION,
+  ADD_TO_CART_ACTION,
 } from "@/store/storeConstants";
 
 const { useGetters: useCategoriesGetters, useActions: useCategoriesActions } =
   createNamespacedHelpers("categories");
 const { useGetters: useMealsGetters, useActions: useMealsActions } =
   createNamespacedHelpers("meals");
-
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "HomePage",
   components: {
@@ -76,8 +80,15 @@ export default {
       GET_CATEGORIES_ACTION,
     ]);
 
-    const { [GET_LATEST_MEAL_ACTION]: getMeals } = useMealsActions([
+    const {
+      [GET_LATEST_MEAL_ACTION]: getMeals,
+      [UPDATE_QUANTITY_OF_MEAL_ACTION]: updateQuantity,
+    } = useMealsActions([
       GET_LATEST_MEAL_ACTION,
+      UPDATE_QUANTITY_OF_MEAL_ACTION,
+    ]);
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
     ]);
 
     onMounted(() => {
@@ -92,6 +103,8 @@ export default {
       errorCat,
       mealsList,
       errorMeal,
+      updateQuantity,
+      addToCart,
     };
   },
 };

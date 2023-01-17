@@ -27,32 +27,65 @@
           <div class="list-food__meals-item-info-wrapper">
             <div class="list-food__meals-item-name">{{ meal.strMeal }}</div>
           </div>
-          <div class="list-food__meals-item-area-cat">
-            <div v-if="meal.strCategory && meal.strCategory != ''">
-              <span class="list-food__meals-item-area-cat-title"
-                >Category:
-              </span>
-              <span> {{ meal.strCategory }}</span>
+          <div class="list-food__meals-item-area-add-info">
+            <div class="list-food__meals-item-area-add-info-cat">
+              <div v-if="meal.strCategory && meal.strCategory != ''">
+                <span class="list-food__meals-item-area-add-info-cat-title"
+                  >Category:
+                </span>
+                <span> {{ meal.strCategory }}</span>
+              </div>
+              <div v-if="meal.strArea && meal.strArea != ''">
+                <span class="list-food__meals-item-area-add-info-cat-title"
+                  >Area:
+                </span>
+                <span>{{ meal.strArea }}</span>
+              </div>
             </div>
-            <div v-if="meal.strArea && meal.strArea != ''">
-              <span class="list-food__meals-item-area-cat-title">Area: </span>
-              <span>{{ meal.strArea }}</span>
+            <div class="list-food__meals-item-area-add-info-price">
+              ${{ meal.price }}
             </div>
           </div>
         </router-link>
+        <div class="list-food__meals-item-to-cart">
+          <quantity-choose
+            :modelValue="meal.quantity"
+            @update:modelValue="
+              (newValue) => updateQuant(meal.idMeal, newValue)
+            "
+          />
+          <add-to-cart-button
+            @add-to-cart="$emit('addToCart', meal)"
+          ></add-to-cart-button>
+        </div>
       </li>
     </ul>
   </section>
 </template>
 
 <script>
+import QuantityChoose from "@/components/general/QuantityChoose";
+import AddToCartButton from "@/components/AddToCartButton.vue";
 export default {
   name: "ListFood",
   props: {
     titleList: String,
     mealsList: Array,
   },
-  setup() {},
+  emits: ["changeQuantity", "addToCart"],
+  components: {
+    QuantityChoose: QuantityChoose,
+    AddToCartButton: AddToCartButton,
+  },
+  setup(props, ctx) {
+    const updateQuant = (id, value) => {
+      ctx.emit("changeQuantity", { id, value });
+    };
+
+    return {
+      updateQuant,
+    };
+  },
 };
 </script>
 
@@ -73,6 +106,7 @@ export default {
     padding: 20px 0;
     &-item {
       display: flex;
+      flex-direction: column;
       width: itemWidth($meal-count-supersize, $meal-items-gap-large);
       background-color: $meal-item-background;
       min-height: 200px;
@@ -89,6 +123,7 @@ export default {
         flex-wrap: wrap;
         text-decoration-line: none;
         width: 100%;
+        color: $text-dark-color;
       }
       &-img-wrapper {
         overflow: hidden;
@@ -120,21 +155,30 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      &-area-cat {
-        flex-basis: 100%;
-        color: $text-light-color;
-        font-size: 0.6em;
-        text-align: left;
+      &-area-add-info {
+        display: flex;
         border-top: 1px dashed $text-light-color;
         padding: 5px 10px;
-        line-height: 1.5em;
-        min-height: 20px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      &-area-cat-title {
-        font-weight: 700;
+        flex-basis: 100%;
+        align-items: flex-start;
+        &-cat {
+          flex-basis: 100%;
+          color: $text-light-color;
+          font-size: 0.6em;
+          text-align: left;
+          display: flex;
+          flex-direction: column;
+          line-height: 1.5em;
+          min-height: 20px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          &-title {
+            font-weight: 700;
+          }
+          &-price {
+          }
+        }
       }
       &-tags {
         position: absolute;
@@ -145,6 +189,12 @@ export default {
         padding: 0.3em 0.7em;
         color: $meal-tags-color-text;
         font-size: 0.7em;
+      }
+      &-to-cart {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 10px;
       }
     }
   }

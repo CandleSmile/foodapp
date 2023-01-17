@@ -1,6 +1,7 @@
 import HomePage from "../views/HomePage.vue";
 import FoodPage from "../views/FoodPage.vue";
 import MealsPage from "../views/MealsPage.vue";
+import CartPage from "../views/CartPage.vue";
 import NotFound from "../views/NotFound.vue";
 import LoginPage from "../views/LoginPage.vue";
 import authCheck from "./middlewares/authCheck";
@@ -21,14 +22,16 @@ const routeInfos = [
         path: "/meals",
         component: MealsPage,
         name: "meal",
-        meta: {
-          middleware: [authCheck],
-        },
       },
       {
         path: "/foodPage/:id",
         component: FoodPage,
         name: "food",
+      },
+      {
+        path: "/cart",
+        component: CartPage,
+        name: "cart",
         meta: {
           middleware: [authCheck],
         },

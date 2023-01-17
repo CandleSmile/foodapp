@@ -7,10 +7,15 @@ export const LOADING = "loading";
 //meals mutations
 export const SET_MEALS = "setMeals";
 export const SET_FOOD = "setFood";
+export const SET_QUANTITY_OF_MEAL = "setMealQuantityInList";
+export const SET_QUANTITY_OF_FOOD = "setFoodDataQuantityOnPage";
 //meals actions
 export const GET_LATEST_MEAL_ACTION = "getLatestMeals";
 export const GET_FILTERING_MEAL_ACTION = "getFilteringMeals";
 export const GET_FOOD_ACTION = "getFoodById";
+export const UPDATE_QUANTITY_OF_MEAL_ACTION = "updateMealQuantityInList";
+export const UPDATE_QUANTITY_OF_FOOD_ACTION = "updateFoodDataQuantityOnPage";
+
 //meals getters
 export const MEALS = "Meals";
 export const FOOD = "FoodData";
@@ -55,3 +60,22 @@ export const LOGOUT_ACTION = "DoLogout";
 //auth getters
 export const LOGGED_IN = "loggedIn";
 export const USER = "user";
+
+//shop mutations
+export const ADD_MEAL_TO_CART = "addMealToCart";
+export const CHANGE_MEAL_QUANTITY = "changeMealQuantityInCart";
+export const SET_CHECKOUT_STATUS = "setCheckoutStatus";
+export const DELETE_MEAL_FROM_CART = "deleteItemFromCart";
+export const SET_CART_ITEMS = "setCartItems";
+
+//shop getters
+export const MEALS_IN_CART = "mealsInCart";
+export const CART_TOTAL_PRICE = "total_Price";
+export const CART_COUNT = "total_Cart";
+export const CHECKOUT_STATUS = "checkOutStatus";
+
+//shop actions
+export const ADD_TO_CART_ACTION = "addToCartAction";
+export const DELETE_FROM_CART_ACTION = "deleteFromCartAction";
+export const BUY_ACTION = "buyAction";
+export const CLEAR_CHECKOUT_ACTION = "clearCheckOutAction";

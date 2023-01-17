@@ -17,6 +17,7 @@
     v-else-if="mealsList && mealsList.length > 0"
     :meals-list="mealsList"
     title-list="Meals"
+    @add-to-cart="addToCart"
   ></ListFood>
   <div
     class="list-food__no-meals-data"
@@ -55,12 +56,15 @@ import {
   SELECTED_INGREDIENTS,
   UPDATE_SELECTED_CATEGORY_ACTION,
   UPDATE_SELECTED_INGREDIENTS_ACTION,
+  UPDATE_QUANTITY_OF_MEAL_ACTION,
+  ADD_TO_CART_ACTION,
 } from "@/store/storeConstants";
 
 const { useGetters: useMealsGetters, useActions: useMealsActions } =
   createNamespacedHelpers("meals");
 const { useActions: useFiltersActions, useGetters: useFiltersGetters } =
   createNamespacedHelpers("filters");
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "MealsPage",
   components: {
@@ -80,8 +84,12 @@ export default {
       [ERROR]: error,
       [LOADING]: loading,
     } = useMealsGetters([MEALS, ERROR, LOADING]);
-    const { [GET_FILTERING_MEAL_ACTION]: getMeals } = useMealsActions([
+    const {
+      [GET_FILTERING_MEAL_ACTION]: getMeals,
+      [UPDATE_QUANTITY_OF_MEAL_ACTION]: updateQuantity,
+    } = useMealsActions([
       GET_FILTERING_MEAL_ACTION,
+      UPDATE_QUANTITY_OF_MEAL_ACTION,
     ]);
 
     const {
@@ -111,6 +119,9 @@ export default {
       GET_CATEGORY_OPTIONS_ACTION,
       UPDATE_SELECTED_CATEGORY_ACTION,
       UPDATE_SELECTED_INGREDIENTS_ACTION,
+    ]);
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
     ]);
 
     // press on filter button
@@ -178,6 +189,8 @@ export default {
       checkedIngredients,
       updateSelectedCat,
       updateSelectedIngredients,
+      updateQuantity,
+      addToCart,
     };
   },
 };
