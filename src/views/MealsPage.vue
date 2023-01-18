@@ -12,9 +12,9 @@
     @update-category="updateSelectedCat"
     @update-ingredients="updateSelectedIngredients"
   ></FilterPanel>
-  <LoadingContent v-if="loading" />
+  <LoadingContent :is-visible="loading" />
   <ListFood
-    v-else-if="mealsList && mealsList.length > 0"
+    v-if="mealsList && mealsList.length > 0"
     :meals-list="mealsList"
     title-list="Meals"
     @change-quantity="updateQuantity"

@@ -1,5 +1,126 @@
 <template>
-  <slot> <p>Loading...</p></slot>
+  <Teleport to="body">
+    <div class="loading-content" v-show="isVisible">
+      <div class="loading-content__lds-roller">
+        <div class="loading-content__lds-roller-item"></div>
+        <div class="loading-content__lds-roller-item"></div>
+        <div class="loading-content__lds-roller-item"></div>
+        <div class="loading-content__lds-roller-item"></div>
+        <div class="loading-content__lds-roller-item"></div>
+        <div class="loading-content__lds-roller-item"></div>
+        <div class="loading-content__lds-roller-item"></div>
+        <div class="loading-content__lds-roller-item"></div>
+      </div>
+      <slot> </slot>
+    </div>
+  </Teleport>
 </template>
-<script setup></script>
-<style></style>
+<script setup>
+import { defineProps } from "vue";
+defineProps({
+  isVisible: Boolean,
+});
+</script>
+<style lang="scss">
+.loading-content {
+  background: none repeat scroll 0 0 rgba(#000, 0.6);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__lds-roller {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    &-item {
+      animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+      transform-origin: 40px 40px;
+      &::after {
+        content: " ";
+        display: block;
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: $loading-color;
+        margin: -4px 0 0 -4px;
+      }
+      &:nth-child(1) {
+        animation-delay: -0.036s;
+        &::after {
+          top: 63px;
+          left: 63px;
+        }
+      }
+
+      &:nth-child(2) {
+        animation-delay: -0.072s;
+        &::after {
+          top: 68px;
+          left: 56px;
+        }
+      }
+
+      &:nth-child(3) {
+        animation-delay: -0.108s;
+        &::after {
+          top: 71px;
+          left: 48px;
+        }
+      }
+      &:nth-child(4) {
+        animation-delay: -0.144s;
+        &::after {
+          top: 72px;
+          left: 40px;
+        }
+      }
+      &:nth-child(5) {
+        animation-delay: -0.18s;
+        &::after {
+          top: 71px;
+          left: 32px;
+        }
+      }
+      &:nth-child(6) {
+        animation-delay: -0.216s;
+        &::after {
+          top: 68px;
+          left: 24px;
+        }
+      }
+
+      &:nth-child(7) {
+        animation-delay: -0.252s;
+        &::after {
+          top: 63px;
+          left: 17px;
+        }
+      }
+      &:nth-child(8) {
+        animation-delay: -0.288s;
+        &::after {
+          top: 56px;
+          left: 12px;
+        }
+      }
+    }
+    @keyframes lds-roller {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+}
+</style>

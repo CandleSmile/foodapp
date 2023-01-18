@@ -2,12 +2,6 @@ import { foodApi } from "@/api/index";
 import { FilterType } from "@/const/filterType";
 import { toRaw } from "vue";
 import {
-  SET_SELECTED_CATEGORY,
-  SET_SELECTED_INGREDIENTS,
-  SET_SEARCH_STRING,
-  SET_INGREDIENT_OPTIONS,
-  SET_CATEGORY_OPTIONS,
-  SET_FILTER_TAGS,
   UPDATE_SELECTED_FILTERS_ACTION,
   UPDATE_FILTER_TAGS_ACTION,
   GET_INGREDIENTS_OPTIONS_ACTION,
@@ -67,23 +61,23 @@ const getters = {
 // actions
 const actions = {
   [UPDATE_SELECTED_CATEGORY_ACTION]({ commit }, categoryValue) {
-    commit(SET_SELECTED_CATEGORY, categoryValue);
+    commit("setSelectedCategory", categoryValue);
   },
   [UPDATE_SELECTED_INGREDIENTS_ACTION]({ commit }, ingredientsValue) {
-    commit(SET_SELECTED_INGREDIENTS, ingredientsValue);
+    commit("setSelectedIngredients", ingredientsValue);
   },
   [UPDATE_SEARCH_ACTION]({ commit }, searchString) {
-    commit(SET_SEARCH_STRING, searchString);
+    commit("setSearchString", searchString);
   },
   [UPDATE_SELECTED_FILTERS_ACTION]({ commit }, filters) {
     commit(
-      SET_SELECTED_INGREDIENTS,
+      "setSelectedIngredients",
       filters[[FilterType.INGREDIENTS]] != ""
         ? toRaw(filters[[FilterType.INGREDIENTS]]).split(",")
         : []
     );
-    commit(SET_SELECTED_CATEGORY, filters[[FilterType.CATEGORY]]);
-    commit(SET_SEARCH_STRING, filters[[FilterType.SEARCH]]);
+    commit("setSelectedCategory", filters[[FilterType.CATEGORY]]);
+    commit("setSearchString", filters[[FilterType.SEARCH]]);
   },
 
   [UPDATE_FILTER_TAGS_ACTION]({ commit }, filters) {
@@ -105,7 +99,7 @@ const actions = {
       }
     }
 
-    commit(SET_FILTER_TAGS, selectedFilterTags);
+    commit("setFilterTags", selectedFilterTags);
   },
 
   async [GET_INGREDIENTS_OPTIONS_ACTION]({ commit }) {
@@ -122,7 +116,7 @@ const actions = {
     } catch (err) {
       ingredientsOptions.push("can't load ingredients");
     }
-    commit(SET_INGREDIENT_OPTIONS, ingredientsOptions);
+    commit("setIngredientsOptions", ingredientsOptions);
   },
 
   async [GET_CATEGORY_OPTIONS_ACTION]({ commit }) {
@@ -137,29 +131,29 @@ const actions = {
     } catch (err) {
       catOptions.push("can't load categories");
     } finally {
-      commit(SET_CATEGORY_OPTIONS, catOptions);
+      commit("setCategoryOptions", catOptions);
     }
   },
 };
 
 // mutations
 const mutations = {
-  [SET_SELECTED_CATEGORY](state, category) {
+  setSelectedCategory(state, category) {
     state.selectedFilters.category = category;
   },
-  [SET_SELECTED_INGREDIENTS](state, ingredients) {
+  setSelectedIngredients(state, ingredients) {
     state.selectedFilters.ingredients = ingredients;
   },
-  [SET_SEARCH_STRING](state, searchString) {
+  setSearchString(state, searchString) {
     state.selectedFilters.searchString = searchString;
   },
-  [SET_INGREDIENT_OPTIONS](state, ingredientsOptions) {
+  setIngredientsOptions(state, ingredientsOptions) {
     state.ingredientsOptions = ingredientsOptions;
   },
-  [SET_CATEGORY_OPTIONS](state, categoriesOptions) {
+  setCategoryOptions(state, categoriesOptions) {
     state.categoryOptions = categoriesOptions;
   },
-  [SET_FILTER_TAGS](state, filterTags) {
+  setFilterTags(state, filterTags) {
     state.existingFiltersTags = filterTags;
   },
 };

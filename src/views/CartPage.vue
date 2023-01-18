@@ -62,9 +62,7 @@
         >Buy</action-button
       >
     </div>
-    <LoadingContent v-if="loading">
-      Your purchase is processing
-    </LoadingContent>
+    <LoadingContent :is-visible="loading"> </LoadingContent>
   </article>
   <article v-else class="cart-empty">
     <h1 class="cart-empty-title">Your cart is empty now.</h1>

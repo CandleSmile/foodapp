@@ -98,16 +98,13 @@ export default {
   }
 
   &__meals {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat($meal-count-supersize, 1fr);
     gap: $meal-items-gap-large;
     padding: 20px 0;
     &-item {
-      display: flex;
-      flex-direction: column;
-      width: itemWidth($meal-count-supersize, $meal-items-gap-large);
+      display: grid;
+      grid-template-columns: 1fr;
       background-color: $meal-item-background;
       min-height: 200px;
       box-shadow: 0px 3px 3px 0px $food-item-border-color;
@@ -115,37 +112,29 @@ export default {
       overflow: hidden;
 
       &-link {
-        display: flex;
-        flex-basis: 100%;
-        height: 100%;
-        flex-direction: row;
-        align-content: flex-start;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr;
         text-decoration-line: none;
-        width: 100%;
         color: $text-dark-color;
       }
       &-img-wrapper {
         overflow: hidden;
         max-height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        align-content: center;
         position: relative;
       }
       &-img {
         width: 100%;
       }
       &-info-wrapper {
-        display: flex;
-        flex-direction: column;
-        flex-basis: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
         padding: 10px;
-        width: 100%;
       }
 
       &-name {
-        flex-basis: 100%;
         color: $text-dark-color;
         text-align: left;
         font-size: 0.8em;
@@ -156,11 +145,11 @@ export default {
         text-overflow: ellipsis;
       }
       &-area-add-info {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 70px;
         border-top: 1px dashed $text-light-color;
         padding: 5px 10px;
-        flex-basis: 100%;
-        align-items: flex-start;
+
         &-cat {
           flex-basis: 100%;
           color: $text-light-color;

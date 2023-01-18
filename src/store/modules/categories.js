@@ -1,8 +1,5 @@
 import { foodApi } from "@/api/index";
 import {
-  SET_CATEGORIES,
-  SET_ERROR,
-  SET_LOADING,
   GET_CATEGORIES_ACTION,
   CATEGORIES,
   ERROR,
@@ -32,28 +29,28 @@ const getters = {
 // actions
 const actions = {
   async [GET_CATEGORIES_ACTION]({ commit }) {
-    commit(SET_LOADING, true);
+    commit("setLoading", true);
     try {
       const res = await foodApi.categories.get.allCategoriesWithImages();
-      commit(SET_CATEGORIES, res.categories);
-      commit(SET_ERROR, res.error);
+      commit("setCategories", res.categories);
+      commit("setError", res.error);
     } catch (err) {
-      commit(SET_ERROR, err);
+      commit("setError", err);
     } finally {
-      commit(SET_LOADING, false);
+      commit("setLoading", false);
     }
   },
 };
 
 // mutations
 const mutations = {
-  [SET_CATEGORIES](state, categories) {
+  setCategories(state, categories) {
     state.categories = categories;
   },
-  [SET_ERROR](state, error) {
+  setError(state, error) {
     state.error = error?.message;
   },
-  [SET_LOADING](state, isLoading) {
+  setLoading(state, isLoading) {
     state.loading = isLoading;
   },
 };
