@@ -28,52 +28,45 @@ h2 {
 .header {
   border-bottom: 0px solid $search-border-color;
   box-shadow: 0px -4px 1px -3px rgba($search-border-color, .2) inset;
-}
-
-.header-info-wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 0 20px;
-}
-
-.logo-title-block {
-  text-decoration: none;
-  padding: 5px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &__site-title {
-    margin-left: 10px;
-    color: $logo-color-main;
-      font-size: 1.2em;
-    
-      & span {
-        color: $logo-color-second;
-      }
-  }
-    &__logo {
-      width: 40px;
+  &-info-wrapper {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 0 20px;
+      max-width: $max-content-width;
+        margin-right: auto;
+        margin-left: auto;
     }
 }
 
+.logo-title-block {  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 5px 0;
+  &__site-title {
+    margin-left: 10px;
+    color: $logo-color-main;
+    font-size: 1.2em;    
+    & span {
+      color: $logo-color-second;
+    }
+  }
+  &__logo {
+    width: 40px;
+  }
+}
 
 .main-block {
   padding: 25px 20px;
-}
-
-.header-info-wrapper,
-.main-block {
   max-width: $max-content-width;
   margin-right: auto;
   margin-left: auto;
 }
 
-
-
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: $mediaTablets) {
   .header-info-wrapper {
     flex-direction: column;
     padding-bottom: 20px;

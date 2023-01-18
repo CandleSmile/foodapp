@@ -10,13 +10,13 @@
     </div>
     <div class="food__info">
       <h1 class="food__info-name">{{ foodData.strMeal }}</h1>
-      <div class="food__info-cat">
+      <div class="food__info-category">
         <span>Category: </span>
         <RouterLink
-          class="food__info-cat-link"
+          class="food__info-category-link"
           :to="{
             name: 'meal',
-            query: { [catFilter]: foodData.strCategory },
+            query: { [categoryFilter]: foodData.strCategory },
           }"
           >{{ foodData.strCategory }}</RouterLink
         >
@@ -25,9 +25,9 @@
       <div class="food__info-ingredients">
         <p class="food__info-ingredients-title">Ingredients:</p>
         <ul class="food__info-ingredients-list">
-          <li v-for="(item, index) in getIngredients" :key="index">
+          <li v-for="item in ingredientsList" :key="item">
             <RouterLink
-              class="food__info-ingredient-link"
+              class="food__info-ingredients-list-link"
               :to="{
                 name: 'meal',
                 query: { [ingredientFilter]: item },
@@ -38,25 +38,61 @@
           </li>
         </ul>
       </div>
+      <div class="food__info-item-to-cart">
+        <quantity-choose
+          class="food__info-item-to-cart-quantity"
+          :modelValue="foodData.quantity"
+          @update:modelValue="(newValue) => updateQuantity(newValue)"
+        />
+        <add-to-cart-button
+          class="food__info-item-to-cart-button"
+          @add-to-cart="addToCart(foodData)"
+        ></add-to-cart-button>
+      </div>
     </div>
   </article>
 </template>
 <script>
-import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted, computed } from "vue";
-import { foodApi } from "../api/index";
+import { useRoute } from "vue-router";
+import { onMounted, computed } from "vue";
 import { FilterType } from "../const/filterType";
+import {
+  GET_FOOD_ACTION,
+  FOOD,
+  LOADING,
+  ADD_TO_CART_ACTION,
+  UPDATE_QUANTITY_OF_FOOD_ACTION,
+} from "@/store/storeConstants";
 import LoadingContent from "@/components/general/LoadingContent.vue";
+import AddToCartButton from "@/components/AddToCartButton.vue";
+import QuantityChoose from "@/components/general/QuantityChoose";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useGetters, useActions } = createNamespacedHelpers("meals");
+
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "FoodPage",
-  components: { LoadingContent },
+  components: { LoadingContent, AddToCartButton, QuantityChoose },
   setup() {
     const route = useRoute();
-    const router = useRouter();
-    const foodData = ref("");
-    const catFilter = FilterType.CATEGORY;
+
+    const { [FOOD]: foodData, [LOADING]: loading } = useGetters([
+      FOOD,
+      LOADING,
+    ]);
+
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
+    ]);
+    const {
+      [GET_FOOD_ACTION]: getFood,
+      [UPDATE_QUANTITY_OF_FOOD_ACTION]: updateQuantity,
+    } = useActions([GET_FOOD_ACTION, UPDATE_QUANTITY_OF_FOOD_ACTION]);
+    const categoryFilter = FilterType.CATEGORY;
+
     const ingredientFilter = FilterType.INGREDIENTS;
-    const getIngredients = computed(() => {
+
+    const ingredientsList = computed(() => {
       if (!foodData.value) return [];
       const infoMeal = foodData.value;
       let ingredients = [];
@@ -72,31 +108,18 @@ export default {
       return ingredients;
     });
 
-    const loading = ref(false);
-    const fetchDataFood = async (id) => {
-      try {
-        loading.value = true;
-        let info = await foodApi.food.get.foodById(id);
-        loading.value = false;
-        if (info.ok) {
-          foodData.value = info.data.meals[0];
-        } else {
-          router.push({ name: "404", replace: true });
-        }
-      } catch (err) {
-        router.push({ name: "404", replace: true });
-      }
-    };
     onMounted(() => {
-      fetchDataFood(route.params.id);
+      getFood(route.params.id);
     });
 
     return {
       foodData,
-      getIngredients,
-      catFilter,
+      ingredientsList,
+      categoryFilter,
       ingredientFilter,
       loading,
+      addToCart,
+      updateQuantity,
     };
   },
 };
@@ -125,17 +148,17 @@ export default {
       padding-bottom: 20px;
       margin: 0;
     }
-    &-cat {
+    &-category {
       padding-bottom: 20px;
       & span {
         font-weight: 600;
       }
     }
-    &-cat-link {
+    &-category-link {
       color: $link-color;
       text-decoration: none;
     }
-    &-insrtuctions {
+    &-instructions {
       font-size: 0.9 rem;
     }
     &-ingredients {
@@ -149,14 +172,21 @@ export default {
       list-style: none;
       padding: 0;
     }
-    &-ingredient-link {
+    &-ingredients-list-link {
       color: $link-color;
       text-decoration: none;
+    }
+    &-item-to-cart {
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      justify-content: flex-start;
+      align-items: center;
     }
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $mediaMobile) {
   .food {
     flex-direction: column;
     &__picture {
@@ -166,6 +196,9 @@ export default {
     &__info {
       padding-top: 20px;
       text-align: center;
+      &-item-to-cart {
+        justify-content: center;
+      }
     }
   }
 }

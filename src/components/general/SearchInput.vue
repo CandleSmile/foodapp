@@ -4,42 +4,24 @@
       type="text"
       :placeholder="placeholder"
       class="search-form__input"
-      :id="id"
-      v-model="query"
-      @keyup.enter="onSearch"
+      :value="query"
+      @input="$emit('updateQuery', $event.target.value)"
+      @keyup.enter="$emit('search', $event.target.value)"
     />
-    <span class="search-form__icon" @click="onSearch"></span>
+    <span class="search-form__icon" @click="$emit('search', query)"></span>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from "vue";
-const emit = defineEmits(["onSearch", "update:modelValue"]);
-const props = defineProps({
-  id: String,
+import { defineProps, defineEmits } from "vue";
+defineEmits(["search", "updateQuery"]);
+defineProps({
   placeholder: String,
-  modelValue: String,
+  query: String,
 });
-
-const query = computed({
-  get() {
-    return props.modelValue;
-  },
-  set(value) {
-    emit("update:modelValue", value);
-  },
-});
-
-const onSearch = () => {
-  console.log(query);
-  emit("onSearch", query.value);
-};
 </script>
 
 <style scoped lang="scss">
-.header__search-form {
-  align-self: center;
-}
 .search-form {
   position: relative;
 

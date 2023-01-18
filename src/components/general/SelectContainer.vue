@@ -1,6 +1,6 @@
 <template>
   <div class="select-container">
-    <span class="select-container__title">{{ title }}</span>
+    <label class="select-container__title">{{ title }}</label>
     <v-select
       :options="options"
       v-model="vModel"
@@ -10,21 +10,24 @@
       :multiple="multiple"
       :close-on-select="true"
       class="select-container__custom-select"
+      :id="id"
     ></v-select>
   </div>
 </template>
 <script setup>
 import vSelect from "vue-select";
+
 import { defineEmits, defineProps, computed } from "vue";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   title: String,
   options: Array,
-  modelValue: Object,
+  modelValue: [String, Object],
   filterable: Boolean,
   placeholder: String,
   multiple: Boolean,
+  id: String,
 });
 
 const vModel = computed({

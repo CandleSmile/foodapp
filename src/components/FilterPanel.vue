@@ -1,41 +1,45 @@
 <template>
   <section class="filter-panel">
     <div class="filter-panel__toggle-button-wrapper">
-      <ActionButton
-        class="action-button action-button--theme-light action-button--theme-width150 action-button--theme-filter-icon"
-        @on-click="onToggleFilterPanelClass"
+      <action-button
+        class="action-button--theme-light action-button--filter-icon filter-panel__action-button"
+        @click="onToggleFilterPanelClass"
       >
         {{ showFilterPanel ? "Hide filters" : "Open filters" }}
-      </ActionButton>
+      </action-button>
     </div>
 
     <Transition name="fade">
       <div v-if="showFilterPanel" class="filter-panel__box">
-        <CustomSelect
+        <SelectContainer
           :options="catOptions"
-          v-model="category"
+          :modelValue="category"
           :filterable="true"
           placeholder="Select category"
           :multiple="false"
+          @update:modelValue="(newValue) => $emit('updateCategory', newValue)"
           title="Category"
-        ></CustomSelect>
+          id="catFilter"
+        ></SelectContainer>
 
-        <CustomSelect
+        <SelectContainer
           :options="ingredientsOptions"
-          v-model="checkedIngredients"
+          :modelValue="checkedIngredients"
           :filterable="true"
           placeholder="Select ingredients"
           :multiple="true"
           title="Ingredients"
-        ></CustomSelect>
+          @update:modelValue="
+            (newValue) => $emit('updateIngredients', newValue)
+          "
+          id="ingFilter"
+        ></SelectContainer>
 
         <div class="filter-panel__button-wrapper">
           <span class="filter-panel__fix-span">&nbsp;</span>
-          <ActionButton
-            class="action-button action-button--theme-dark"
-            @on-click="onFilter"
+          <action-button class="action-button--theme-dark" @click="onFilter"
             >Filter
-          </ActionButton>
+          </action-button>
         </div>
       </div>
     </Transition>
@@ -43,76 +47,35 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { ref } from "vue";
 import ActionButton from "@/components/general/ActionButton.vue";
-import CustomSelect from "@/components/general/CustomSelect.vue";
-
-import "vue-select/dist/vue-select.css";
-import { FilterType } from "@/const/filterType";
+import SelectContainer from "@/components/general/SelectContainer.vue";
 
 export default {
   name: "FilterPanel",
   components: {
     ActionButton,
-    CustomSelect,
+    SelectContainer,
   },
   props: {
     ingredientsOptions: Array,
     catOptions: Array,
-    initialCategory: String,
-    initialIngredientsOptions: Array,
+    checkedIngredients: Array,
+    category: String,
   },
-  emits: ["update:initialIngredientsOptions", "update:initialCategory"],
+  emits: ["filter", "updateCategory", "updateIngredients"],
   setup(props, { emit }) {
-    const router = useRouter();
-    const route = useRoute();
-
     let showFilterPanel = ref(false);
     let activeClass = "filter-panel-box--active";
-    const checkedIngredients = computed({
-      get() {
-        return props.initialIngredientsOptions;
-      },
-      set(value) {
-        emit("update:initialIngredientsOptions", value);
-      },
-    });
-
-    const category = computed({
-      get() {
-        return props.initialCategory;
-      },
-      set(value) {
-        emit("update:initialCategory", value);
-      },
-    });
 
     const onToggleFilterPanelClass = () => {
       showFilterPanel.value = !showFilterPanel.value;
     };
-
-    // press on filter button
     const onFilter = () => {
-      let routeQuery = Object.assign({}, route.query);
-      console.log(category.value);
-      if (category.value && category.value != "") {
-        routeQuery[[FilterType.CATEGORY]] = category.value;
-      } else {
-        delete routeQuery[[FilterType.CATEGORY]];
-      }
-
-      if (checkedIngredients.value != "")
-        routeQuery[[FilterType.INGREDIENTS]] =
-          checkedIngredients.value.join(",");
-      else delete routeQuery[[FilterType.INGREDIENTS]];
-
-      router.push({ name: "meal", query: routeQuery });
+      emit("filter", props.category, props.checkedIngredients);
     };
 
     return {
-      category,
-      checkedIngredients,
       showFilterPanel,
       activeClass,
       onToggleFilterPanelClass,
@@ -126,6 +89,9 @@ export default {
 .filter-panel {
   display: flex;
   flex-direction: column;
+  &__action-button {
+    width: 150px;
+  }
   &__toggle-button-wrapper {
     display: flex;
     justify-content: flex-start;
@@ -165,7 +131,8 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-@media only screen and (max-width: 480px) {
+
+@media only screen and (max-width: $mediaMobile) {
   .filter-panel-box {
     flex-direction: column;
   }

@@ -1,15 +1,13 @@
-import axios from "axios";
-import conf from "./configapi";
-axios.defaults.baseURL = `${conf.mainUrl}${conf.apiKey}`;
+import { axios } from "./configapi";
 
-const getAxiosReq = async (url, parameters) => {
+const getAxiosReq = async (url, params) => {
   let result = {
     ok: false,
     data: null,
     error: null,
   };
   try {
-    const response = await axios.get(url, { params: parameters });
+    const response = await axios.get(url, { params });
     result.ok = true;
     result.data = response.data;
   } catch (error) {

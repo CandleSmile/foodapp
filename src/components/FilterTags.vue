@@ -3,65 +3,26 @@
     <ul class="filter-tags-panel__list">
       <li
         :class="[tag.className, 'filter-tags-panel__list-item']"
-        v-for="(tag, index) in filterTags"
-        :key="index"
+        v-for="tag in filterTags"
+        :key="tag.val"
       >
         {{ tag.val }}
         <span
           class="filter-tags-panel__list-item-remove-filter"
-          @click="deleteFromFilters(tag)"
+          @click="$emit('deleteTag', tag)"
         ></span>
       </li>
     </ul>
   </section>
 </template>
+
 <script setup>
-import { FilterType } from "@/const/filterType";
-import { useRouter, useRoute } from "vue-router";
-import { defineProps, computed } from "vue";
-const props = defineProps({
-  initialFilterTags: Array,
-});
+import { defineEmits, defineProps } from "vue";
 
-const router = useRouter();
-const route = useRoute();
-
-const classByTagType = (tagType) => {
-  let className = "";
-  switch (tagType) {
-    case FilterType.CATEGORY:
-      className = "filter-tags-panel__list-item--category-theme";
-      break;
-    case FilterType.SEARCH:
-      className = "filter-tags-panel__list-item--search-theme";
-      break;
-    default:
-      className = "filter-tags-panel__list-item--ingredients-theme";
-  }
-  return className;
-};
-
-const filterTags = computed(() =>
-  props.initialFilterTags.map((f) => {
-    return { ...f, className: classByTagType(f.type) };
-  })
-);
-
-const deleteFromFilters = (tag) => {
-  let routeQuery = Object.assign({}, route.query);
-  if (tag.type === FilterType.INGREDIENTS) {
-    let ingredientsArr = routeQuery[[tag.type]]
-      ? routeQuery[[tag.type]].split(",")
-      : [];
-    ingredientsArr = ingredientsArr.filter((ing) => ing != tag.val);
-    ingredientsArr.length > 0
-      ? (routeQuery[[tag.type]] = ingredientsArr.join(","))
-      : delete routeQuery[[tag.type]];
-  } else delete routeQuery[[tag.type]];
-
-  router.push({ name: "meal", query: routeQuery });
-};
+defineEmits(["deleteTag"]);
+defineProps(["filterTags"]);
 </script>
+
 <style lang="scss">
 .filter-tags-panel__list {
   display: flex;

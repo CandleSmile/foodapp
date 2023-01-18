@@ -1,12 +1,15 @@
 <template>
-  <button @click="$emit('onClick')" class="action-button"><slot></slot></button>
+  <button :disabled="disabled" class="action-button" @click="$emit('click')">
+    <slot></slot>
+  </button>
 </template>
 
 <script>
 export default {
-  emits: ["onClick"],
+  emits: ["click"],
   props: {
     title: String,
+    disabled: Boolean,
   },
   setup() {},
 };
@@ -19,6 +22,7 @@ export default {
   width: 100px;
   &:hover {
     border: 1px solid $filter-button-border;
+    cursor: pointer;
   }
   &--theme-light {
     border: 1px solid $filter-button-background;
@@ -34,10 +38,8 @@ export default {
     box-shadow: 0px 2px 8px 0px rgba(153, 153, 153, 0.2);
     color: $filter-button-text;
   }
-  &--theme-width150 {
-    width: 150px;
-  }
-  &--theme-filter-icon {
+
+  &--filter-icon {
     position: relative;
     &::after {
       content: "\21C5";

@@ -12,6 +12,6 @@
     </div>
   </header>
   <main class="main-block">
-    <slot />
+    <RouterView></RouterView>
   </main>
 </template>

@@ -9,42 +9,48 @@
         />
         <h1 class="logo-title-block__site-title">THE <span>BEST </span>FOOD</h1>
       </router-link>
-      <SearchInput
-        id="searchQuery"
-        @on-search="onSearch"
-        placeholder="Search products"
-        class="header__search-form"
-        v-model="searchQuery"
-      ></SearchInput>
+      <div class="header__search-log-wrapper">
+        <SearchInput
+          id="searchQuery"
+          @search="onSearch"
+          placeholder="Search products"
+          :query="searchString"
+          @update-query="updateQuery"
+          class="header__search-form"
+        ></SearchInput>
+
+        <LogPanel v-if="isLogPanelShown" @logout="logOut"></LogPanel>
+        <CartButton>Cart</CartButton>
+      </div>
     </div>
   </header>
-  <main class="main-block"><slot /></main>
+  <main class="main-block"><RouterView></RouterView></main>
 </template>
 <script setup>
 import SearchInput from "@/components/general/SearchInput.vue";
-import { ref, watch } from "vue";
+import LogPanel from "@/components/LogPanel.vue";
+import {
+  LOGOUT_ACTION,
+  SEARCH_STRING,
+  UPDATE_SEARCH_ACTION,
+} from "@/store/storeConstants";
 import { useRouter, useRoute } from "vue-router";
 import { FilterType } from "@/const/filterType";
-
+import { computed } from "@vue/runtime-core";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+import CartButton from "@/components/CartButton.vue";
 const router = useRouter();
 const route = useRoute();
+const { useActions: useAuthActions } = createNamespacedHelpers("auth");
+const { useGetters: useFilterGetters, useActions: useFilterActions } =
+  createNamespacedHelpers("filters");
+const { [LOGOUT_ACTION]: logOutAction } = useAuthActions([LOGOUT_ACTION]);
 
-const searchQuery = ref(
-  route.query && route.name == "meal"
-    ? route.query[[FilterType.SEARCH]] || ""
-    : ""
-);
+const { [SEARCH_STRING]: searchString } = useFilterGetters([SEARCH_STRING]);
+const { [UPDATE_SEARCH_ACTION]: updateQuery } = useFilterActions([
+  UPDATE_SEARCH_ACTION,
+]);
 
-//clear search
-watch(
-  () => route.query,
-  () => {
-    searchQuery.value =
-      route.query && route.name == "meal"
-        ? route.query[[FilterType.SEARCH]] || ""
-        : "";
-  }
-);
 const onSearch = (searchString) => {
   if (route.name != "meal") {
     router.push({ name: "meal", query: { [FilterType.SEARCH]: searchString } });
@@ -54,5 +60,26 @@ const onSearch = (searchString) => {
     router.push({ name: "meal", query: routeQuery });
   }
 };
+const isLogPanelShown = computed(() => route.name != "login");
+
+const logOut = () => {
+  logOutAction();
+  router.push({ name: "home" });
+};
 </script>
-<style></style>
+<style lang="scss">
+.header__search-form {
+  align-self: center;
+}
+.header__search-log-wrapper {
+  display: flex;
+  gap: 10px 20px;
+  font-size: 12px;
+  align-items: center;
+}
+@media only screen and (max-width: $mediaTablets) {
+  .header__search-log-wrapper {
+    justify-content: center;
+  }
+}
+</style>
