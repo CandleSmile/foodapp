@@ -12,23 +12,25 @@
     @update-category="updateSelectedCat"
     @update-ingredients="updateSelectedIngredients"
   ></FilterPanel>
-  <LoadingContent :is-visible="loading" />
-  <ListFood
-    v-if="mealsList && mealsList.length > 0"
-    :meals-list="mealsList"
-    title-list="Meals"
-    @change-quantity="updateQuantity"
-    @add-to-cart="addToCart"
-  ></ListFood>
-  <div
-    class="list-food__no-meals-data"
-    v-else-if="mealsList && mealsList.length == 0"
-  >
-    <p>Meals were not found</p>
-  </div>
-  <div class="list-food__error" v-else>
-    <p>There war an error {{ error }}</p>
-  </div>
+  <LoadingContent :is-visible="loading" :is-dark="false" />
+  <template v-if="!loading">
+    <ListFood
+      v-if="mealsList && mealsList.length > 0"
+      :meals-list="mealsList"
+      title-list="Meals"
+      @change-quantity="updateQuantity"
+      @add-to-cart="addToCart"
+    ></ListFood>
+    <div
+      class="list-food__no-meals-data"
+      v-else-if="mealsList && mealsList.length == 0"
+    >
+      <p>Meals were not found</p>
+    </div>
+    <div class="list-food__error" v-else>
+      <p>There war an error {{ error }}</p>
+    </div>
+  </template>
 </template>
 <script>
 import ListFood from "../components/ListFood.vue";

@@ -25,10 +25,8 @@
               :alt="category.strCategory"
             />
           </div>
-          <div class="list-categories__categories-item-info-wrapper">
-            <div class="list-categories__categories-item-name">
-              {{ category.strCategory }}
-            </div>
+          <div class="list-categories__categories-item-name">
+            {{ category.strCategory }}
           </div>
         </router-link>
       </li>
@@ -58,52 +56,41 @@ export default {
   }
 
   &__categories {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat($cat-count-supersize, 1fr);
     gap: $cat-items-gap-large;
     padding: 20px 0;
+    gap: $cat-items-gap-large;
+
     &-item {
-      display: flex;
-      width: itemWidth($cat-count-supersize, $cat-items-gap-large);
       box-shadow: 0px 3px 3px 0px $food-item-border-color;
       border: 1px solid $food-item-border-color;
       border-radius: 5px;
       overflow: hidden;
       background-color: $cat-item-background;
-      flex-direction: row;
-      align-content: flex-start;
-      flex-wrap: wrap;
+
       &-link {
         text-decoration: none;
-      }
-      &-img-wrapper {
-        overflow: hidden;
-        width: 100%;
-        max-height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 1px solid $food-item-border-color;
+        display: grid;
+        grid-template-columns: 1fr;
       }
       &-img {
         width: 100%;
-      }
-      &-info-wrapper {
-        display: flex;
-        flex-direction: column;
-        flex-basis: 100%;
-        padding: 10px;
+        &-wrapper {
+          overflow: hidden;
+          width: 100%;
+          max-height: 150px;
+          border-bottom: 1px solid $food-item-border-color;
+        }
       }
 
       &-name {
-        flex-basis: 100%;
         color: $text-dark-color;
         text-align: left;
         font-size: 0.8em;
         font-weight: 600;
         line-height: 1.3em;
+        padding: 10px;
       }
     }
   }
@@ -111,35 +98,27 @@ export default {
 
 @media only screen and (max-width: $mediaExtraLarge) {
   .list-categories__categories {
+    grid-template-columns: repeat($cat-count-large, 1fr);
     gap: $cat-items-gap-large;
-    &-item {
-      width: itemWidth($cat-count-large, $cat-items-gap-large);
-    }
   }
 }
 
 @media only screen and (max-width: $mediaSmallScreen) {
   .list-categories__categories {
+    grid-template-columns: repeat($cat-count-middle1, 1fr);
     gap: $cat-items-gap-large;
-    &-item {
-      width: itemWidth($cat-count-middle1, $cat-items-gap-large);
-    }
   }
 }
 @media only screen and (max-width: $mediaTablets) {
   .list-categories__categories {
+    grid-template-columns: repeat($cat-count-middle2, 1fr);
     gap: $cat-items-gap-small;
-    &-item {
-      width: itemWidth($cat-count-middle2, $cat-items-gap-small);
-    }
   }
 }
 @media only screen and (max-width: $mediaMobile) {
   .list-categories__categories {
+    grid-template-columns: repeat($cat-count-small, 1fr);
     gap: $cat-items-gap-small;
-    &-item {
-      width: itemWidth($cat-count-small, $cat-items-gap-small);
-    }
   }
 }
 </style>

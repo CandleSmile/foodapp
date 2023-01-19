@@ -1,6 +1,10 @@
 <template>
   <Teleport to="body">
-    <div class="loading-content" v-show="isVisible">
+    <div
+      class="loading-content"
+      v-show="isVisible"
+      :class="{ 'loading-content--dark': isDark }"
+    >
       <div class="loading-content__lds-roller">
         <div class="loading-content__lds-roller-item"></div>
         <div class="loading-content__lds-roller-item"></div>
@@ -19,11 +23,12 @@
 import { defineProps } from "vue";
 defineProps({
   isVisible: Boolean,
+  isDark: Boolean,
 });
 </script>
 <style lang="scss">
 .loading-content {
-  background: none repeat scroll 0 0 rgba(#000, 0.6);
+  background-color: rgba(#fff, 0.6);
   position: absolute;
   bottom: 0;
   left: 0;
@@ -35,6 +40,7 @@ defineProps({
   display: flex;
   justify-content: center;
   align-items: center;
+
   &__lds-roller {
     display: inline-block;
     position: relative;
@@ -120,6 +126,12 @@ defineProps({
       100% {
         transform: rotate(360deg);
       }
+    }
+  }
+  &--dark {
+    background-color: rgba(#000, 0.6);
+    & .loading-content__lds-roller-item::after {
+      background: $loading-color-dark-theme;
     }
   }
 }

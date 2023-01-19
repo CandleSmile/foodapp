@@ -62,7 +62,7 @@
         >Buy</action-button
       >
     </div>
-    <LoadingContent :is-visible="loading"> </LoadingContent>
+    <LoadingContent :is-visible="loading" :is-dark="true"> </LoadingContent>
   </article>
   <article v-else class="cart-empty">
     <h1 class="cart-empty-title">Your cart is empty now.</h1>

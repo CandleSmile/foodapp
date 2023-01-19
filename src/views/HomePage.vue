@@ -1,5 +1,5 @@
 <template>
-  <LoadingContent :is-visible="loadingCat || loading" />
+  <LoadingContent :is-visible="loadingCat || loading" :is-dark="false" />
 
   <template v-if="!loadingCat && !loading">
     <ListCategories
