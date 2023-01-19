@@ -12,7 +12,7 @@
     @update-category="updateSelectedCat"
     @update-ingredients="updateSelectedIngredients"
   ></FilterPanel>
-  <LoadingContent :is-visible="loading" :is-dark="false" />
+  <AppLoader :is-visible="loading" :is-dark="false" />
   <template v-if="!loading">
     <ListFood
       v-if="mealsList && mealsList.length > 0"
@@ -36,7 +36,7 @@
 import ListFood from "../components/ListFood.vue";
 import FilterTags from "../components/FilterTags.vue";
 import FilterPanel from "../components/FilterPanel.vue";
-import LoadingContent from "../components/general/LoadingContent.vue";
+import AppLoader from "../components/general/AppLoader.vue";
 import { FilterType } from "@/const/filterType";
 import { watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -74,7 +74,7 @@ export default {
     ListFood,
     FilterTags,
     FilterPanel,
-    LoadingContent,
+    AppLoader,
   },
 
   setup() {

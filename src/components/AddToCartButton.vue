@@ -1,12 +1,16 @@
 <template>
-  <action-button class="add-to-cart-btn" @click="$emit('addToCart')"
+  <AppButton
+    class="add-to-cart-btn"
+    :class="{ 'add-to-cart-btn--in-cart': existInCart }"
+    @click="$emit('addToCart')"
     ><i class="add-to-cart-btn__icon"></i>
-  </action-button>
+  </AppButton>
 </template>
 <script setup>
-import ActionButton from "@/components/general/ActionButton.vue";
-import { defineEmits } from "vue";
+import AppButton from "@/components/general/AppButton.vue";
+import { defineEmits, defineProps } from "vue";
 defineEmits(["addToCart"]);
+defineProps(["existInCart"]);
 </script>
 <style lang="scss">
 .add-to-cart-btn {
@@ -18,6 +22,7 @@ defineEmits(["addToCart"]);
   justify-content: center;
   border-radius: 4px;
   border: none;
+
   &__icon {
     content: "";
     background: url("@/assets/images/addToCartWhite.png");
@@ -25,10 +30,12 @@ defineEmits(["addToCart"]);
     width: 20px;
     height: 20px;
   }
+
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
   }
+
   &--in-cart {
     background-color: $in-cart-background-color;
   }

@@ -49,27 +49,27 @@
       </li>
     </ul>
     <div class="cart-buttons">
-      <action-button
-        class="cart-buttons-purchase action-button--theme-light"
+      <AppButton
+        class="cart-buttons-purchase app-button--theme-light"
         @click="goToPurchase"
         :disabled="loading"
-        >Continue purchase</action-button
+        >Continue purchase</AppButton
       >
-      <action-button
-        class="cart-buttons-buy action-button--theme-dark"
+      <AppButton
+        class="cart-buttons-buy app-button--theme-dark"
         @click="buy"
         :disabled="loading"
-        >Buy</action-button
+        >Buy</AppButton
       >
     </div>
-    <LoadingContent :is-visible="loading" :is-dark="true"> </LoadingContent>
+    <AppLoader :is-visible="loading" :is-dark="true"> </AppLoader>
   </article>
   <article v-else class="cart-empty">
     <h1 class="cart-empty-title">Your cart is empty now.</h1>
-    <action-button
+    <AppButton
       @click="goToPurchase"
-      class="cart-empty-start-button action-button--theme-dark"
-      >Start purchase</action-button
+      class="cart-empty-start-button app-button--theme-dark"
+      >Start purchase</AppButton
     >
   </article>
   <article v-if="checkOutStatus != null" class="">
@@ -77,8 +77,8 @@
   </article>
 </template>
 <script setup>
-import ActionButton from "@/components/general/ActionButton.vue";
-import LoadingContent from "@/components/general/LoadingContent.vue";
+import AppButton from "@/components/general/AppButton.vue";
+import AppLoader from "@/components/general/AppLoader.vue";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -127,9 +127,11 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+
   &-title {
     font-size: 1.2em;
   }
+
   &-list {
     display: flex;
     flex-direction: column;
@@ -137,11 +139,13 @@ onMounted(() => {
     width: 400px;
     font-size: 12px;
     padding: 0;
+
     &__item {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       gap: 10px 10px;
+
       &-col {
         justify-content: flex-end;
         display: flex;
@@ -151,21 +155,26 @@ onMounted(() => {
           justify-content: flex-start;
           text-align: left;
         }
+
         &--25 {
           flex-basis: 25%;
         }
+
         &--45 {
           flex-basis: 45%;
         }
+
         &--5 {
           flex-basis: 5%;
         }
+
         &-remove-from-cart {
           display: inline-flex;
           width: 1rem;
           height: 1rem;
           position: relative;
           cursor: pointer;
+
           &::before,
           &::after {
             content: "";
@@ -178,6 +187,7 @@ onMounted(() => {
             margin: -0.05rem 0 0 -0.2rem;
             transform: rotate(-45deg);
           }
+
           &::after {
             transform: rotate(45deg);
           }
@@ -189,6 +199,7 @@ onMounted(() => {
         border-bottom: 1px dashed $secondary-dark-color;
         padding-bottom: 5px;
       }
+
       &--total {
         font-weight: 700;
         border-top: 1px dashed $secondary-dark-color;
@@ -196,31 +207,38 @@ onMounted(() => {
       }
     }
   }
+
   &-buttons {
     display: flex;
     gap: 10px;
+
     &-purchase {
       width: 150px;
     }
   }
+
   &-empty {
     display: flex;
     flex-direction: column;
     gap: 20px;
     align-items: center;
+
     &-title {
       font-size: 1.2em;
     }
+
     &-start-button {
       width: 150px;
     }
   }
 }
+
 @media only screen and (max-width: $mediaTablets) {
   .cart-list {
     width: 80%;
   }
 }
+
 @media only screen and (max-width: $mediaMobile) {
   .cart-list {
     width: 100%;

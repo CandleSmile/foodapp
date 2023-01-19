@@ -1,15 +1,22 @@
 <template>
-  <div class="input-field" :class="{ 'input-field--error': errors.length }">
+  <div
+    class="app-text-field"
+    :class="{ 'app-text-field--error': errors.length }"
+  >
     <input
-      class="input-field__input"
+      class="app-text-field__input"
       :placeholder="placeholder"
       type="text"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
     />
 
-    <div class="input-field__errors" v-for="error of errors" :key="error.$uid">
-      <div class="input-field__errors-error-msg">{{ error.$message }}</div>
+    <div
+      class="app-text-field__error"
+      v-for="error of errors"
+      :key="error.$uid"
+    >
+      {{ error.$message }}
     </div>
   </div>
 </template>
@@ -19,11 +26,12 @@ defineProps(["placeholder", "modelValue", "errors"]);
 defineEmits(["update:modelValue"]);
 </script>
 <style lang="scss">
-.input-field {
+.app-text-field {
   display: flex;
   flex-direction: column;
   gap: 5px;
   align-items: center;
+
   &__input {
     font-size: 0.8rem;
     padding: 6px;
@@ -33,14 +41,14 @@ defineEmits(["update:modelValue"]);
     outline: none;
     color: $input-field-color;
   }
-  &__errors {
-    &-error-msg {
-      color: $primary-dark-color;
-      font-size: 0.7rem;
-    }
+
+  &__error {
+    color: $primary-dark-color;
+    font-size: 0.7rem;
   }
+
   &--error {
-    .input-field {
+    .app-text-field {
       &__input {
         border-color: $input-field-border-error-color;
       }

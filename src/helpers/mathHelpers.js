@@ -1,5 +1,5 @@
 export const roundNumber = (number, digits) => {
-  var multiple = Math.pow(10, digits);
-  var roundedNumber = Math.round(number * multiple) / multiple;
+  const multiple = Math.pow(10, digits);
+  const roundedNumber = Math.round(number * multiple) / multiple;
   return roundedNumber;
 };

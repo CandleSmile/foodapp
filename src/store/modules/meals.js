@@ -13,6 +13,16 @@ import {
   LOADING,
 } from "@/store/storeConstants";
 
+const mapMeals = (meals) =>
+  meals?.map((meal) => ({
+    ...meal,
+    checkSpacesTags: checkSpaces(meal.strTags ?? ""),
+  }));
+const getMealsWithQuantityField = (meals, itemsInCart) =>
+  meals.map((meal) => {
+    const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
+    return { ...meal, quantity: foundItem ? foundItem.quantity : 0 };
+  });
 // initial state
 const state = {
   meals: [],
@@ -23,20 +33,10 @@ const state = {
 
 // getters
 const getters = {
-  [MEALS]: (state) =>
-    state.meals?.map((meal) => {
-      return {
-        ...meal,
-        checkSpacesTags: checkSpaces(meal.strTags ?? ""),
-      };
-    }),
-  [FOOD]: (state) => state.foodData ?? [],
-  [ERROR]: (state) => {
-    return state.error;
-  },
-  [LOADING]: (state) => {
-    return state.loading;
-  },
+  [MEALS]: ({ meals }) => mapMeals(meals),
+  [FOOD]: ({ foodData }) => foodData ?? [],
+  [ERROR]: ({ error }) => error,
+  [LOADING]: ({ loading }) => loading,
 };
 
 // actions
@@ -46,11 +46,7 @@ const actions = {
     try {
       const itemsInCart = rootGetters[`cart/${MEALS_IN_CART}`];
       const res = await foodApi.food.get.latestMeals();
-      res.meals = res.meals.map((meal) => {
-        const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
-
-        return { ...meal, quantity: foundItem ? foundItem.quantity : 0 };
-      });
+      res.meals = getMealsWithQuantityField(res.meals, itemsInCart);
       commit("setMeals", res.meals);
       commit("setError", res.error);
     } catch (err) {
@@ -66,10 +62,7 @@ const actions = {
     try {
       const itemsInCart = rootGetters[`cart/${MEALS_IN_CART}`];
       const res = await foodApi.food.get.foodByFilters(filters);
-      res.meals = res.meals.map((meal) => {
-        const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
-        return { ...meal, quantity: foundItem ? foundItem.quantity : 0 };
-      });
+      res.meals = getMealsWithQuantityField(res.meals, itemsInCart);
       commit("setMeals", res.meals);
       commit("setError", res.error);
     } catch (err) {

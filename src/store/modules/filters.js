@@ -1,6 +1,6 @@
 import { foodApi } from "@/api/index";
 import { FilterType } from "@/const/filterType";
-import { toRaw } from "vue";
+
 import {
   UPDATE_SELECTED_FILTERS_ACTION,
   UPDATE_FILTER_TAGS_ACTION,
@@ -32,6 +32,12 @@ const classByTagType = (tagType) => {
   return className;
 };
 
+const mapFilters = (filters) =>
+  filters?.map((tag) => ({
+    ...tag,
+    className: classByTagType(tag.type),
+  }));
+
 // initial state
 const state = {
   selectedFilters: {
@@ -47,15 +53,12 @@ const state = {
 
 // getters
 const getters = {
-  [INGREDIENT_OPTIONS]: (state) => state.ingredientsOptions,
-  [CATEGORY_OPTIONS]: (state) => state.categoryOptions,
-  [FILTER_TAGS]: (state) =>
-    state.existingFiltersTags?.map((tag) => {
-      return { ...tag, className: classByTagType(tag.type) };
-    }),
-  [SELECTED_CATEGORY]: (state) => state.selectedFilters.category,
-  [SELECTED_INGREDIENTS]: (state) => state.selectedFilters.ingredients,
-  [SEARCH_STRING]: (state) => state.selectedFilters.searchString,
+  [INGREDIENT_OPTIONS]: ({ ingredientsOptions }) => ingredientsOptions,
+  [CATEGORY_OPTIONS]: ({ categoryOptions }) => categoryOptions,
+  [FILTER_TAGS]: ({ existingFiltersTags }) => mapFilters(existingFiltersTags),
+  [SELECTED_CATEGORY]: ({ selectedFilters: { category } }) => category,
+  [SELECTED_INGREDIENTS]: ({ selectedFilters: { ingredients } }) => ingredients,
+  [SEARCH_STRING]: ({ selectedFilters: { searchString } }) => searchString,
 };
 
 // actions
@@ -63,17 +66,20 @@ const actions = {
   [UPDATE_SELECTED_CATEGORY_ACTION]({ commit }, categoryValue) {
     commit("setSelectedCategory", categoryValue);
   },
+
   [UPDATE_SELECTED_INGREDIENTS_ACTION]({ commit }, ingredientsValue) {
     commit("setSelectedIngredients", ingredientsValue);
   },
+
   [UPDATE_SEARCH_ACTION]({ commit }, searchString) {
     commit("setSearchString", searchString);
   },
+
   [UPDATE_SELECTED_FILTERS_ACTION]({ commit }, filters) {
     commit(
       "setSelectedIngredients",
       filters[[FilterType.INGREDIENTS]] != ""
-        ? toRaw(filters[[FilterType.INGREDIENTS]]).split(",")
+        ? filters[[FilterType.INGREDIENTS]].split(",")
         : []
     );
     commit("setSelectedCategory", filters[[FilterType.CATEGORY]]);

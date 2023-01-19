@@ -1,17 +1,17 @@
 <template>
   <section class="filter-panel">
     <div class="filter-panel__toggle-button-wrapper">
-      <action-button
-        class="action-button--theme-light action-button--filter-icon filter-panel__action-button"
+      <AppButton
+        class="app-button--theme-light app-button--filter-icon filter-panel__app-button"
         @click="onToggleFilterPanelClass"
       >
         {{ showFilterPanel ? "Hide filters" : "Open filters" }}
-      </action-button>
+      </AppButton>
     </div>
 
     <Transition name="fade">
       <div v-if="showFilterPanel" class="filter-panel__box">
-        <SelectContainer
+        <AppSelect
           :options="catOptions"
           :modelValue="category"
           :filterable="true"
@@ -20,9 +20,9 @@
           @update:modelValue="(newValue) => $emit('updateCategory', newValue)"
           title="Category"
           id="catFilter"
-        ></SelectContainer>
+        ></AppSelect>
 
-        <SelectContainer
+        <AppSelect
           :options="ingredientsOptions"
           :modelValue="checkedIngredients"
           :filterable="true"
@@ -33,13 +33,13 @@
             (newValue) => $emit('updateIngredients', newValue)
           "
           id="ingFilter"
-        ></SelectContainer>
+        ></AppSelect>
 
         <div class="filter-panel__button-wrapper">
           <span class="filter-panel__fix-span">&nbsp;</span>
-          <action-button class="action-button--theme-dark" @click="onFilter"
+          <AppButton class="app-button--theme-dark" @click="onFilter"
             >Filter
-          </action-button>
+          </AppButton>
         </div>
       </div>
     </Transition>
@@ -48,14 +48,14 @@
 
 <script>
 import { ref } from "vue";
-import ActionButton from "@/components/general/ActionButton.vue";
-import SelectContainer from "@/components/general/SelectContainer.vue";
+import AppButton from "@/components/general/AppButton.vue";
+import AppSelect from "@/components/general/AppSelect.vue";
 
 export default {
   name: "FilterPanel",
   components: {
-    ActionButton,
-    SelectContainer,
+    AppButton,
+    AppSelect,
   },
   props: {
     ingredientsOptions: Array,
@@ -89,9 +89,11 @@ export default {
 .filter-panel {
   display: flex;
   flex-direction: column;
-  &__action-button {
+
+  &__app-button {
     width: 150px;
   }
+
   &__toggle-button-wrapper {
     display: flex;
     justify-content: flex-start;
@@ -109,11 +111,13 @@ export default {
       display: flex;
     }
   }
+
   &__button-wrapper {
     display: flex;
     flex-direction: column;
     gap: 5px;
   }
+
   &__fix-span {
     font-size: 0.6em;
   }
@@ -123,6 +127,7 @@ export default {
 .fade-enter-active {
   transition: opacity 0.3s ease;
 }
+
 .fade-leave-active {
   transition: opacity 0.1s ease;
 }

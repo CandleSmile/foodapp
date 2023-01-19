@@ -74,8 +74,10 @@ export default {
         display: grid;
         grid-template-columns: 1fr;
       }
+
       &-img {
         width: 100%;
+
         &-wrapper {
           overflow: hidden;
           width: 100%;
@@ -109,12 +111,14 @@ export default {
     gap: $cat-items-gap-large;
   }
 }
+
 @media only screen and (max-width: $mediaTablets) {
   .list-categories__categories {
     grid-template-columns: repeat($cat-count-middle2, 1fr);
     gap: $cat-items-gap-small;
   }
 }
+
 @media only screen and (max-width: $mediaMobile) {
   .list-categories__categories {
     grid-template-columns: repeat($cat-count-small, 1fr);

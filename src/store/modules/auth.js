@@ -13,8 +13,8 @@ const state = user
 
 // getters
 const getters = {
-  [LOGGED_IN]: (state) => state.status.loggedIn,
-  [USER]: (state) => state.user,
+  [LOGGED_IN]: ({ status: { loggedIn } }) => loggedIn,
+  [USER]: ({ user }) => user,
 };
 
 // actions

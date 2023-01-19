@@ -48,16 +48,16 @@
           <div class="list-food__meals-item-link-price">${{ meal.price }}</div>
         </router-link>
         <div class="list-food__meals-item-to-cart">
-          <quantity-choose
+          <AppQuantityBox
             :modelValue="meal.quantity"
             @update:modelValue="
               (newValue) => updateQuant(meal.idMeal, newValue)
             "
           />
-          <add-to-cart-button
+          <AddToCartButton
             @add-to-cart="$emit('addToCart', meal)"
             class="list-food__meals-item-to-cart-button"
-          ></add-to-cart-button>
+          ></AddToCartButton>
         </div>
       </li>
     </ul>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import QuantityChoose from "@/components/general/QuantityChoose";
+import AppQuantityBox from "@/components/general/AppQuantityBox.vue";
 import AddToCartButton from "@/components/AddToCartButton.vue";
 export default {
   name: "ListFood",
@@ -75,7 +75,7 @@ export default {
   },
   emits: ["changeQuantity", "addToCart"],
   components: {
-    QuantityChoose: QuantityChoose,
+    AppQuantityBox: AppQuantityBox,
     AddToCartButton: AddToCartButton,
   },
   setup(props, ctx) {
@@ -103,6 +103,7 @@ export default {
     grid-template-columns: repeat($meal-count-supersize, 1fr);
     gap: $meal-items-gap-large;
     padding: 20px 0;
+
     &-item {
       display: grid;
       grid-template-columns: 1fr;
@@ -114,7 +115,6 @@ export default {
 
       &-link {
         display: grid;
-
         text-decoration-line: none;
         color: $text-dark-color;
         grid-template-columns: 1fr 80px;
@@ -124,13 +124,10 @@ export default {
           "name name"
           "category price"
           "area price";
-        &-img-wrapper {
-          overflow: hidden;
-          max-height: 150px;
-          position: relative;
-        }
+
         &-img {
           width: 100%;
+
           &-wrapper {
             overflow: hidden;
             max-height: 150px;
@@ -139,6 +136,7 @@ export default {
             align-items: center;
           }
         }
+
         &-name {
           color: $text-dark-color;
           text-align: left;
@@ -152,6 +150,7 @@ export default {
           grid-area: name;
           border-bottom: 1px dashed $secondary-dark-color;
         }
+
         &-category,
         &-area {
           color: $text-light-color;
@@ -168,14 +167,17 @@ export default {
             font-weight: 700;
           }
         }
+
         &-category {
           grid-area: category;
           padding: 5px 10px 0;
         }
+
         &-area {
           grid-area: area;
           padding: 0px 10px 5px;
         }
+
         &-tags {
           position: absolute;
           top: 0;
@@ -187,6 +189,7 @@ export default {
           font-size: 0.7em;
           grid-area: tags;
         }
+
         &-price {
           grid-area: price;
           text-align: right;
@@ -202,6 +205,7 @@ export default {
         grid-template-columns: 2fr 1fr;
         align-items: center;
         padding: 10px 10px;
+        justify-items: start;
         &-button {
           justify-self: end;
         }

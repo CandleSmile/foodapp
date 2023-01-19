@@ -34,6 +34,7 @@ h2 {
   background: $header-background-color;
   border-bottom: 0px solid $search-border-color;
   box-shadow: 0px -4px 1px -3px rgba($search-border-color, .2) inset;  
+
   &-info-wrapper {
       display: flex;
       flex-direction: row;
@@ -52,6 +53,7 @@ h2 {
   justify-content: center;
   text-decoration: none;
   padding: 5px 0;
+
   &__site-title {
     margin-left: 10px;
     color: $logo-color-main;
@@ -60,6 +62,7 @@ h2 {
       color: $logo-color-second;
     }
   }
+
   &__logo {
     width: 40px;
   }
@@ -70,6 +73,7 @@ h2 {
   max-width: $max-content-width;
   margin-right: auto;
   margin-left: auto;
+
   > .loading-content {
       margin-top: $header-height-small;
     }
@@ -87,6 +91,7 @@ h2 {
   }
   .main-block {
      padding: calc($header-height-large + 25px) 20px 25px;
+     
       > .loading-content {
           margin-top: $header-height-large;
         }

@@ -1,5 +1,5 @@
 <template>
-  <LoadingContent :is-visible="loadingCat || loading" :is-dark="false" />
+  <AppLoader :is-visible="loadingCat || loading" :is-dark="false" />
 
   <template v-if="!loadingCat && !loading">
     <ListCategories
@@ -39,7 +39,7 @@
 import { onMounted } from "vue";
 import ListFood from "../components/ListFood.vue";
 import ListCategories from "../components/ListCategories.vue";
-import LoadingContent from "../components/general/LoadingContent.vue";
+import AppLoader from "../components/general/AppLoader.vue";
 
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 import {
@@ -63,7 +63,7 @@ export default {
   components: {
     ListFood,
     ListCategories,
-    LoadingContent,
+    AppLoader,
   },
   setup() {
     const {

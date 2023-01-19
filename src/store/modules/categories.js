@@ -15,15 +15,9 @@ const state = {
 
 // getters
 const getters = {
-  [CATEGORIES]: (state) => {
-    return state.categories;
-  },
-  [ERROR]: (state) => {
-    return state.error;
-  },
-  [LOADING]: (state) => {
-    return state.loading;
-  },
+  [CATEGORIES]: ({ categories }) => categories,
+  [ERROR]: ({ error }) => error,
+  [LOADING]: ({ loading }) => loading,
 };
 
 // actions

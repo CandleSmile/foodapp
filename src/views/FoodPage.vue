@@ -1,6 +1,6 @@
 <template>
-  <LoadingContent v-if="loading" />
-  <article v-else class="food">
+  <AppLoader :is-visible="loading" />
+  <article v-if="!loading" class="food">
     <div class="food__picture">
       <img
         class="food__picture-image"
@@ -39,15 +39,15 @@
         </ul>
       </div>
       <div class="food__info-item-to-cart">
-        <quantity-choose
+        <AppQuantityBox
           class="food__info-item-to-cart-quantity"
           :modelValue="foodData.quantity"
           @update:modelValue="(newValue) => updateQuantity(newValue)"
         />
-        <add-to-cart-button
+        <AddToCartButton
           class="food__info-item-to-cart-button"
           @add-to-cart="addToCart(foodData)"
-        ></add-to-cart-button>
+        ></AddToCartButton>
       </div>
     </div>
   </article>
@@ -63,16 +63,16 @@ import {
   ADD_TO_CART_ACTION,
   UPDATE_QUANTITY_OF_FOOD_ACTION,
 } from "@/store/storeConstants";
-import LoadingContent from "@/components/general/LoadingContent.vue";
+import AppLoader from "@/components/general/AppLoader.vue";
 import AddToCartButton from "@/components/AddToCartButton.vue";
-import QuantityChoose from "@/components/general/QuantityChoose";
+import AppQuantityBox from "@/components/general/AppQuantityBox.vue";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useGetters, useActions } = createNamespacedHelpers("meals");
 
 const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "FoodPage",
-  components: { LoadingContent, AddToCartButton, QuantityChoose },
+  components: { AppLoader, AddToCartButton, AppQuantityBox },
   setup() {
     const route = useRoute();
 
@@ -132,50 +132,62 @@ export default {
 
   &__picture {
     flex-basis: 30%;
+
     &-image {
       width: 100%;
     }
   }
+
   &__info {
     flex-basis: 70%;
     display: flex;
     flex-direction: column;
     padding: 0 20px;
     text-align: left;
+
     &-name {
       font-weight: 600;
       font-size: 2rem;
       padding-bottom: 20px;
       margin: 0;
     }
+
     &-category {
       padding-bottom: 20px;
+
       & span {
         font-weight: 600;
       }
     }
+
     &-category-link {
       color: $link-color;
       text-decoration: none;
     }
+
     &-instructions {
       font-size: 0.9 rem;
     }
+
     &-ingredients {
       border: 1px #000;
       font-size: 0.9em;
     }
+
     &-ingredients-title {
       font-weight: 600;
     }
+
     &-ingredients-list {
       list-style: none;
       padding: 0;
     }
+
     &-ingredients-list-link {
       color: $link-color;
       text-decoration: none;
     }
+
     &-item-to-cart {
       display: flex;
       gap: 20px;
@@ -189,13 +201,16 @@ export default {
 @media only screen and (max-width: $mediaMobile) {
   .food {
     flex-direction: column;
+
     &__picture {
       width: 100%;
       margin: auto;
     }
+
     &__info {
       padding-top: 20px;
       text-align: center;
+
       &-item-to-cart {
         justify-content: center;
       }
