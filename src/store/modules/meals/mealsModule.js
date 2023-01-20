@@ -1,5 +1,4 @@
 import { foodApi } from "@/api/index";
-import { checkSpaces } from "@/helpers/stringHelper";
 import {
   GET_LATEST_MEAL_ACTION,
   GET_FILTERING_MEAL_ACTION,
@@ -13,16 +12,12 @@ import {
   LOADING,
 } from "@/store/storeConstants";
 
-const mapMeals = (meals) =>
-  meals?.map((meal) => ({
-    ...meal,
-    checkSpacesTags: checkSpaces(meal.strTags ?? ""),
-  }));
 const getMealsWithQuantityField = (meals, itemsInCart) =>
   meals.map((meal) => {
     const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
     return { ...meal, quantity: foundItem ? foundItem.quantity : 0 };
   });
+
 // initial state
 const state = {
   meals: [],
@@ -33,7 +28,7 @@ const state = {
 
 // getters
 const getters = {
-  [MEALS]: ({ meals }) => mapMeals(meals),
+  [MEALS]: ({ meals }) => meals,
   [FOOD]: ({ foodData }) => foodData ?? [],
   [ERROR]: ({ error }) => error,
   [LOADING]: ({ loading }) => loading,

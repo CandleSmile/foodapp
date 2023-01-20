@@ -1,10 +1,10 @@
 <template>
   <section class="list-food">
     <h2 class="list-food__title">{{ titleList }}</h2>
-    <ul class="list-food__meals" v-if="mealsList && mealsList.length > 0">
+    <ul class="list-food__meals" v-if="meals && meals.length > 0">
       <li
         class="list-food__meals-item"
-        v-for="meal in mealsList"
+        v-for="meal in meals"
         :key="meal.idMeal"
       >
         <router-link
@@ -67,6 +67,9 @@
 <script>
 import AppQuantityBox from "@/components/general/AppQuantityBox.vue";
 import AddToCartButton from "@/components/AddToCartButton.vue";
+import { computed } from "vue";
+
+import { checkSpaces } from "@/helpers/stringHelper";
 export default {
   name: "ListFood",
   props: {
@@ -74,6 +77,7 @@ export default {
     mealsList: Array,
   },
   emits: ["changeQuantity", "addToCart"],
+
   components: {
     AppQuantityBox: AppQuantityBox,
     AddToCartButton: AddToCartButton,
@@ -82,12 +86,18 @@ export default {
     const updateQuant = (id, value) => {
       ctx.emit("changeQuantity", { id, value });
     };
-
+    const meals = computed(() => mapMeals(props.mealsList));
     return {
       updateQuant,
+      meals,
     };
   },
 };
+const mapMeals = (meals) =>
+  meals?.map((meal) => ({
+    ...meal,
+    checkSpacesTags: checkSpaces(meal.strTags ?? ""),
+  }));
 </script>
 
 <style lang="scss">
@@ -124,6 +134,7 @@ export default {
           "name name"
           "category price"
           "area price";
+        position: relative;
 
         &-img {
           width: 100%;
