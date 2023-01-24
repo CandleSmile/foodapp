@@ -57,7 +57,7 @@
           <AddToCartButton
             @add-to-cart="$emit('addToCart', meal)"
             class="list-food__meals-item-to-cart-button"
-          ></AddToCartButton>
+          />
         </div>
       </li>
     </ul>

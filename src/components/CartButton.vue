@@ -1,8 +1,8 @@
 <template>
   <div class="cart-button">
-    <app-button class="cart-button-btn" @click="$emit('viewCart')"
+    <AppButton class="cart-button-btn" @click="$emit('viewCart')"
       ><i class="cart-button-btn-icon"></i
-    ></app-button>
+    ></AppButton>
     <div class="cart-button-count" v-if="countItems > 0">{{ countItems }}</div>
   </div>
 </template>

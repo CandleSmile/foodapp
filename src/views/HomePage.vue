@@ -1,11 +1,11 @@
 <template>
-  <AppLoader :is-visible="loadingCat || loading" :is-dark="false" />
+  <AppLoader v-if="loadingCat || loading" :is-dark="false" />
 
-  <template v-if="!loadingCat && !loading">
+  <template v-else>
     <ListCategories
       :categories-list="categoriesList"
       v-if="categoriesList && categoriesList.length > 0"
-    ></ListCategories>
+    />
     <div
       class="categories-item__no-category-data"
       v-else-if="categoriesList && categoriesList.length == 0"
@@ -22,7 +22,7 @@
       :meals-list="mealsList"
       @change-quantity="updateQuantity"
       @add-to-cart="addToCart"
-    ></ListFood>
+    />
     <div
       class="list-food__no-meals-data"
       v-else-if="mealsList && mealsList.length == 0"

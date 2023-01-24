@@ -20,7 +20,7 @@
           @update:modelValue="(newValue) => $emit('updateCategory', newValue)"
           title="Category"
           id="catFilter"
-        ></AppSelect>
+        />
 
         <AppSelect
           :options="ingredientsOptions"
@@ -33,7 +33,7 @@
             (newValue) => $emit('updateIngredients', newValue)
           "
           id="ingFilter"
-        ></AppSelect>
+        />
 
         <div class="filter-panel__button-wrapper">
           <span class="filter-panel__fix-span">&nbsp;</span>

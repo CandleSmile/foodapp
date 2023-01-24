@@ -1,6 +1,6 @@
 <template>
   <input
-    class="app-text-field-input"
+    class="app-text-field__input"
     :class="{ 'app-text-field-input--error': errors.length }"
     :placeholder="placeholder"
     type="text"
@@ -8,7 +8,7 @@
     @input="$emit('update:modelValue', $event.target.value)"
   />
 
-  <div class="app-text-field-error" v-for="error of errors" :key="error.$uid">
+  <div class="app-text-field__error" v-for="error of errors" :key="error.$uid">
     {{ error.$message }}
   </div>
 </template>
@@ -19,7 +19,7 @@ defineEmits(["update:modelValue"]);
 </script>
 <style lang="scss">
 .app-text-field {
-  &-input {
+  &__input {
     font-size: 0.8rem;
     padding: 6px;
     width: 100px;
@@ -33,7 +33,7 @@ defineEmits(["update:modelValue"]);
     }
   }
 
-  &-error {
+  &__error {
     color: $primary-dark-color;
     font-size: 0.7rem;
   }

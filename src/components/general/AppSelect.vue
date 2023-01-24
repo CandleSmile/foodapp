@@ -11,7 +11,7 @@
       :close-on-select="true"
       class="app-select__custom-select"
       :id="id"
-    ></v-select>
+    />
   </div>
 </template>
 <script setup>

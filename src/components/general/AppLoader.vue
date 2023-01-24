@@ -1,10 +1,6 @@
 <template>
   <Teleport to="body">
-    <div
-      class="add-loader"
-      v-show="isVisible"
-      :class="{ 'add-loader--dark': isDark }"
-    >
+    <div class="add-loader" :class="{ 'add-loader--dark': isDark }">
       <div class="add-loader__lds-roller">
         <div class="add-loader__lds-roller-item"></div>
         <div class="add-loader__lds-roller-item"></div>
@@ -22,7 +18,6 @@
 <script setup>
 import { defineProps } from "vue";
 defineProps({
-  isVisible: Boolean,
   isDark: Boolean,
 });
 </script>

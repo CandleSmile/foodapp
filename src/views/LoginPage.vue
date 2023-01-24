@@ -7,8 +7,7 @@
         v-model="user"
         :errors="v$.user.$errors"
         class="login-form__email"
-      >
-      </AppTextField>
+      />
       <AppButton class="login-form__button app-button--theme-dark"
         >Login</AppButton
       >

@@ -1,6 +1,6 @@
 <template>
-  <AppLoader :is-visible="loading" />
-  <article v-if="!loading" class="food">
+  <AppLoader v-if="loading" />
+  <article v-else class="food">
     <div class="food__picture">
       <img
         class="food__picture-image"
@@ -47,7 +47,7 @@
         <AddToCartButton
           class="food__info-item-to-cart-button"
           @add-to-cart="addToCart(foodData)"
-        ></AddToCartButton>
+        />
       </div>
     </div>
   </article>

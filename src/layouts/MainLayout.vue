@@ -17,12 +17,9 @@
           :query="searchString"
           @update-query="updateQuery"
           class="header__search-form"
-        ></AppSearch>
-        <LogPanel v-if="isLogPanelShown" @logout="logOut"></LogPanel>
-        <CartButton
-          @view-cart="onViewCart"
-          :count-items="countItems"
-        ></CartButton>
+        />
+        <LogPanel v-if="isLogPanelShown" @logout="logOut" />
+        <CartButton @view-cart="onViewCart" :count-items="countItems" />
       </div>
     </div>
   </header>

@@ -1,8 +1,5 @@
 <template>
-  <FilterTags
-    @delete-tag="deleteFromFilters"
-    :filter-tags="filterTags"
-  ></FilterTags>
+  <FilterTags @delete-tag="deleteFromFilters" :filter-tags="filterTags" />
   <FilterPanel
     :ingredients-options="ingredientsOptions"
     :checked-ingredients="checkedIngredients"
@@ -11,16 +8,16 @@
     @filter="onFilter"
     @update-category="updateSelectedCat"
     @update-ingredients="updateSelectedIngredients"
-  ></FilterPanel>
-  <AppLoader :is-visible="loading" :is-dark="false" />
-  <template v-if="!loading">
+  />
+  <AppLoader v-if="loading" :is-dark="false" />
+  <template v-else>
     <ListFood
       v-if="mealsList && mealsList.length > 0"
       :meals-list="mealsList"
       title-list="Meals"
       @change-quantity="updateQuantity"
       @add-to-cart="addToCart"
-    ></ListFood>
+    />
     <div
       class="list-food__no-meals-data"
       v-else-if="mealsList && mealsList.length == 0"
