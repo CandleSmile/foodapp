@@ -2,15 +2,14 @@
   <article class="login">
     <h2 class="login-title">Please input your email to log in</h2>
     <form class="login-form" @submit.prevent="onSubmit">
-      <input-field
+      <AppTextField
         placeholder="Enter your email"
         v-model="user"
         :errors="v$.user.$errors"
         class="login-form__email"
-      >
-      </input-field>
-      <ActionButton class="login-form__button action-button--theme-dark"
-        >Login</ActionButton
+      />
+      <AppButton class="login-form__button app-button--theme-dark"
+        >Login</AppButton
       >
     </form>
   </article>
@@ -22,8 +21,8 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
 import { LOGIN_ACTION, LOGGED_IN } from "@/store/storeConstants";
 
-import ActionButton from "@/components/general/ActionButton.vue";
-import InputField from "@/components/general/InputField.vue";
+import AppButton from "@/components/general/AppButton.vue";
+import AppTextField from "@/components/general/AppTextField.vue";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useGetters, useActions } = createNamespacedHelpers("auth");
 
@@ -56,6 +55,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 10px;
   align-items: center;
+
   &-form {
     display: flex;
     flex-direction: column;

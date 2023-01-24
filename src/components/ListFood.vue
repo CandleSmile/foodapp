@@ -1,62 +1,63 @@
 <template>
   <section class="list-food">
     <h2 class="list-food__title">{{ titleList }}</h2>
-    <ul class="list-food__meals" v-if="mealsList && mealsList.length > 0">
+    <ul class="list-food__meals" v-if="meals && meals.length > 0">
       <li
         class="list-food__meals-item"
-        v-for="meal in mealsList"
+        v-for="meal in meals"
         :key="meal.idMeal"
       >
         <router-link
           :to="{ name: 'food', params: { id: meal.idMeal } }"
           class="list-food__meals-item-link"
         >
-          <div class="list-food__meals-item-img-wrapper">
-            <div
-              v-if="meal.strTags && meal.strTags != ''"
-              class="list-food__meals-item-tags"
-            >
-              {{ meal.checkSpacesTags }}
-            </div>
+          <div
+            v-show="meal.strTags && meal.strTags != ''"
+            class="list-food__meals-item-link-tags"
+          >
+            {{ meal.checkSpacesTags }}
+          </div>
+          <div class="list-food__meals-item-link-img-wrapper">
             <img
-              class="list-food__meals-item-img"
+              class="list-food__meals-item-link-img"
               :src="meal.strMealThumb"
               :alt="meal.strMeal"
             />
           </div>
-          <div class="list-food__meals-item-info-wrapper">
-            <div class="list-food__meals-item-name">{{ meal.strMeal }}</div>
+          <div class="list-food__meals-item-link-name">{{ meal.strMeal }}</div>
+
+          <div
+            v-show="meal.strCategory && meal.strCategory != ''"
+            class="list-food__meals-item-link-category"
+          >
+            <span class="list-food__meals-item-link-category-title"
+              >Category:
+            </span>
+            <span> {{ meal.strCategory }}</span>
           </div>
-          <div class="list-food__meals-item-area-add-info">
-            <div class="list-food__meals-item-area-add-info-cat">
-              <div v-if="meal.strCategory && meal.strCategory != ''">
-                <span class="list-food__meals-item-area-add-info-cat-title"
-                  >Category:
-                </span>
-                <span> {{ meal.strCategory }}</span>
-              </div>
-              <div v-if="meal.strArea && meal.strArea != ''">
-                <span class="list-food__meals-item-area-add-info-cat-title"
-                  >Area:
-                </span>
-                <span>{{ meal.strArea }}</span>
-              </div>
-            </div>
-            <div class="list-food__meals-item-area-add-info-price">
-              ${{ meal.price }}
-            </div>
+          <div
+            v-show="meal.strArea && meal.strArea != ''"
+            class="list-food__meals-item-link-area"
+          >
+            <span class="list-food__meals-item-link-category-title"
+              >Area:
+            </span>
+            <span>{{ meal.strArea }}</span>
           </div>
+
+          <div class="list-food__meals-item-link-price">${{ meal.price }}</div>
         </router-link>
         <div class="list-food__meals-item-to-cart">
-          <quantity-choose
+          <AppQuantityBox
             :modelValue="meal.quantity"
             @update:modelValue="
               (newValue) => updateQuant(meal.idMeal, newValue)
             "
           />
-          <add-to-cart-button
+          <AddToCartButton
             @add-to-cart="$emit('addToCart', meal)"
-          ></add-to-cart-button>
+            class="list-food__meals-item-to-cart-button"
+          />
         </div>
       </li>
     </ul>
@@ -64,8 +65,11 @@
 </template>
 
 <script>
-import QuantityChoose from "@/components/general/QuantityChoose";
+import AppQuantityBox from "@/components/general/AppQuantityBox.vue";
 import AddToCartButton from "@/components/AddToCartButton.vue";
+import { computed } from "vue";
+
+import { checkSpaces } from "@/helpers/stringHelper";
 export default {
   name: "ListFood",
   props: {
@@ -73,20 +77,27 @@ export default {
     mealsList: Array,
   },
   emits: ["changeQuantity", "addToCart"],
+
   components: {
-    QuantityChoose: QuantityChoose,
+    AppQuantityBox: AppQuantityBox,
     AddToCartButton: AddToCartButton,
   },
   setup(props, ctx) {
     const updateQuant = (id, value) => {
       ctx.emit("changeQuantity", { id, value });
     };
-
+    const meals = computed(() => mapMeals(props.mealsList));
     return {
       updateQuant,
+      meals,
     };
   },
 };
+const mapMeals = (meals) =>
+  meals?.map((meal) => ({
+    ...meal,
+    checkSpacesTags: checkSpaces(meal.strTags ?? ""),
+  }));
 </script>
 
 <style lang="scss">
@@ -98,16 +109,14 @@ export default {
   }
 
   &__meals {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat($meal-count-supersize, 1fr);
     gap: $meal-items-gap-large;
     padding: 20px 0;
+
     &-item {
-      display: flex;
-      flex-direction: column;
-      width: itemWidth($meal-count-supersize, $meal-items-gap-large);
+      display: grid;
+      grid-template-columns: 1fr;
       background-color: $meal-item-background;
       min-height: 200px;
       box-shadow: 0px 3px 3px 0px $food-item-border-color;
@@ -115,123 +124,130 @@ export default {
       overflow: hidden;
 
       &-link {
-        display: flex;
-        flex-basis: 100%;
-        height: 100%;
-        flex-direction: row;
-        align-content: flex-start;
-        flex-wrap: wrap;
+        display: grid;
         text-decoration-line: none;
-        width: 100%;
         color: $text-dark-color;
-      }
-      &-img-wrapper {
-        overflow: hidden;
-        max-height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        grid-template-columns: 1fr 80px;
+        grid-template-areas:
+          "tags tags"
+          "image image"
+          "name name"
+          "category price"
+          "area price";
         position: relative;
-      }
-      &-img {
-        width: 100%;
-      }
-      &-info-wrapper {
-        display: flex;
-        flex-direction: column;
-        flex-basis: 100%;
-        padding: 10px;
-        width: 100%;
-      }
 
-      &-name {
-        flex-basis: 100%;
-        color: $text-dark-color;
-        text-align: left;
-        font-size: 0.8em;
-        font-weight: 700;
-        line-height: 1.3em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      &-area-add-info {
-        display: flex;
-        border-top: 1px dashed $text-light-color;
-        padding: 5px 10px;
-        flex-basis: 100%;
-        align-items: flex-start;
-        &-cat {
-          flex-basis: 100%;
+        &-img {
+          width: 100%;
+
+          &-wrapper {
+            overflow: hidden;
+            max-height: 150px;
+            grid-area: image;
+            display: flex;
+            align-items: center;
+          }
+        }
+
+        &-name {
+          color: $text-dark-color;
+          text-align: left;
+          font-size: 0.8em;
+          font-weight: 700;
+          line-height: 1.3em;
+          padding: 10px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          grid-area: name;
+          border-bottom: 1px dashed $secondary-dark-color;
+        }
+
+        &-category,
+        &-area {
           color: $text-light-color;
           font-size: 0.6em;
           text-align: left;
-          display: flex;
-          flex-direction: column;
+
           line-height: 1.5em;
           min-height: 20px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+
           &-title {
             font-weight: 700;
           }
-          &-price {
-          }
+        }
+
+        &-category {
+          grid-area: category;
+          padding: 5px 10px 0;
+        }
+
+        &-area {
+          grid-area: area;
+          padding: 0px 10px 5px;
+        }
+
+        &-tags {
+          position: absolute;
+          top: 0;
+          right: 0;
+          background: $meal-tags-color-background;
+          border-end-start-radius: 5px;
+          padding: 0.3em 0.7em;
+          color: $meal-tags-color-text;
+          font-size: 0.7em;
+          grid-area: tags;
+        }
+
+        &-price {
+          grid-area: price;
+          text-align: right;
+          padding: 5px 10px 5px 0;
+          align-self: end;
+          color: $text-light-color;
+          font-size: 13px;
         }
       }
-      &-tags {
-        position: absolute;
-        top: 0;
-        right: 0;
-        background: $meal-tags-color-background;
-        border-end-start-radius: 5px;
-        padding: 0.3em 0.7em;
-        color: $meal-tags-color-text;
-        font-size: 0.7em;
-      }
+
       &-to-cart {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
         align-items: center;
         padding: 10px 10px;
+        justify-items: start;
+        &-button {
+          justify-self: end;
+        }
       }
     }
   }
 }
 @media only screen and (max-width: $mediaExtraLarge) {
   .list-food__meals {
+    grid-template-columns: repeat($meal-count-large, 1fr);
     gap: $meal-items-gap-large;
-    &-item {
-      width: itemWidth($meal-count-large, $meal-items-gap-large);
-    }
   }
 }
 
 @media only screen and (max-width: $mediaSmallScreen) {
   .list-food__meals {
+    grid-template-columns: repeat($meal-count-middle1, 1fr);
     gap: $meal-items-gap-large;
-    &-item {
-      width: itemWidth($meal-count-middle1, $meal-items-gap-large);
-    }
   }
 }
 
 @media only screen and (max-width: $mediaTablets) {
   .list-food__meals {
+    grid-template-columns: repeat($meal-count-middle2, 1fr);
     gap: $meal-items-gap-small;
-    &-item {
-      width: itemWidth($meal-count-middle2, $meal-items-gap-small);
-    }
   }
 }
 @media only screen and (max-width: $mediaMobile) {
   .list-food__meals {
-    justify-content: center;
+    grid-template-columns: repeat($meal-count-small, 1fr);
     gap: $meal-items-gap-small;
-    &-item {
-      width: itemWidth($meal-count-small, $meal-items-gap-small);
-    }
   }
 }
 </style>

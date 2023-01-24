@@ -18,6 +18,7 @@ const { [LOGGED_IN]: loggedIn } = useGetters([LOGGED_IN]);
 .logout-link {
   align-self: center;
   color: $login-link-color;
+
   &:hover {
     cursor: pointer;
   }

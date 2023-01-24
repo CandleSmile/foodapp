@@ -1,30 +1,25 @@
 <template>
   <div class="cart-button">
-    <action-button class="cart-button-btn" @click="onViewCart"
+    <AppButton class="cart-button-btn" @click="$emit('viewCart')"
       ><i class="cart-button-btn-icon"></i
-    ></action-button>
+    ></AppButton>
     <div class="cart-button-count" v-if="countItems > 0">{{ countItems }}</div>
   </div>
 </template>
 
 <script setup>
-import ActionButton from "@/components/general/ActionButton.vue";
-import { useRouter } from "vue-router";
-import { createNamespacedHelpers } from "vuex-composition-helpers";
-import { CART_COUNT } from "@/store/storeConstants";
+import AppButton from "@/components/general/AppButton.vue";
+import { defineProps, defineEmits } from "vue";
 
-const { useGetters } = createNamespacedHelpers("cart");
-const { [CART_COUNT]: countItems } = useGetters([CART_COUNT]);
-const router = useRouter();
-const onViewCart = () => {
-  router.push({ name: "cart" });
-};
+defineProps({ countItems: Number });
+defineEmits(["viewCart"]);
 </script>
 <style lang="scss">
 .cart-button {
   display: flex;
   flex-direction: column;
   position: relative;
+
   &-btn {
     width: 30px;
     height: 30px;
@@ -34,6 +29,7 @@ const onViewCart = () => {
     border: none;
     padding: 0;
     background: none;
+
     &-icon {
       content: "";
       background: url("@/assets/images/viewCart.png");
@@ -41,11 +37,13 @@ const onViewCart = () => {
       width: 30px;
       height: 30px;
     }
+
     &:hover {
       cursor: pointer;
       border: none;
     }
   }
+
   &-count {
     display: flex;
     justify-content: center;

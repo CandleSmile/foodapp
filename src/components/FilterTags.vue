@@ -45,6 +45,7 @@ defineProps(["filterTags"]);
       height: 1rem;
       position: relative;
       cursor: pointer;
+
       &::before,
       &::after {
         content: "";
@@ -57,16 +58,20 @@ defineProps(["filterTags"]);
         margin: -0.05rem 0 0 -0.2rem;
         transform: rotate(-45deg);
       }
+
       &::after {
         transform: rotate(45deg);
       }
     }
+
     &--category-theme {
       background: $filter-tag-cat-background;
     }
+
     &--search-theme {
       background: $filter-tag-search-background;
     }
+
     &--ingredients-theme {
       background: $filter-tag-ingredients-background;
     }

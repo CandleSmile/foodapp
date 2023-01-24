@@ -1,8 +1,5 @@
 <template>
-  <FilterTags
-    @delete-tag="deleteFromFilters"
-    :filter-tags="filterTags"
-  ></FilterTags>
+  <FilterTags @delete-tag="deleteFromFilters" :filter-tags="filterTags" />
   <FilterPanel
     :ingredients-options="ingredientsOptions"
     :checked-ingredients="checkedIngredients"
@@ -11,30 +8,32 @@
     @filter="onFilter"
     @update-category="updateSelectedCat"
     @update-ingredients="updateSelectedIngredients"
-  ></FilterPanel>
-  <LoadingContent v-if="loading" />
-  <ListFood
-    v-else-if="mealsList && mealsList.length > 0"
-    :meals-list="mealsList"
-    title-list="Meals"
-    @change-quantity="updateQuantity"
-    @add-to-cart="addToCart"
-  ></ListFood>
-  <div
-    class="list-food__no-meals-data"
-    v-else-if="mealsList && mealsList.length == 0"
-  >
-    <p>Meals were not found</p>
-  </div>
-  <div class="list-food__error" v-else>
-    <p>There war an error {{ error }}</p>
-  </div>
+  />
+  <AppLoader v-if="loading" :is-dark="false" />
+  <template v-else>
+    <ListFood
+      v-if="mealsList && mealsList.length > 0"
+      :meals-list="mealsList"
+      title-list="Meals"
+      @change-quantity="updateQuantity"
+      @add-to-cart="addToCart"
+    />
+    <div
+      class="list-food__no-meals-data"
+      v-else-if="mealsList && mealsList.length == 0"
+    >
+      <p>Meals were not found</p>
+    </div>
+    <div class="list-food__error" v-else>
+      <p>There war an error {{ error }}</p>
+    </div>
+  </template>
 </template>
 <script>
 import ListFood from "../components/ListFood.vue";
 import FilterTags from "../components/FilterTags.vue";
 import FilterPanel from "../components/FilterPanel.vue";
-import LoadingContent from "../components/general/LoadingContent.vue";
+import AppLoader from "../components/general/AppLoader.vue";
 import { FilterType } from "@/const/filterType";
 import { watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -72,7 +71,7 @@ export default {
     ListFood,
     FilterTags,
     FilterPanel,
-    LoadingContent,
+    AppLoader,
   },
 
   setup() {

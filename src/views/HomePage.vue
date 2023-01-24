@@ -1,43 +1,45 @@
 <template>
-  <LoadingContent v-if="loadingCat" />
-  <ListCategories
-    :categories-list="categoriesList"
-    v-else-if="categoriesList && categoriesList.length > 0"
-  ></ListCategories>
-  <div
-    class="categories-item__no-category-data"
-    v-else-if="categoriesList && categoriesList.length == 0"
-  >
-    <p>Categories were not found</p>
-  </div>
-  <div class="categories-item__error" v-else>
-    <p>There war an error {{ errorCat }}</p>
-  </div>
+  <AppLoader v-if="loadingCat || loading" :is-dark="false" />
 
-  <LoadingContent v-if="loading" />
-  <ListFood
-    v-else-if="mealsList && mealsList.length > 0"
-    title-list="Latest Meals"
-    :meals-list="mealsList"
-    @change-quantity="updateQuantity"
-    @add-to-cart="addToCart"
-  ></ListFood>
-  <div
-    class="list-food__no-meals-data"
-    v-else-if="mealsList && mealsList.length == 0"
-  >
-    <p>Meals were not found</p>
-  </div>
-  <div class="list-food__error" v-else>
-    <p>There war an error {{ errorMeal }}</p>
-  </div>
+  <template v-else>
+    <ListCategories
+      :categories-list="categoriesList"
+      v-if="categoriesList && categoriesList.length > 0"
+    />
+    <div
+      class="categories-item__no-category-data"
+      v-else-if="categoriesList && categoriesList.length == 0"
+    >
+      <p>Categories were not found</p>
+    </div>
+    <div class="categories-item__error" v-else>
+      <p>There war an error {{ errorCat }}</p>
+    </div>
+
+    <ListFood
+      v-if="mealsList && mealsList.length > 0"
+      title-list="Latest Meals"
+      :meals-list="mealsList"
+      @change-quantity="updateQuantity"
+      @add-to-cart="addToCart"
+    />
+    <div
+      class="list-food__no-meals-data"
+      v-else-if="mealsList && mealsList.length == 0"
+    >
+      <p>Meals were not found</p>
+    </div>
+    <div class="list-food__error" v-else>
+      <p>There war an error {{ errorMeal }}</p>
+    </div>
+  </template>
 </template>
 
 <script>
 import { onMounted } from "vue";
 import ListFood from "../components/ListFood.vue";
 import ListCategories from "../components/ListCategories.vue";
-import LoadingContent from "../components/general/LoadingContent.vue";
+import AppLoader from "../components/general/AppLoader.vue";
 
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 import {
@@ -61,7 +63,7 @@ export default {
   components: {
     ListFood,
     ListCategories,
-    LoadingContent,
+    AppLoader,
   },
   setup() {
     const {

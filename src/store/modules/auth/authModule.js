@@ -1,7 +1,4 @@
 import {
-  LOGIN_FAILURE,
-  LOGIN_SUCCESS,
-  LOGOUT,
   LOGIN_ACTION,
   LOGOUT_ACTION,
   LOGGED_IN,
@@ -16,35 +13,31 @@ const state = user
 
 // getters
 const getters = {
-  [LOGGED_IN]: (state) => state.status.loggedIn,
-  [USER]: (state) => state.user,
+  [LOGGED_IN]: ({ status: { loggedIn } }) => loggedIn,
+  [USER]: ({ user }) => user,
 };
 
 // actions
 const actions = {
   [LOGIN_ACTION]({ commit }, user) {
     localStorage.setItem("user", user);
-    commit(LOGIN_SUCCESS, user);
+    commit("setUser", user);
+    commit("setLoggedIn", true);
   },
   [LOGOUT_ACTION]({ commit }) {
     localStorage.removeItem("user");
-    commit(LOGOUT);
+    commit("setUser", "");
+    commit("setLoggedIn", false);
   },
 };
 
 // mutations
 const mutations = {
-  [LOGIN_FAILURE](state) {
-    state.user = "";
-    state.status.loggedIn = false;
-  },
-  [LOGIN_SUCCESS](state, user) {
+  setUser(state, user) {
     state.user = user;
-    state.status.loggedIn = true;
   },
-  [LOGOUT](state) {
-    state.user = "";
-    state.status.loggedIn = false;
+  setLoggedIn(state, loggedIn) {
+    state.status.loggedIn = loggedIn;
   },
 };
 

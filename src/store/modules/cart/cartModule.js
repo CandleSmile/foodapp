@@ -3,18 +3,12 @@ import { foodApi } from "@/api/index";
 import {
   MEALS_IN_CART,
   CART_TOTAL_PRICE,
-  ADD_MEAL_TO_CART,
-  CHANGE_MEAL_QUANTITY,
   ADD_TO_CART_ACTION,
-  SET_CHECKOUT_STATUS,
   CART_COUNT,
-  DELETE_MEAL_FROM_CART,
   DELETE_FROM_CART_ACTION,
   BUY_ACTION,
-  SET_CART_ITEMS,
   LOADING,
   CHECKOUT_STATUS,
-  SET_LOADING,
   CLEAR_CHECKOUT_ACTION,
 } from "@/store/storeConstants";
 
@@ -33,24 +27,21 @@ const state = {
 
 // getters
 const getters = {
-  [MEALS_IN_CART]: (state) => {
-    return state.items;
-  },
+  [MEALS_IN_CART]: ({ items }) => items,
 
-  [CART_TOTAL_PRICE]: (state, getters) => {
-    return getters[[MEALS_IN_CART]].reduce((total, product) => {
+  [CART_TOTAL_PRICE]: (state, getters) =>
+    getters[[MEALS_IN_CART]].reduce((total, product) => {
       return roundNumber(total + product.price * product.quantity, 2);
-    }, 0);
-  },
-  [CART_COUNT]: (state, getters) => {
-    return getters[[MEALS_IN_CART]].reduce((total, product) => {
+    }, 0),
+
+  [CART_COUNT]: (state, getters) =>
+    getters[[MEALS_IN_CART]].reduce((total, product) => {
       return total + product.quantity;
-    }, 0);
-  },
-  [LOADING]: (state) => {
-    return state.loading;
-  },
-  [CHECKOUT_STATUS]: (state) => state.checkoutStatus,
+    }, 0),
+
+  [LOADING]: ({ loading }) => loading,
+
+  [CHECKOUT_STATUS]: ({ checkoutStatus }) => checkoutStatus,
 };
 
 // actions
@@ -60,51 +51,52 @@ const actions = {
       (item) => item.id === meal.idMeal
     );
     if (!itemInCart) {
-      if (meal.quantity > 0) commit(ADD_MEAL_TO_CART, meal);
+      if (meal.quantity > 0) commit("addMealToCart", meal);
     } else {
       if (meal.quantity > 0)
-        commit(CHANGE_MEAL_QUANTITY, { itemInCart, quantity: meal.quantity });
+        commit("changeMealQuantity", { itemInCart, quantity: meal.quantity });
       else {
-        commit(DELETE_MEAL_FROM_CART, itemInCart);
+        commit("deleteMealFromCart", itemInCart);
       }
     }
-
     localStorage.setItem("mealItems", JSON.stringify(getters[[MEALS_IN_CART]]));
   },
-  [DELETE_FROM_CART_ACTION]({ commit }, item) {
-    commit(SET_CHECKOUT_STATUS, null);
-    commit(DELETE_MEAL_FROM_CART, item);
-  },
-  async [BUY_ACTION]({ commit, state }) {
-    commit(SET_LOADING, true);
-    commit(SET_CHECKOUT_STATUS, null);
 
+  [DELETE_FROM_CART_ACTION]({ commit }, item) {
+    commit("setCheckoutStatus", null);
+    commit("deleteMealFromCart", item);
+  },
+
+  async [BUY_ACTION]({ commit, state }) {
+    commit("setLoading", true);
+    commit("setCheckoutStatus", null);
     try {
       const res = await foodApi.shop.post.buy(state.items);
       if (res.isDone) {
-        commit(SET_CHECKOUT_STATUS, "Congratulations! Your purchase was done");
-        commit(SET_CART_ITEMS, []);
+        commit("setCheckoutStatus", "Congratulations! Your purchase was done");
+        commit("setCartItems", []);
       } else {
-        console.log("error");
-        commit(SET_CHECKOUT_STATUS, "There was an error: " + res.error);
+        commit("setCheckoutStatus", "There was an error: " + res.error);
       }
     } catch (err) {
-      commit(SET_CHECKOUT_STATUS, "There was an error: " + err.message);
+      commit("setCheckoutStatus", "There was an error: " + err.message);
     } finally {
-      commit(SET_LOADING, false);
+      commit("setLoading", false);
     }
   },
+
   [CLEAR_CHECKOUT_ACTION]({ commit }) {
-    commit(SET_CHECKOUT_STATUS, null);
+    commit("setCheckoutStatus", null);
   },
 };
 
 // mutations
 const mutations = {
-  [SET_CHECKOUT_STATUS](state, status) {
+  setCheckoutStatus(state, status) {
     state.checkoutStatus = status;
   },
-  [ADD_MEAL_TO_CART](state, meal) {
+
+  addMealToCart(state, meal) {
     state.items.push({
       id: meal.idMeal,
       title: meal.strMeal,
@@ -113,16 +105,19 @@ const mutations = {
     });
   },
 
-  [CHANGE_MEAL_QUANTITY](state, { itemInCart, quantity }) {
+  changeMealQuantity(state, { itemInCart, quantity }) {
     itemInCart.quantity = quantity;
   },
-  [DELETE_MEAL_FROM_CART](state, itemCart) {
+
+  deleteMealFromCart(state, itemCart) {
     state.items = state.items.filter((item) => item.id != itemCart.id);
   },
-  [SET_CART_ITEMS](state, items) {
+
+  setCartItems(state, items) {
     state.items = items;
   },
-  [SET_LOADING](state, isLoading) {
+
+  setLoading(state, isLoading) {
     state.loading = isLoading;
   },
 };

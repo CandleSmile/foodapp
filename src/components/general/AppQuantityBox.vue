@@ -1,16 +1,14 @@
 <template>
-  <div class="quantity-choose">
-    <div class="quantity-choose__wrapper">
-      <button @click="decrement" class="quantity-choose__btn-minus">-</button>
-      <input
-        class="quantity-choose__quantity"
-        type="text"
-        :value="modelValue"
-        @keypress="updateAfterCheck($event)"
-        @input="$emit('update:modelValue', Number($event.target.value))"
-      />
-      <button @click="increment" class="quantity-choose__btn-plus">+</button>
-    </div>
+  <div class="app-quantity-box">
+    <button @click="decrement" class="app-quantity-box__btn-minus">-</button>
+    <input
+      class="app-quantity-box__quantity"
+      type="text"
+      :value="modelValue"
+      @keypress="updateAfterCheck($event)"
+      @input="$emit('update:modelValue', Number($event.target.value))"
+    />
+    <button @click="increment" class="app-quantity-box__btn-plus">+</button>
   </div>
 </template>
 <script setup>
@@ -18,7 +16,7 @@ import { defineProps, defineEmits } from "vue";
 const props = defineProps(["modelValue"]);
 const emit = defineEmits(["update:modelValue"]);
 const updateAfterCheck = (ev) => {
-  var charCode = ev.which ? ev.which : ev.keyCode;
+  const charCode = ev.which ? ev.which : ev.keyCode;
   if (charCode >= 48 && charCode <= 57) {
     return true;
   } else {
@@ -33,15 +31,12 @@ const increment = () => {
 };
 </script>
 <style scoped lang="scss">
-.quantity-choose {
+.app-quantity-box {
   display: flex;
   flex-direction: row;
   color: $secondary-dark-color;
-  &__wrapper {
-    display: flex;
-    flex-direction: row;
-    border: 1px solid $secondary-dark-color;
-  }
+  border: 1px solid $secondary-dark-color;
+
   &__quantity {
     width: 50px;
     max-height: 20px;
@@ -50,10 +45,12 @@ const increment = () => {
     text-align: center;
     border-right: 1px solid $secondary-dark-color;
     border-left: 1px solid $secondary-dark-color;
+
     &:focus {
       outline-width: 0;
     }
   }
+
   &__btn-minus,
   &__btn-plus {
     width: 26px;

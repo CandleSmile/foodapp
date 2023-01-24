@@ -52,9 +52,6 @@ const routeInfos = [
         path: "/404",
         component: NotFound,
         name: "404",
-        meta: {
-          layout: "ErrorLayout",
-        },
       },
     ],
   },

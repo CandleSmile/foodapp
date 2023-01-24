@@ -1,6 +1,6 @@
 <template>
-  <div class="select-container">
-    <label class="select-container__title">{{ title }}</label>
+  <div class="app-select">
+    <label class="app-select__title">{{ title }}</label>
     <v-select
       :options="options"
       v-model="vModel"
@@ -9,9 +9,9 @@
       :clearable="true"
       :multiple="multiple"
       :close-on-select="true"
-      class="select-container__custom-select"
+      class="app-select__custom-select"
       :id="id"
-    ></v-select>
+    />
   </div>
 </template>
 <script setup>
@@ -40,7 +40,7 @@ const vModel = computed({
 });
 </script>
 <style lang="scss">
-.select-container {
+.app-select {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -50,15 +50,19 @@ const vModel = computed({
     font-size: 0.6em;
     color: $select-title;
   }
+
   &__custom-select {
     margin: auto;
+
     .vs__dropdown-toggle {
       border-color: $select-border;
     }
+
     .v-select {
       width: 200px;
       font-size: 12px;
     }
+
     .vs__selected-options {
       width: 150px;
     }
@@ -69,10 +73,12 @@ const vModel = computed({
       font-size: 12px;
       color: $select-text;
     }
+
     .vs__clear,
     .vs__open-indicator {
       fill: $select-text;
     }
+
     .vs__dropdown-menu li {
       color: $select-text;
     }

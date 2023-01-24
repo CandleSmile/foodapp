@@ -2,7 +2,7 @@ import { getAxiosReq } from "./axiosReq";
 import apiUrls from "./consts/apiUrls.js";
 import { FilterType } from "../const/filterType";
 import { roundNumber } from "@/helpers/mathHelpers";
-const calcPriceOnID = (id) =>
+const getPriceById = (id) =>
   roundNumber((id % 10) + roundNumber(id / 10000, 2), 2);
 const handleResponses = (response) => {
   let {
@@ -65,9 +65,10 @@ const api = {
           );
         }
         //map prices;
-        meals = meals.map((meal) => {
-          return { ...meal, price: calcPriceOnID(meal.idMeal) };
-        });
+        meals = meals.map((meal) => ({
+          ...meal,
+          price: getPriceById(meal.idMeal),
+        }));
         return { meals, error, ok };
       },
       latestMeals: async () => {
@@ -77,9 +78,10 @@ const api = {
           error,
         } = await getAxiosReq(apiUrls.getLatestMeals);
 
-        meals = meals.map((meal) => {
-          return { ...meal, price: calcPriceOnID(meal.idMeal) };
-        });
+        meals = meals.map((meal) => ({
+          ...meal,
+          price: getPriceById(meal.idMeal),
+        }));
         return { ok, meals, error };
       },
 
