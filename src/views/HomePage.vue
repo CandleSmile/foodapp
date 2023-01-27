@@ -1,4 +1,5 @@
 <template>
+  {{ users }}
   <AppLoader v-if="loadingCat || loading" :is-dark="false" />
 
   <template v-else>
@@ -58,6 +59,9 @@ const { useGetters: useCategoriesGetters, useActions: useCategoriesActions } =
 const { useGetters: useMealsGetters, useActions: useMealsActions } =
   createNamespacedHelpers("meals");
 const { useActions: useCartActions } = createNamespacedHelpers("cart");
+
+const { useGetters: useAuthGetters } = createNamespacedHelpers("auth");
+const { useActions: useAuthActions } = createNamespacedHelpers("auth");
 export default {
   name: "HomePage",
   components: {
@@ -92,10 +96,13 @@ export default {
     const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
       ADD_TO_CART_ACTION,
     ]);
+    const { users } = useAuthGetters(["users"]);
+    const { getUsers } = useAuthActions(["getUsers"]);
 
     onMounted(() => {
       getCategories();
       getMeals();
+      getUsers();
     });
 
     return {
@@ -107,6 +114,7 @@ export default {
       errorMeal,
       updateQuantity,
       addToCart,
+      users,
     };
   },
 };
