@@ -1,7 +1,5 @@
-import { axios } from "./configapi";
+import { axiosOld, axiosNew, baseUrl } from "./configapi";
 import { statusCodes } from "./consts/statusCodes";
-import { setCookie, getCookie } from "@/helpers/cookieHelper";
-
 const getAxiosReq = async (url, params) => {
   let result = {
     ok: false,
@@ -9,7 +7,7 @@ const getAxiosReq = async (url, params) => {
     error: null,
   };
   try {
-    const response = await axios.get(url, { params });
+    const response = await axiosOld.get(url, { params });
     result.ok = true;
     result.data = response.data;
   } catch (error) {
@@ -33,7 +31,7 @@ const postAxiosRequest = async (url, data) => {
   };
 
   try {
-    const response = await axios({
+    const response = await axiosNew({
       url: url,
       method: "POST",
       data: data,
@@ -42,6 +40,7 @@ const postAxiosRequest = async (url, data) => {
     result.status = statusCodes.OK;
     result.data = response.data;
   } catch (error) {
+    console.log(error);
     if (error.response) {
       if (error.response.status == 400) {
         result.error = new Error(error.response.data?.message);
@@ -57,45 +56,36 @@ const postAxiosRequest = async (url, data) => {
 
   return result;
 };
-const axiosRequestAndRefreshToken = async (
-  url,
-  method,
-  params,
-  data,
-  headers
-) => {
+const axiosRequestWithToken = async (url, method, params, data) => {
   let result = {
     status: null,
     data: null,
     error: null,
   };
-  const jwtToken = getCookie("token");
-  headers = headers || {};
-  headers["Authorization"] = "Bearer " + jwtToken;
+
   try {
-    let response = await axios({
+    let response = await axiosNew({
       url: url,
       method: method,
       params: params,
       data: data,
-      headers: headers,
+      withCredentials: true,
+      baseURL: baseUrl,
     });
 
-    response = await processResponseOnTokens(
-      response,
-      jwtToken,
-      url,
-      method,
-      params,
-      data,
-      headers
-    );
-
-    result.status = statusCodes.OK;
-    result.data = response.data;
+    return { status: statusCodes.OK, data: response.data, error: null }; //return the original response
   } catch (error) {
     if (error.response) {
-      if (error.response.status == 400) {
+      if (error.response.status === 401 && error.response.data) {
+        console.log(error.response);
+        console.log(error.response.data.errorCode);
+        console.log(statusCodes.TokenWasRefreshed);
+        if (error.response.data.errorCode == statusCodes.TokenWasRefreshed)
+          return await axiosRequestWithToken(url, method, params, data);
+        else {
+          result.error = new Error(error.response.data?.message);
+        }
+      } else if (error.response.status == 400) {
         result.error = new Error(error.response.data?.message);
       } else {
         result.error = new Error(error.response.data);
@@ -110,42 +100,4 @@ const axiosRequestAndRefreshToken = async (
   return result;
 };
 
-const processResponseOnTokens = async (
-  response,
-  jwtToken,
-  url,
-  method,
-  params,
-  data,
-  headers
-) => {
-  if (response.status === 401 && response.headers.has("Token-Expired")) {
-    const refreshToken = getCookie("refreshToken");
-    let refreshResponse = null;
-    try {
-      refreshResponse = await refresh(jwtToken, refreshToken);
-    } catch {
-      return response; //failed to refresh so return original 401 response
-    }
-    const jsonRefreshResponse = refreshResponse.response; //read the json with the new tokens
-
-    setCookie("token", jsonRefreshResponse.token, 1);
-    setCookie("refreshToken", jsonRefreshResponse.refreshToken, 1);
-    await axiosRequestAndRefreshToken(url, method, params, data, headers); //repeat the original request
-  } else {
-    return response; //return the original 401 response
-  }
-};
-
-const refresh = async (jwtToken, refreshToken) => {
-  return await axios.post("token/refresh", {
-    body: `token=${encodeURIComponent(
-      jwtToken
-    )}&refreshToken=${encodeURIComponent(refreshToken)}`,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  });
-};
-
-export { axiosRequestAndRefreshToken, getAxiosReq, postAxiosRequest };
+export { axiosRequestWithToken, getAxiosReq, postAxiosRequest };

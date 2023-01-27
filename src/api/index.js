@@ -1,7 +1,12 @@
-import { getAxiosReq } from "./axiosReq";
+import {
+  getAxiosReq,
+  postAxiosRequest,
+  axiosRequestWithToken,
+} from "./axiosReq";
 import apiUrls from "./consts/apiUrls.js";
 import { FilterType } from "../const/filterType";
 import { roundNumber } from "@/helpers/mathHelpers";
+import { statusCodes } from "./consts/statusCodes";
 const getPriceById = (id) =>
   roundNumber((id % 10) + roundNumber(id / 10000, 2), 2);
 const handleResponses = (response) => {
@@ -132,6 +137,22 @@ const api = {
       },
     },
   },
+  areas: {
+    get: {
+      areas: async () => {
+        const {
+          ok,
+          data: { meals },
+          error,
+        } = await getAxiosReq(apiUrls.getAreasList);
+        return {
+          ok: ok,
+          data: meals,
+          error: error,
+        };
+      },
+    },
+  },
   shop: {
     post: {
       buy: async (items) => {
@@ -157,6 +178,58 @@ const api = {
           };
         }
       },
+    },
+  },
+
+  auth: {
+    login: async (username, password) => {
+      const { status, data, error } = await postAxiosRequest(apiUrls.loginUrl, {
+        username: username,
+        password: password,
+      });
+      return { status, data, error };
+    },
+
+    logOut: async () => {
+      try {
+        const { status, error } = await axiosRequestWithToken(
+          apiUrls.logOutUrl,
+          "post"
+        );
+        return { status, error };
+      } catch (err) {
+        return {
+          status: statusCodes.UnexpectedError,
+          error: new Error("Something went wrong"),
+        };
+      }
+    },
+
+    register: async (username, password, passwordConfirmation) => {
+      const { status, data, error } = await postAxiosRequest(
+        apiUrls.registerUrl,
+        {
+          username: username,
+          password: password,
+          passwordConfirmation: passwordConfirmation,
+        }
+      );
+      return { status, data, error };
+    },
+
+    getUsers: async () => {
+      const { status, data, error } = await axiosRequestWithToken(
+        "auth/GetUsers",
+        "get"
+      );
+      return { status, data, error };
+    },
+    loadDb: async (model) => {
+      const { status, data, error } = await postAxiosRequest(
+        "DbLoad/LoadDb",
+        model
+      );
+      return { status, data, error };
     },
   },
 };

@@ -4,6 +4,8 @@ import MealsPage from "../views/MealsPage.vue";
 import CartPage from "../views/CartPage.vue";
 import NotFound from "../views/NotFound.vue";
 import LoginPage from "../views/LoginPage.vue";
+import LoadDb from "../views/LoadDb.vue";
+import RegistrationPage from "../views/RegistrationPage.vue";
 import authCheck from "./middlewares/authCheck";
 import { createRouter, createWebHistory } from "vue-router";
 import store from "@/store";
@@ -40,6 +42,16 @@ const routeInfos = [
         path: "/login",
         component: LoginPage,
         name: "login",
+      },
+      {
+        path: "/register",
+        component: RegistrationPage,
+        name: "register",
+      },
+      {
+        path: "/loaddb",
+        component: LoadDb,
+        name: "loaddb",
       },
     ],
   },

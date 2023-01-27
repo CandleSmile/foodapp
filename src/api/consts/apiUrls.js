@@ -7,4 +7,8 @@ export default {
   getFoodByIngredients: "/filter.php?i=",
   getListCategories: "/list.php?c=list",
   getIngredientsList: "/list.php?i=list",
+  getAreasList: "/list.php?a=list",
+  loginUrl: "auth/login",
+  logOutUrl: "auth/logout",
+  registerUrl: "auth/register",
 };

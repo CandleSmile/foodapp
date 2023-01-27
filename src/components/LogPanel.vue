@@ -2,6 +2,9 @@
   <RouterLink class="login-link" v-if="!loggedIn" :to="{ name: 'login' }">
     Login
   </RouterLink>
+  <RouterLink class="register-link" v-if="!loggedIn" :to="{ name: 'register' }">
+    Register
+  </RouterLink>
   <a class="logout-link" v-else @click="$emit('logout')">Logout</a>
 </template>
 <script setup>
@@ -15,7 +18,8 @@ const { [LOGGED_IN]: loggedIn } = useGetters([LOGGED_IN]);
 </script>
 <style lang="scss">
 .login-link,
-.logout-link {
+.logout-link,
+.register-link {
   align-self: center;
   color: $login-link-color;
 

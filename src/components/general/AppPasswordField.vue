@@ -1,30 +1,28 @@
 <template>
   <input
-    class="app-text-field__input"
-    :class="{ 'app-text-field-input--error': errors.length }"
+    class="app-password-field__input"
+    :class="{ 'app-password-field-input--error': errors.length }"
     :placeholder="placeholder"
-    :type="typeOfInput"
+    type="password"
     :value="modelValue"
     @input="$emit('update:modelValue', $event.target.value)"
   />
 
-  <div class="app-text-field__error" v-for="error of errors" :key="error.$uid">
+  <div
+    class="app-password-field__error"
+    v-for="error of errors"
+    :key="error.$uid"
+  >
     {{ error.$message }}
   </div>
 </template>
 <script setup>
 import { defineProps, defineEmits } from "vue";
-const props = defineProps([
-  "placeholder",
-  "modelValue",
-  "errors",
-  "isPassword",
-]);
+defineProps(["placeholder", "modelValue", "errors"]);
 defineEmits(["update:modelValue"]);
-const typeOfInput = props.isPassword ? "password" : "text";
 </script>
 <style lang="scss">
-.app-text-field {
+.app-password-field {
   &__input {
     font-size: 0.8rem;
     padding: 6px;
