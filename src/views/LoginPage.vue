@@ -16,7 +16,9 @@
         :is-password="true"
         class="login-form__password"
       />
-      <div class="login-form__error" v-if="error != null">{{ error }}</div>
+      <div class="login-form__error" v-if="error != null">
+        {{ error }}
+      </div>
       <AppButton class="login-form__button app-button--theme-dark"
         >Login</AppButton
       >
@@ -77,6 +79,7 @@ onMounted(() => {
   cleanError();
 });
 </script>
+
 <style lang="scss">
 .login {
   display: flex;

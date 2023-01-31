@@ -7,6 +7,9 @@ import {
   LOADING,
   CLEAN_ERROR_ACTION,
   REGISTRATION_ACTION,
+  CHECK_LOGIN_ACTION,
+  SHOW_NOTIFY_INFO,
+  CLEAR_NOTIFY_INFO_ACTION,
 } from "@/store/storeConstants";
 import { foodApi } from "@/api/index";
 
@@ -15,8 +18,22 @@ const user = localStorage.getItem("user");
 
 // initial state
 const state = user
-  ? { status: { loggedIn: true }, user, error: null, users: null }
-  : { status: { loggedIn: false }, user: "", error: null, users: null };
+  ? {
+      status: { loggedIn: true },
+      user,
+      users: null,
+      popupInfo: "",
+      error: "",
+      loading: false,
+    }
+  : {
+      status: { loggedIn: false },
+      user: "",
+      users: null,
+      popupInfo: "",
+      error: "",
+      loading: false,
+    };
 
 // getters
 const getters = {
@@ -24,13 +41,14 @@ const getters = {
   [USER]: ({ user }) => user,
   [ERROR]: ({ error }) => error,
   [LOADING]: ({ loading }) => loading,
+  [SHOW_NOTIFY_INFO]: ({ popupInfo }) => popupInfo,
   users: ({ users }) => users ?? [],
 };
 
 // actions
 const actions = {
   async [LOGIN_ACTION]({ commit, dispatch }, { user, password }) {
-    commit("setError", null);
+    commit("setError", "");
     commit("setLoading", true);
     try {
       const result = await foodApi.auth.login(user, password);
@@ -57,7 +75,6 @@ const actions = {
 
   async [LOGOUT_ACTION]({ commit }) {
     const res = await foodApi.auth.logOut();
-    console.log(res);
     if (res.status == statusCodes.OK) {
       localStorage.removeItem("user");
       commit("setUser", "");
@@ -69,7 +86,7 @@ const actions = {
     { commit, dispatch },
     { user, password, passwordConfirmation }
   ) {
-    commit("setError", null);
+    commit("setError", "");
     commit("setLoading", true);
     try {
       const res = await foodApi.auth.register(
@@ -80,7 +97,6 @@ const actions = {
       if (res.status == statusCodes.OK) {
         await dispatch(LOGIN_ACTION, { user, password });
       } else {
-        console.log(res);
         commit("setError", res.error?.message);
       }
     } catch (err) {
@@ -91,7 +107,24 @@ const actions = {
   },
 
   [CLEAN_ERROR_ACTION]({ commit }) {
-    commit("setError", null);
+    commit("setError", "");
+  },
+
+  async [CHECK_LOGIN_ACTION]({ commit, state }) {
+    if (state.user != "") {
+      const res = await foodApi.auth.checkLogin(state.user);
+
+      if (res.status == statusCodes.OK && res.data == false) {
+        localStorage.removeItem("user");
+        commit("setUser", "");
+        commit("setLoggedIn", false);
+        commit("setPopup", "Please, login again. Your token was expired.");
+      }
+    }
+  },
+
+  async [CLEAR_NOTIFY_INFO_ACTION]({ commit }) {
+    commit("setPopup", "");
   },
 
   async getUsers({ commit }) {
@@ -116,6 +149,9 @@ const mutations = {
   },
   setUsers(state, users) {
     state.users = users;
+  },
+  setPopup(state, info) {
+    state.popupInfo = info;
   },
 };
 

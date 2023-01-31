@@ -36,7 +36,7 @@ const load = async () => {
     meals: meals,
   });
 
-  const resload = await foodApi.auth.loadDb({
+  const resload = await foodApi.loadDb.load({
     categories: categories.categories,
     ingredients: ingredients.data,
     areas: areas.data,

@@ -24,6 +24,11 @@
     </div>
   </header>
   <main class="main-block"><RouterView></RouterView></main>
+  <NotificationPopup
+    :is-open="showNotifyInfo != ''"
+    @close-popup="clearNotification"
+    >{{ showNotifyInfo }}</NotificationPopup
+  >
 </template>
 <script setup>
 import AppSearch from "@/components/general/AppSearch.vue";
@@ -33,20 +38,34 @@ import {
   SEARCH_STRING,
   UPDATE_SEARCH_ACTION,
   CART_COUNT,
+  SHOW_NOTIFY_INFO,
+  CHECK_LOGIN_ACTION,
+  CLEAR_NOTIFY_INFO_ACTION,
 } from "@/store/storeConstants";
+
 import { useRouter, useRoute } from "vue-router";
 import { FilterType } from "@/const/filterType";
-import { computed } from "@vue/runtime-core";
+import { computed, onMounted } from "vue";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 
 import CartButton from "@/components/CartButton.vue";
+import NotificationPopup from "@/components/NotificationPopup.vue";
 const router = useRouter();
 const route = useRoute();
-const { useActions: useAuthActions } = createNamespacedHelpers("auth");
+const { useActions: useAuthActions, useGetters: useAuthGetters } =
+  createNamespacedHelpers("auth");
 const { useGetters: useFilterGetters, useActions: useFilterActions } =
   createNamespacedHelpers("filters");
 const { useGetters: useCartGetters } = createNamespacedHelpers("cart");
-const { [LOGOUT_ACTION]: logOutAction } = useAuthActions([LOGOUT_ACTION]);
+const {
+  [LOGOUT_ACTION]: logOutAction,
+  [CHECK_LOGIN_ACTION]: checkIfLogOut,
+  [CLEAR_NOTIFY_INFO_ACTION]: clearNotification,
+} = useAuthActions([
+  LOGOUT_ACTION,
+  CHECK_LOGIN_ACTION,
+  CLEAR_NOTIFY_INFO_ACTION,
+]);
 
 const { [SEARCH_STRING]: searchString } = useFilterGetters([SEARCH_STRING]);
 const { [UPDATE_SEARCH_ACTION]: updateQuery } = useFilterActions([
@@ -54,6 +73,10 @@ const { [UPDATE_SEARCH_ACTION]: updateQuery } = useFilterActions([
 ]);
 
 const { [CART_COUNT]: countItems } = useCartGetters([CART_COUNT]);
+const { [SHOW_NOTIFY_INFO]: showNotifyInfo } = useAuthGetters([
+  SHOW_NOTIFY_INFO,
+]);
+
 const onSearch = (searchString) => {
   if (route.name != "meal") {
     router.push({ name: "meal", query: { [FilterType.SEARCH]: searchString } });
@@ -73,6 +96,10 @@ const logOut = () => {
   logOutAction();
   router.push({ name: "home" });
 };
+
+onMounted(async () => {
+  await checkIfLogOut();
+});
 </script>
 <style lang="scss">
 .header {

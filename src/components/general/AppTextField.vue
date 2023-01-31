@@ -5,7 +5,9 @@
     :placeholder="placeholder"
     :type="typeOfInput"
     :value="modelValue"
+    v-bind="$attrs"
     @input="$emit('update:modelValue', $event.target.value)"
+    autocomplete="on"
   />
 
   <div class="app-text-field__error" v-for="error of errors" :key="error.$uid">

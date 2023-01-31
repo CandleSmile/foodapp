@@ -54,32 +54,34 @@ const route = useRoute();
 const user = ref("");
 const password = ref("");
 const confirmPassword = ref("");
+
 const { [REGISTRATION_ACTION]: doRegistration } = useActions([
   REGISTRATION_ACTION,
 ]);
+
 const {
   [LOGGED_IN]: isLoggedIn,
   [LOADING]: loading,
   [ERROR]: error,
 } = useGetters([LOGGED_IN, LOADING, ERROR]);
+
 const rules = {
   user: { required, email },
   password: { required, minLength: minLength(6) },
   confirmPassword: { required, sameAsPassword: sameAs(password) },
 };
 const v$ = useVuelidate(rules, { user, password, confirmPassword });
+
 const onSubmit = async () => {
   const isFormCorrect = await v$.value.$validate();
   if (!isFormCorrect) {
     return;
   }
-
   await doRegistration({
     user: user.value,
     password: password.value,
     passwordConfirmation: confirmPassword.value,
   });
-  console.log(isLoggedIn.value);
   if (isLoggedIn.value) router.push(route.query.redirect ?? "/");
 };
 
