@@ -25,7 +25,7 @@ const actions = {
   async [GET_CATEGORIES_ACTION]({ commit }) {
     commit("setLoading", true);
     try {
-      const res = await foodApi.categories.get.allCategoriesWithImages();
+      const res = await foodApi.categories.get.listCategories();
       commit("setCategories", res.categories);
       commit("setError", res.error);
     } catch (err) {

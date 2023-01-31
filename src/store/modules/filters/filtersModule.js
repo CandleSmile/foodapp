@@ -129,8 +129,8 @@ const actions = {
     const catOptions = [];
     try {
       const catList = await foodApi.categories.get.listCategories();
-      if (catList.ok && catList.data?.length > 0) {
-        catList.data.forEach((cat) => catOptions.push(cat.strCategory));
+      if (catList.ok && catList.categories?.length > 0) {
+        catList.categories.forEach((cat) => catOptions.push(cat.strCategory));
       } else if (!catList.ok) {
         catOptions.push("can't load categories");
       }

@@ -9,24 +9,24 @@
       <li
         class="list-categories__categories-item"
         v-for="category in categoriesList"
-        :key="category.strCategory"
+        :key="category.name"
       >
         <router-link
           class="list-categories__categories-item-link"
           :to="{
             name: 'meal',
-            query: { [categoryFilter]: category.strCategory },
+            query: { [categoryFilter]: category.id },
           }"
         >
           <div class="list-categories__categories-item-img-wrapper">
             <img
               class="list-categories__categories-item-img"
-              :src="category.strCategoryThumb"
-              :alt="category.strCategory"
+              :src="category.image"
+              :alt="category.name"
             />
           </div>
           <div class="list-categories__categories-item-name">
-            {{ category.strCategory }}
+            {{ category.name }}
           </div>
         </router-link>
       </li>

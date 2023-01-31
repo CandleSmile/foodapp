@@ -2,47 +2,43 @@
   <section class="list-food">
     <h2 class="list-food__title">{{ titleList }}</h2>
     <ul class="list-food__meals" v-if="meals && meals.length > 0">
-      <li
-        class="list-food__meals-item"
-        v-for="meal in meals"
-        :key="meal.idMeal"
-      >
+      <li class="list-food__meals-item" v-for="meal in meals" :key="meal.id">
         <router-link
-          :to="{ name: 'food', params: { id: meal.idMeal } }"
+          :to="{ name: 'food', params: { id: meal.id } }"
           class="list-food__meals-item-link"
         >
           <div
-            v-show="meal.strTags && meal.strTags != ''"
+            v-show="meal.tags && meal.tags.length > 0"
             class="list-food__meals-item-link-tags"
           >
-            {{ meal.checkSpacesTags }}
+            {{ meal.tagsString }}
           </div>
           <div class="list-food__meals-item-link-img-wrapper">
             <img
               class="list-food__meals-item-link-img"
-              :src="meal.strMealThumb"
-              :alt="meal.strMeal"
+              :src="meal.image"
+              :alt="meal.name"
             />
           </div>
-          <div class="list-food__meals-item-link-name">{{ meal.strMeal }}</div>
+          <div class="list-food__meals-item-link-name">{{ meal.name }}</div>
 
           <div
-            v-show="meal.strCategory && meal.strCategory != ''"
+            v-show="meal.category && meal.category.name != ''"
             class="list-food__meals-item-link-category"
           >
             <span class="list-food__meals-item-link-category-title"
               >Category:
             </span>
-            <span> {{ meal.strCategory }}</span>
+            <span> {{ meal.category.name }}</span>
           </div>
           <div
-            v-show="meal.strArea && meal.strArea != ''"
+            v-show="meal.area && meal.area.name != ''"
             class="list-food__meals-item-link-area"
           >
             <span class="list-food__meals-item-link-category-title"
               >Area:
             </span>
-            <span>{{ meal.strArea }}</span>
+            <span>{{ meal.area.name }}</span>
           </div>
 
           <div class="list-food__meals-item-link-price">${{ meal.price }}</div>
@@ -50,9 +46,7 @@
         <div class="list-food__meals-item-to-cart">
           <AppQuantityBox
             :modelValue="meal.quantity"
-            @update:modelValue="
-              (newValue) => updateQuant(meal.idMeal, newValue)
-            "
+            @update:modelValue="(newValue) => updateQuant(meal.id, newValue)"
           />
           <AddToCartButton
             @add-to-cart="$emit('addToCart', meal)"
@@ -69,7 +63,6 @@ import AppQuantityBox from "@/components/general/AppQuantityBox.vue";
 import AddToCartButton from "@/components/AddToCartButton.vue";
 import { computed } from "vue";
 
-import { checkSpaces } from "@/helpers/stringHelper";
 export default {
   name: "ListFood",
   props: {
@@ -96,7 +89,9 @@ export default {
 const mapMeals = (meals) =>
   meals?.map((meal) => ({
     ...meal,
-    checkSpacesTags: checkSpaces(meal.strTags ?? ""),
+    tagsString: meal.tags.reduce((tagString, tag) => {
+      return tagString + tagString != "" ? ", " : "" + tag.name;
+    }, ""),
   }));
 </script>
 

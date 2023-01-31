@@ -2,9 +2,9 @@ import { axiosNew, baseUrl } from "./configapi";
 import { statusCodes } from "./consts/statusCodes";
 
 const postAxiosRequest = async (url, data) =>
-  await axiosAnyRequest(url, "POST", data, null);
-const getAxiosRequest = async (url, params) =>
-  await axiosAnyRequest(url, "GET", null, params);
+  await axiosAnyRequest(url, "POST", null, data);
+const getAxiosRequest = async (url, data) =>
+  await axiosAnyRequest(url, "GET", null, data);
 
 const axiosAnyRequest = async (url, method, params, data) => {
   let result = {
@@ -35,7 +35,9 @@ const axiosAnyRequest = async (url, method, params, data) => {
       } else if (error.response.status == 400 || error.response.status == 404) {
         result.error = new Error(error.response.data?.message);
       } else {
-        result.error = new Error(error.response.data);
+        result.error = new Error(
+          error.response.data.title ?? error.response.data
+        );
       }
     } else if (error.request) {
       result.error = new Error(error.request);

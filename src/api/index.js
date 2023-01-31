@@ -21,7 +21,7 @@ const api = {
           searchString: searchFilter,
           categoryId: catFilter,
           idsIngredients:
-            ingredientsFilter != null ? ingredientsFilter.split(",") : [],
+            ingredientsFilter != "" ? ingredientsFilter.split(",") : [],
         });
 
         return { meals, error, ok };
@@ -93,10 +93,14 @@ const api = {
 
   auth: {
     login: async (username, password) => {
-      const { status, data, error } = await post(apiUrls.loginUrl, {
-        username: username,
-        password: password,
-      });
+      const { status, data, error } = await post(
+        apiUrls.loginUrl,
+
+        {
+          username: username,
+          password: password,
+        }
+      );
       return { status, data, error };
     },
 

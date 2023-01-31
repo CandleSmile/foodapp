@@ -1,36 +1,37 @@
 <template>
   <AppLoader v-if="loading" />
+
   <article v-else class="food">
     <div class="food__picture">
       <img
         class="food__picture-image"
-        :src="foodData.strMealThumb"
-        :alt="foodData.strMeal"
+        :src="foodData.image"
+        :alt="foodData.name"
       />
     </div>
     <div class="food__info">
-      <h1 class="food__info-name">{{ foodData.strMeal }}</h1>
+      <h1 class="food__info-name">{{ foodData.name }}</h1>
       <div class="food__info-category">
         <span>Category: </span>
         <RouterLink
           class="food__info-category-link"
           :to="{
             name: 'meal',
-            query: { [categoryFilter]: foodData.strCategory },
+            query: { [categoryFilter]: foodData.category?.name },
           }"
           >{{ foodData.strCategory }}</RouterLink
         >
       </div>
-      <div class="food__info-instructions">{{ foodData.strInstructions }}</div>
+      <div class="food__info-instructions">{{ foodData.description }}</div>
       <div class="food__info-ingredients">
         <p class="food__info-ingredients-title">Ingredients:</p>
         <ul class="food__info-ingredients-list">
-          <li v-for="item in ingredientsList" :key="item">
+          <li v-for="item in ingredientsList" :key="item.id">
             <RouterLink
               class="food__info-ingredients-list-link"
               :to="{
                 name: 'meal',
-                query: { [ingredientFilter]: item },
+                query: { [ingredientFilter]: item.id },
               }"
             >
               {{ item }}</RouterLink
@@ -88,24 +89,14 @@ export default {
       [GET_FOOD_ACTION]: getFood,
       [UPDATE_QUANTITY_OF_FOOD_ACTION]: updateQuantity,
     } = useActions([GET_FOOD_ACTION, UPDATE_QUANTITY_OF_FOOD_ACTION]);
-    const categoryFilter = FilterType.CATEGORY;
 
+    const categoryFilter = FilterType.CATEGORY;
     const ingredientFilter = FilterType.INGREDIENTS;
 
     const ingredientsList = computed(() => {
       if (!foodData.value) return [];
       const infoMeal = foodData.value;
-      let ingredients = [];
-      for (let key in infoMeal) {
-        if (
-          key.startsWith("strIngredient") &&
-          infoMeal[key] &&
-          infoMeal[key].length > 0
-        ) {
-          ingredients.push(infoMeal[key]);
-        }
-      }
-      return ingredients;
+      return infoMeal.ingredients ?? [];
     });
 
     onMounted(() => {

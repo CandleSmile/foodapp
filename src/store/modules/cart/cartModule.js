@@ -48,7 +48,7 @@ const getters = {
 const actions = {
   [ADD_TO_CART_ACTION]({ commit, getters }, meal) {
     const itemInCart = getters[[MEALS_IN_CART]].find(
-      (item) => item.id === meal.idMeal
+      (item) => item.id === meal.id
     );
     if (!itemInCart) {
       if (meal.quantity > 0) commit("addMealToCart", meal);
@@ -98,8 +98,8 @@ const mutations = {
 
   addMealToCart(state, meal) {
     state.items.push({
-      id: meal.idMeal,
-      title: meal.strMeal,
+      id: meal.id,
+      title: meal.name,
       price: meal.price,
       quantity: meal.quantity,
     });

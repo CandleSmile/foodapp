@@ -14,7 +14,7 @@ import {
 
 const getMealsWithQuantityField = (meals, itemsInCart) =>
   meals.map((meal) => {
-    const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
+    const foundItem = itemsInCart.find((item) => item.id == meal.id);
     return { ...meal, quantity: foundItem ? foundItem.quantity : 0 };
   });
 
@@ -71,9 +71,10 @@ const actions = {
     commit("setLoading", true);
     try {
       const itemsInCart = rootGetters[`cart/${MEALS_IN_CART}`];
+
       const res = await foodApi.food.get.foodById(id);
-      const meal = res.data.meals[0];
-      const foundItem = itemsInCart.find((item) => item.id == meal.idMeal);
+      const meal = res.data;
+      const foundItem = itemsInCart.find((item) => item.id == meal.id);
       foundItem ? (meal.quantity = foundItem.quantity) : (meal.quantity = 0);
 
       commit("setFood", meal);
@@ -107,7 +108,7 @@ const mutations = {
     state.foodData = foodData;
   },
   setQuantityOfMeal(state, { id, value }) {
-    let food = state.meals.find((meal) => meal.idMeal == id);
+    let food = state.meals.find((meal) => meal.id == id);
     food.quantity = value;
   },
   setQuantityOfFood(state, value) {
