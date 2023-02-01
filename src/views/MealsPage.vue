@@ -168,12 +168,12 @@ export default {
     );
 
     //get and set initial info and filter's object
-    onMounted(() => {
-      getIngredientsOptions(filters);
-      getCategoryOptions(filters);
+    onMounted(async () => {
+      getMeals(filters);
+      await getIngredientsOptions(filters);
+      await getCategoryOptions(filters);
       updateSelectedFilters(filters);
       updateFilterTags(filters);
-      getMeals(filters);
     });
 
     return {

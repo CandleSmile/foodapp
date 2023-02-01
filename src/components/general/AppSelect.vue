@@ -10,7 +10,8 @@
       :multiple="multiple"
       :close-on-select="true"
       class="app-select__custom-select"
-      :id="id"
+      :reduce="(option) => option.id"
+      :label="label"
     />
   </div>
 </template>
@@ -23,11 +24,12 @@ const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   title: String,
   options: Array,
-  modelValue: [String, Object],
+  modelValue: [String, Number, Object],
   filterable: Boolean,
   placeholder: String,
   multiple: Boolean,
   id: String,
+  label: String,
 });
 
 const vModel = computed({

@@ -1,3 +1,4 @@
+import { statusCodes } from "@/api/consts/statusCodes";
 import { foodApi } from "@/api/index";
 import { FilterType } from "@/const/filterType";
 
@@ -17,27 +18,6 @@ import {
   SEARCH_STRING,
 } from "@/store/storeConstants";
 
-const classByTagType = (tagType) => {
-  let className = "";
-  switch (tagType) {
-    case FilterType.CATEGORY:
-      className = "filter-tags-panel__list-item--category-theme";
-      break;
-    case FilterType.SEARCH:
-      className = "filter-tags-panel__list-item--search-theme";
-      break;
-    default:
-      className = "filter-tags-panel__list-item--ingredients-theme";
-  }
-  return className;
-};
-
-const mapFilters = (filters) =>
-  filters?.map((tag) => ({
-    ...tag,
-    className: classByTagType(tag.type),
-  }));
-
 // initial state
 const state = {
   selectedFilters: {
@@ -46,16 +26,32 @@ const state = {
     searchString: "",
   },
 
-  ingredientsOptions: [],
-  categoryOptions: [],
+  ingredients: [],
+  categories: [],
   existingFiltersTags: [],
 };
 
 // getters
 const getters = {
-  [INGREDIENT_OPTIONS]: ({ ingredientsOptions }) => ingredientsOptions,
-  [CATEGORY_OPTIONS]: ({ categoryOptions }) => categoryOptions,
-  [FILTER_TAGS]: ({ existingFiltersTags }) => mapFilters(existingFiltersTags),
+  [INGREDIENT_OPTIONS]: ({ ingredients }) => {
+    if (ingredients.length > 0) {
+      return ingredients.map((ingredient) => ({
+        id: ingredient.id.toString(),
+        label: ingredient.name,
+      }));
+    } else {
+      return ["can't load ingredients"];
+    }
+  },
+  [CATEGORY_OPTIONS]: ({ categories }) => {
+    if (categories.length > 0)
+      return categories.map((category) => ({
+        id: category.id.toString(),
+        label: category.name,
+      }));
+    else return ["can't load categories"];
+  },
+  [FILTER_TAGS]: ({ existingFiltersTags }) => existingFiltersTags,
   [SELECTED_CATEGORY]: ({ selectedFilters: { category } }) => category,
   [SELECTED_INGREDIENTS]: ({ selectedFilters: { ingredients } }) => ingredients,
   [SEARCH_STRING]: ({ selectedFilters: { searchString } }) => searchString,
@@ -63,12 +59,12 @@ const getters = {
 
 // actions
 const actions = {
-  [UPDATE_SELECTED_CATEGORY_ACTION]({ commit }, categoryValue) {
-    commit("setSelectedCategory", categoryValue);
+  [UPDATE_SELECTED_CATEGORY_ACTION]({ commit }, category) {
+    commit("setSelectedCategory", category ?? "");
   },
 
   [UPDATE_SELECTED_INGREDIENTS_ACTION]({ commit }, ingredientsValue) {
-    commit("setSelectedIngredients", ingredientsValue);
+    commit("setSelectedIngredients", ingredientsValue ?? []);
   },
 
   [UPDATE_SEARCH_ACTION]({ commit }, searchString) {
@@ -76,31 +72,45 @@ const actions = {
   },
 
   [UPDATE_SELECTED_FILTERS_ACTION]({ commit }, filters) {
-    commit(
-      "setSelectedIngredients",
+    const checkedIngredients =
       filters[[FilterType.INGREDIENTS]] != ""
         ? filters[[FilterType.INGREDIENTS]].split(",")
-        : []
-    );
-    commit("setSelectedCategory", filters[[FilterType.CATEGORY]]);
+        : [];
+    let category = filters[[FilterType.CATEGORY]];
+
+    commit("setSelectedIngredients", checkedIngredients);
+    commit("setSelectedCategory", category);
     commit("setSearchString", filters[[FilterType.SEARCH]]);
   },
 
-  [UPDATE_FILTER_TAGS_ACTION]({ commit }, filters) {
+  [UPDATE_FILTER_TAGS_ACTION]({ commit, state }, filters) {
     const selectedFilterTags = [];
     for (let key in filters) {
       if (key === FilterType.INGREDIENTS && filters[key] != "") {
         const ingredientsArr = filters[key].split(",");
-        ingredientsArr.forEach((ing) =>
+        ingredientsArr.forEach((ing) => {
+          const ingredientObj = state.ingredients.find(
+            (ingredient) => ingredient.id == Number(ing)
+          );
           selectedFilterTags.push({
             type: FilterType.INGREDIENTS,
-            val: ing,
-          })
+            val: { id: ingredientObj.id, name: ingredientObj.name },
+          });
+        });
+      } else if (key === FilterType.CATEGORY && filters[key] != "") {
+        const categoryId = filters[key];
+        const categoryObj = state.categories.find(
+          (category) => category.id == Number(categoryId)
         );
+
+        selectedFilterTags.push({
+          type: FilterType.CATEGORY,
+          val: { id: categoryObj.id, name: categoryObj.name },
+        });
       } else if (filters[key] != "") {
         selectedFilterTags.push({
           type: key,
-          val: filters[key],
+          val: { id: filters[key], name: filters[key] },
         });
       }
     }
@@ -109,35 +119,31 @@ const actions = {
   },
 
   async [GET_INGREDIENTS_OPTIONS_ACTION]({ commit }) {
-    const ingredientsOptions = [];
-    const ingredientList = await foodApi.ingredients.get.ingredients();
     try {
-      if (ingredientList.ok & (ingredientList.data?.length > 0)) {
-        ingredientList.data.forEach((ing) =>
-          ingredientsOptions.push(ing.strIngredient)
-        );
-      } else if (!ingredientList.ok) {
-        ingredientsOptions.push("can't load ingredients");
+      const ingredientList = await foodApi.ingredients.get.ingredients();
+      if (
+        ingredientList.status == statusCodes.OK &&
+        ingredientList.data?.length > 0
+      ) {
+        commit("setIngredients", ingredientList.data);
+      } else {
+        commit("setIngredients", []);
       }
     } catch (err) {
-      ingredientsOptions.push("can't load ingredients");
+      commit("setIngredients", []);
     }
-    commit("setIngredientsOptions", ingredientsOptions);
   },
 
   async [GET_CATEGORY_OPTIONS_ACTION]({ commit }) {
-    const catOptions = [];
     try {
       const catList = await foodApi.categories.get.listCategories();
-      if (catList.ok && catList.categories?.length > 0) {
-        catList.categories.forEach((cat) => catOptions.push(cat.strCategory));
-      } else if (!catList.ok) {
-        catOptions.push("can't load categories");
+      if (catList.status == statusCodes.OK && catList.categories?.length > 0) {
+        commit("setCategories", catList.categories);
+      } else if (!(catList.status == statusCodes.OK)) {
+        commit("setCategories", []);
       }
     } catch (err) {
-      catOptions.push("can't load categories");
-    } finally {
-      commit("setCategoryOptions", catOptions);
+      commit("setCategories", []);
     }
   },
 };
@@ -148,16 +154,16 @@ const mutations = {
     state.selectedFilters.category = category;
   },
   setSelectedIngredients(state, ingredients) {
-    state.selectedFilters.ingredients = ingredients;
+    state.selectedFilters.ingredients = ingredients ?? [];
   },
   setSearchString(state, searchString) {
     state.selectedFilters.searchString = searchString;
   },
-  setIngredientsOptions(state, ingredientsOptions) {
-    state.ingredientsOptions = ingredientsOptions;
+  setIngredients(state, ingredientsOptions) {
+    state.ingredients = ingredientsOptions;
   },
-  setCategoryOptions(state, categoriesOptions) {
-    state.categoryOptions = categoriesOptions;
+  setCategories(state, categoriesOptions) {
+    state.categories = categoriesOptions;
   },
   setFilterTags(state, filterTags) {
     state.existingFiltersTags = filterTags;

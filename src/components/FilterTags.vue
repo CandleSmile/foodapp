@@ -1,15 +1,15 @@
 <template>
-  <section class="filter-tags-panel" v-if="filterTags && filterTags.length > 0">
+  <section class="filter-tags-panel" v-if="tags && tags.length > 0">
     <ul class="filter-tags-panel__list">
       <li
         :class="[tag.className, 'filter-tags-panel__list-item']"
-        v-for="tag in filterTags"
-        :key="tag.val"
+        v-for="tag in tags"
+        :key="tag.val.id"
       >
-        {{ tag.val }}
+        {{ tag.val.name }}
         <span
           class="filter-tags-panel__list-item-remove-filter"
-          @click="$emit('deleteTag', tag)"
+          @click="$emit('deleteTag', tag.id)"
         ></span>
       </li>
     </ul>
@@ -17,10 +17,33 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps } from "vue";
+import { defineEmits, defineProps, computed } from "vue";
+import { FilterType } from "@/const/filterType";
 
 defineEmits(["deleteTag"]);
-defineProps(["filterTags"]);
+const props = defineProps(["filterTags"]);
+
+const tags = computed(() =>
+  props.filterTags?.map((tag) => ({
+    ...tag,
+    className: classByTagType(tag.type),
+  }))
+);
+
+const classByTagType = (tagType) => {
+  let className = "";
+  switch (tagType) {
+    case FilterType.CATEGORY:
+      className = "filter-tags-panel__list-item--category-theme";
+      break;
+    case FilterType.SEARCH:
+      className = "filter-tags-panel__list-item--search-theme";
+      break;
+    default:
+      className = "filter-tags-panel__list-item--ingredients-theme";
+  }
+  return className;
+};
 </script>
 
 <style lang="scss">

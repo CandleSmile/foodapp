@@ -1,4 +1,4 @@
-import { post, get } from "./axiosRequests";
+import { post, get, anyRequest } from "./axiosRequests";
 import apiUrls from "./consts/apiUrls.js";
 import { FilterType } from "../const/filterType";
 import { statusCodes } from "./consts/statusCodes";
@@ -15,25 +15,29 @@ const api = {
 
         const {
           data: meals,
-          ok,
+          status,
           error,
         } = await post(apiUrls.getMealsUrl, {
           searchString: searchFilter,
-          categoryId: catFilter,
+          categoryId: catFilter == "" ? null : catFilter,
           idsIngredients:
             ingredientsFilter != "" ? ingredientsFilter.split(",") : [],
         });
 
-        return { meals, error, ok };
+        return { meals, error, status };
       },
       latestMeals: async () => {
-        let { ok, data: meals, error } = await get(apiUrls.getLatestMealsUrl);
+        let {
+          status,
+          data: meals,
+          error,
+        } = await get(apiUrls.getLatestMealsUrl);
 
-        return { ok, meals, error };
+        return { status, meals, error };
       },
 
       foodById: async (id) => {
-        return await get(apiUrls.getFoodByIdUrl, id);
+        return await get(apiUrls.getFoodByIdUrl, { id });
       },
     },
   },
@@ -41,21 +45,21 @@ const api = {
     get: {
       listCategories: async () => {
         const {
-          ok,
+          status,
           data: categories,
           error,
         } = await get(apiUrls.getCategoriesUrl);
 
-        return { ok, categories, error };
+        return { status, categories, error };
       },
     },
   },
   ingredients: {
     get: {
       ingredients: async () => {
-        const { ok, data, error } = await get(apiUrls.getIngredientsUrl);
+        const { status, data, error } = await get(apiUrls.getIngredientsUrl);
         return {
-          ok,
+          status,
           data,
           error,
         };
@@ -126,9 +130,13 @@ const api = {
     },
 
     checkLogin: async (username) => {
-      const { status, data, error } = await post(apiUrls.checkLogin, {
-        userName: username,
-      });
+      const { status, data, error } = await anyRequest(
+        apiUrls.checkLogin,
+        "POST",
+        {
+          userName: username,
+        }
+      );
       return { status, data, error };
     },
 

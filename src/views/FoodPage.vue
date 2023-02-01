@@ -34,7 +34,7 @@
                 query: { [ingredientFilter]: item.id },
               }"
             >
-              {{ item }}</RouterLink
+              {{ item.name }}</RouterLink
             >
           </li>
         </ul>

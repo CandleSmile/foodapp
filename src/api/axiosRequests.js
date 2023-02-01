@@ -3,8 +3,8 @@ import { statusCodes } from "./consts/statusCodes";
 
 const postAxiosRequest = async (url, data) =>
   await axiosAnyRequest(url, "POST", null, data);
-const getAxiosRequest = async (url, data) =>
-  await axiosAnyRequest(url, "GET", null, data);
+const getAxiosRequest = async (url, params) =>
+  await axiosAnyRequest(url, "GET", params, null);
 
 const axiosAnyRequest = async (url, method, params, data) => {
   let result = {

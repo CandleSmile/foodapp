@@ -72,6 +72,7 @@ const actions = {
     commit("setCheckoutStatus", null);
     try {
       const res = await foodApi.shop.post.buy(state.items);
+      console.log(res);
       if (res.isDone) {
         commit("setCheckoutStatus", "Congratulations! Your purchase was done");
         commit("setCartItems", []);
