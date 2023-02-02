@@ -1,12 +1,13 @@
-import { axiosOld } from "./configapi";
+import { axiosOld } from "./oldConfigApi";
 const getAxiosReq = async (url, params) => {
   let result = {
     ok: false,
     data: null,
     error: null,
   };
+
   try {
-    const response = await axiosOld.get(url, { params });
+    const response = await axiosOld.get(url, params);
     result.ok = true;
     result.data = response.data;
   } catch (error) {

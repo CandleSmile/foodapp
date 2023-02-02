@@ -3,17 +3,20 @@
 </template>
 <script setup>
 import { foodApi } from "@/api/index";
+import { oldApi } from "@/api/oldIndex";
 import { FilterType } from "../const/filterType";
+
 const load = async () => {
-  const categories = await foodApi.categories.get.allCategoriesWithImages();
-  const ingredients = await foodApi.ingredients.get.ingredients();
-  const areas = await foodApi.areas.get.areas();
+  const categories = await oldApi.categories.get.allCategoriesWithImages();
+  console.log(categories);
+  const ingredients = await oldApi.ingredients.get.ingredients();
+  const areas = await oldApi.areas.get.areas();
   let filters = {
     [FilterType.CATEGORY]: "",
     [FilterType.SEARCH]: "",
     [FilterType.INGREDIENTS]: "",
   };
-  const res = await foodApi.food.get.foodByFilters(filters);
+  const res = await oldApi.food.get.foodByFilters(filters);
   let meals = res.meals;
   meals = meals.map((meal) => {
     meal.strIngredients = [];

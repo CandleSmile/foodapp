@@ -9,7 +9,7 @@
         {{ tag.val.name }}
         <span
           class="filter-tags-panel__list-item-remove-filter"
-          @click="$emit('deleteTag', tag.id)"
+          @click="$emit('deleteTag', tag)"
         ></span>
       </li>
     </ul>

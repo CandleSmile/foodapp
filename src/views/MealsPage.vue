@@ -148,7 +148,7 @@ export default {
         let ingredientsArr = routeQuery[[tag.type]]
           ? routeQuery[[tag.type]].split(",")
           : [];
-        ingredientsArr = ingredientsArr.filter((ing) => ing != tag.val);
+        ingredientsArr = ingredientsArr.filter((ing) => ing != tag.val.id);
         ingredientsArr.length > 0
           ? (routeQuery[[tag.type]] = ingredientsArr.join(","))
           : delete routeQuery[[tag.type]];
