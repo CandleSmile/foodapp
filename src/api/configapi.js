@@ -1,7 +1,7 @@
 import axios from "axios";
 
 //new api
-const baseUrl = "https://localhost:7266/api";
+const baseUrl = "https://foodapi.somee.com/api";
 
 let axiosNew = axios.create();
 axiosNew.defaults.withCredentials = true;
