@@ -17,9 +17,9 @@
           class="food__info-category-link"
           :to="{
             name: 'meal',
-            query: { [categoryFilter]: foodData.category?.name },
+            query: { [categoryFilter]: foodData.category?.id },
           }"
-          >{{ foodData.strCategory }}</RouterLink
+          >{{ foodData.category?.name }}</RouterLink
         >
       </div>
       <div class="food__info-instructions">{{ foodData.description }}</div>
