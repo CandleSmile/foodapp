@@ -1,7 +1,11 @@
 <template>
+  <RouterLink class="profile-link" v-if="loggedIn" :to="{ name: 'orders' }">
+    Profile
+  </RouterLink>
   <RouterLink class="login-link" v-if="!loggedIn" :to="{ name: 'login' }">
     Login
   </RouterLink>
+
   <RouterLink class="register-link" v-if="!loggedIn" :to="{ name: 'register' }">
     Register
   </RouterLink>
@@ -19,7 +23,8 @@ const { [LOGGED_IN]: loggedIn } = useGetters([LOGGED_IN]);
 <style lang="scss">
 .login-link,
 .logout-link,
-.register-link {
+.register-link,
+.profile-link {
   align-self: center;
   color: $login-link-color;
 

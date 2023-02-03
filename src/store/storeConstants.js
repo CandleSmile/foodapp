@@ -8,4 +8,6 @@ export * from "./modules/categories/categoriesModuleGetters";
 export * from "./modules/categories/categoriesModuleActions";
 export * from "./modules/filters/filtersModuleGetters";
 export * from "./modules/filters/filtersModuleActions";
+export * from "./modules/orders/ordersModuleActions";
+export * from "./modules/orders/ordersModuleGetters";
 export * from "./modules/common/getters";

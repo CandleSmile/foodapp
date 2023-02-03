@@ -1,5 +1,6 @@
 import { roundNumber } from "@/helpers/mathHelpers";
 import { foodApi } from "@/api/index";
+import { statusCodes } from "@/api/consts/statusCodes";
 import {
   MEALS_IN_CART,
   CART_TOTAL_PRICE,
@@ -72,10 +73,11 @@ const actions = {
     commit("setCheckoutStatus", null);
     try {
       const res = await foodApi.shop.post.buy(state.items);
-      console.log(res);
-      if (res.isDone) {
+
+      if (res.status == statusCodes.OK) {
         commit("setCheckoutStatus", "Congratulations! Your purchase was done");
         commit("setCartItems", []);
+        localStorage.setItem("mealItems", JSON.stringify([]));
       } else {
         commit("setCheckoutStatus", "There was an error: " + res.error);
       }

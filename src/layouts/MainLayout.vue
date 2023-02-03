@@ -119,6 +119,7 @@ onMounted(async () => {
 @media only screen and (max-width: $mediaTablets) {
   .header__search-log-wrapper {
     justify-content: center;
+    gap: 10px;
   }
 }
 </style>

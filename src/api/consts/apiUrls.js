@@ -8,4 +8,6 @@ export default {
   logOutUrl: "auth/logout",
   registerUrl: "auth/register",
   checkLogin: "auth/checkLogin",
+  makeOrderUrl: "shop/makeOrder",
+  getOrderUrl: "shop/getOrders",
 };

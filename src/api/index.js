@@ -70,27 +70,22 @@ const api = {
   shop: {
     post: {
       buy: async (items) => {
-        console.log(items);
-        const pr = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            // simulate random buy failure
-
-            if (Math.random() > 0.5 || navigator.webdriver) {
-              resolve({ isDone: true, error: "" });
-            } else {
-              reject(new Error("API ERROR!!!"));
-            }
-          }, 3000);
-        });
-        try {
-          const res = await pr;
-          return res;
-        } catch (err) {
-          return {
-            isDone: false,
-            error: err.message,
-          };
-        }
+        const cart = {
+          cartItems: items.map((item) => ({
+            mealId: item.id,
+            quantity: item.quantity,
+            price: item.price,
+            title: item.title,
+          })),
+        };
+        const { status, data, error } = await post(apiUrls.makeOrderUrl, cart);
+        return { status, data, error };
+      },
+    },
+    get: {
+      orders: async () => {
+        const { status, data, error } = await get(apiUrls.getOrderUrl);
+        return { status, data, error };
       },
     },
   },
