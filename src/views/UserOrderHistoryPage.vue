@@ -1,8 +1,9 @@
 <template>
   <AppLoader v-if="loading" :is-dark="false" />
   <article v-else class="user-order-history">
-    <h1 class="user-order-history__title">Orders history</h1>
-    <ul v-if="!error" class="user-order-history__order-list">
+    <h2 class="user-order-history__title">Your orders history</h2>
+
+    <ul v-if="error == ''" class="user-order-history__order-list">
       <li
         v-for="order in orders"
         :key="order.id"
@@ -10,8 +11,8 @@
       >
         <div class="user-order-history__order-list-item-num">
           <label class="user-order-history__order-list-item-num-label"
-            >Order # </label
-          >{{ order.id }}
+            >Order # {{ order.id }}</label
+          >
         </div>
         <div class="user-order-history__order-list-item-date">
           <label class="user-order-history__order-list-item-date-label"
@@ -31,12 +32,12 @@
             Title
           </div>
           <div
-            class="user-order-history__order-list-item-meals-table-td user-order-history__order-list-item-meals-table-td--header"
+            class="user-order-history__order-list-item-meals-table-td user-order-history__order-list-item-meals-table-td--header user-order-history__order-list-item-meals-table-td--right"
           >
             Price
           </div>
           <div
-            class="user-order-history__order-list-item-meals-table-td user-order-history__order-list-item-meals-table-td--header"
+            class="user-order-history__order-list-item-meals-table-td user-order-history__order-list-item-meals-table-td--header user-order-history__order-list-item-meals-table-td--right"
           >
             Quantity
           </div>
@@ -44,10 +45,14 @@
             <div class="user-order-history__order-list-item-meals-table-td">
               {{ orderItem.title }}
             </div>
-            <div class="user-order-history__order-list-item-meals-table-td">
+            <div
+              class="user-order-history__order-list-item-meals-table-td user-order-history__order-list-item-meals-table-td--right"
+            >
               {{ orderItem.price }}
             </div>
-            <div class="user-order-history__order-list-item-meals-table-td">
+            <div
+              class="user-order-history__order-list-item-meals-table-td user-order-history__order-list-item-meals-table-td--right"
+            >
               {{ orderItem.quantity }}
             </div>
           </template>
@@ -69,6 +74,8 @@ import {
   ERROR,
   LOADING,
 } from "@/store/storeConstants";
+
+import AppLoader from "../components/general/AppLoader.vue";
 const { useGetters, useActions } = createNamespacedHelpers("orders");
 const {
   [ORDERS]: orders,
@@ -85,6 +92,9 @@ onMounted(async () => {
 .user-order-history {
   &__title {
     padding-bottom: 20px;
+    font-size: 1em;
+    font-weight: 600;
+    text-align: left;
   }
   &__order-list {
     list-style: none;
@@ -98,21 +108,20 @@ onMounted(async () => {
       grid-template-rows: 20px 20px 20px 1fr;
       justify-items: center;
       display: grid;
-      /*   grid-template-areas:
-        "num date"
-        "price price"
-        "mealTable mealTable"; */
+      background: $secondary-light-color;
       text-align: left;
       gap: 0;
       padding: 10px 10px;
-      border: 1px solid $secondary-dark-color;
+      box-shadow: 0px 3px 3px 0px rgba($secondary-dark-color, 0.17);
+      border: 1px solid rgba($secondary-dark-color, 0.17);
       border-radius: 5px;
       &-date {
         //   grid-area: date;
         font-size: 14px;
 
         &-label {
-          font-weight: bold;
+          font-weight: 500;
+          color: $secondary-dark-color;
         }
       }
       &-num {
@@ -120,6 +129,7 @@ onMounted(async () => {
         // grid-area: num;
         &-label {
           font-weight: bold;
+          color: $secondary-dark-color;
         }
       }
       &-price {
@@ -127,21 +137,24 @@ onMounted(async () => {
         padding-bottom: 5px;
         //  grid-area: price;
         &-label {
-          font-weight: bold;
+          font-weight: 500;
+          color: $secondary-dark-color;
         }
       }
 
       &-meals-table {
         border-top: 1px dashed $secondary-dark-color;
         display: grid;
-        //grid-area: mealTable;
-
         padding-top: 5px;
         grid-template-columns: 5fr 1fr 1fr;
         font-size: 12px;
+        gap: 5px;
         &-td {
           &--header {
             font-weight: bold;
+          }
+          &--right {
+            text-align: right;
           }
         }
       }
@@ -160,9 +173,10 @@ onMounted(async () => {
     gap: 10px;
   }
 }
-@media only screen and (max-width: $mediaTablets) {
+@media only screen and (max-width: $mediaMobile) {
   .user-order-history__order-list {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 }
 </style>

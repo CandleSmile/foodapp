@@ -30,7 +30,7 @@ const typeOfInput = props.isPassword ? "password" : "text";
   &__input {
     font-size: 0.8rem;
     padding: 6px;
-    width: 100px;
+    width: 150px;
     border-radius: 4px;
     border: 1px solid $input-field-border-color;
     outline: none;

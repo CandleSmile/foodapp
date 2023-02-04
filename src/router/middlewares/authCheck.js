@@ -5,6 +5,5 @@ export default function authCheck({ to, next, store }) {
       query: { redirect: to.fullPath },
     });
   }
-
   return next();
 }

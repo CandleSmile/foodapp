@@ -8,7 +8,7 @@ import {
 // initial state
 const state = {
   orders: [],
-  error: null,
+  error: "",
   loading: false,
 };
 
@@ -19,7 +19,7 @@ const formatDate = (dt) => {
 // getters
 const getters = {
   [ORDERS]: ({ orders }) =>
-    orders.map((order) => {
+    orders?.map((order) => {
       let orderFormated = { ...order };
       orderFormated.dateCreated = formatDate(
         new Date(orderFormated.dateCreated)
@@ -42,6 +42,7 @@ const actions = {
     try {
       const res = await foodApi.shop.get.orders();
       commit("setOrders", res.data);
+
       commit("setError", res.error);
     } catch (err) {
       commit("setError", err);
@@ -55,7 +56,8 @@ const mutations = {
     state.orders = orders;
   },
   setError(state, error) {
-    state.error = error?.message;
+    state.error = error?.message ?? "";
+    console.log(state.error);
   },
   setLoading(state, isLoading) {
     state.loading = isLoading;

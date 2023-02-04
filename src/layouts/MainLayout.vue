@@ -39,7 +39,7 @@ import {
   UPDATE_SEARCH_ACTION,
   CART_COUNT,
   SHOW_NOTIFY_INFO,
-  CHECK_LOGIN_ACTION,
+  // CHECK_LOGIN_ACTION,
   CLEAR_NOTIFY_INFO_ACTION,
 } from "@/store/storeConstants";
 
@@ -59,11 +59,11 @@ const { useGetters: useFilterGetters, useActions: useFilterActions } =
 const { useGetters: useCartGetters } = createNamespacedHelpers("cart");
 const {
   [LOGOUT_ACTION]: logOutAction,
-  [CHECK_LOGIN_ACTION]: checkIfLogOut,
+  //[CHECK_LOGIN_ACTION]: checkIfLogOut,
   [CLEAR_NOTIFY_INFO_ACTION]: clearNotification,
 } = useAuthActions([
   LOGOUT_ACTION,
-  CHECK_LOGIN_ACTION,
+  // CHECK_LOGIN_ACTION,
   CLEAR_NOTIFY_INFO_ACTION,
 ]);
 
@@ -98,7 +98,7 @@ const logOut = () => {
 };
 
 onMounted(async () => {
-  await checkIfLogOut();
+  // await checkIfLogOut();
 });
 </script>
 <style lang="scss">

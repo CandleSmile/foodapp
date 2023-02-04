@@ -8,4 +8,5 @@ export const statusCodes = {
   ServerError: 500,
   TokenWasRefreshed: 6,
   ErrorOnRefreshToken: 7,
+  LoginExpired: 8,
 };

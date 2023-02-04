@@ -8,6 +8,8 @@ import UserOrderHistoryPage from "../views/UserOrderHistoryPage.vue";
 
 import RegistrationPage from "../views/RegistrationPage.vue";
 import authCheck from "./middlewares/authCheck";
+import loginTokensCheck from "./middlewares/loginTokensCheck";
+import middlewarePipeline from "./middlewares/middlewarePipeline";
 import { createRouter, createWebHistory } from "vue-router";
 import store from "@/store";
 const routeInfos = [
@@ -20,23 +22,32 @@ const routeInfos = [
         path: "/",
         component: HomePage,
         name: "home",
+        meta: {
+          middleware: [loginTokensCheck],
+        },
       },
       {
         path: "/meals",
         component: MealsPage,
         name: "meal",
+        meta: {
+          middleware: [loginTokensCheck],
+        },
       },
       {
         path: "/foodPage/:id",
         component: FoodPage,
         name: "food",
+        meta: {
+          middleware: [loginTokensCheck],
+        },
       },
       {
         path: "/cart",
         component: CartPage,
         name: "cart",
         meta: {
-          middleware: [authCheck],
+          middleware: [authCheck, loginTokensCheck],
         },
       },
       {
@@ -44,7 +55,7 @@ const routeInfos = [
         component: UserOrderHistoryPage,
         name: "orders",
         meta: {
-          middleware: [authCheck],
+          middleware: [authCheck, loginTokensCheck],
         },
       },
       {
@@ -91,14 +102,18 @@ router.beforeEach((to, from, next) => {
     return next();
   }
   const middleware = to.meta.middleware;
+
   const context = {
     to,
     from,
     next,
     store,
   };
+
   return middleware[0]({
     ...context,
+    next: middlewarePipeline(context, middleware, 1),
   });
 });
+
 export default router;
