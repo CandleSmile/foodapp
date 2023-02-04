@@ -4,11 +4,7 @@ const fs = require("fs");
 module.exports = defineConfig({
   devServer: {
     host: "0.0.0.0",
-
     port: 8081,
-    client: {
-      webSocketURL: "ws://0.0.0.0:8081/ws",
-    },
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
