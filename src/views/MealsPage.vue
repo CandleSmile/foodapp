@@ -160,10 +160,12 @@ export default {
     watch(
       () => route.query,
       (newValue) => {
-        filters = parseQueryStringToFilters(newValue);
-        updateSelectedFilters(filters);
-        updateFilterTags(filters);
-        getMeals(filters);
+        if (route.name == "meal") {
+          filters = parseQueryStringToFilters(newValue);
+          updateSelectedFilters(filters);
+          updateFilterTags(filters);
+          getMeals(filters);
+        }
       }
     );
 

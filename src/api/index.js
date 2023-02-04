@@ -20,7 +20,7 @@ const api = {
         } = await post(apiUrls.getMealsUrl, {
           searchString: searchFilter,
           categoryId: catFilter == "" ? null : catFilter,
-          idsIngredients:
+          ingredientIds:
             ingredientsFilter != "" ? ingredientsFilter.split(",") : [],
         });
 
