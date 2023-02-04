@@ -1,145 +1,198 @@
 <template>
-  <FilterTags :initial-filter-tags="selectedFilterTags"></FilterTags>
+  <FilterTags @delete-tag="deleteFromFilters" :filter-tags="filterTags" />
   <FilterPanel
     :ingredients-options="ingredientsOptions"
+    :checked-ingredients="checkedIngredients"
     :cat-options="catOptions"
-    v-model:initial-category="selectedCategory"
-    v-model:initial-ingredients-options="selectedIngredients"
-  ></FilterPanel>
-  <LoadingContent v-if="loading" />
-  <Listfood v-else title-list="Meals" :meals="meals" :error="error"></Listfood>
+    :category="category"
+    @filter="onFilter"
+    @update-category="updateSelectedCat"
+    @update-ingredients="updateSelectedIngredients"
+  />
+  <AppLoader v-if="loading" :is-dark="false" />
+  <template v-else>
+    <ListFood
+      v-if="mealsList && mealsList.length > 0"
+      :meals-list="mealsList"
+      title-list="Meals"
+      @change-quantity="updateQuantity"
+      @add-to-cart="addToCart"
+    />
+    <div
+      class="list-food__no-meals-data"
+      v-else-if="mealsList && mealsList.length == 0"
+    >
+      <p>Meals were not found</p>
+    </div>
+    <div class="list-food__error" v-else>
+      <p>There war an error {{ error }}</p>
+    </div>
+  </template>
 </template>
 <script>
-import Listfood from "../components/Listfood.vue";
+import ListFood from "../components/ListFood.vue";
 import FilterTags from "../components/FilterTags.vue";
 import FilterPanel from "../components/FilterPanel.vue";
-import LoadingContent from "../components/general/LoadingContent.vue";
-import { watch, ref, toRaw } from "vue";
-import { useRoute } from "vue-router";
-import { parseQueryStringToFilters } from "../helpers/filters";
-import { foodApi } from "../api/index.js";
+import AppLoader from "../components/general/AppLoader.vue";
 import { FilterType } from "@/const/filterType";
+import { watch, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { parseQueryStringToFilters } from "../helpers/filters";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+
+import {
+  GET_FILTERING_MEAL_ACTION,
+  UPDATE_SELECTED_FILTERS_ACTION,
+  UPDATE_FILTER_TAGS_ACTION,
+  GET_INGREDIENTS_OPTIONS_ACTION,
+  GET_CATEGORY_OPTIONS_ACTION,
+  LOADING,
+  ERROR,
+  MEALS,
+  FILTER_TAGS,
+  INGREDIENT_OPTIONS,
+  CATEGORY_OPTIONS,
+  SELECTED_CATEGORY,
+  SELECTED_INGREDIENTS,
+  UPDATE_SELECTED_CATEGORY_ACTION,
+  UPDATE_SELECTED_INGREDIENTS_ACTION,
+  UPDATE_QUANTITY_OF_MEAL_ACTION,
+  ADD_TO_CART_ACTION,
+} from "@/store/storeConstants";
+
+const { useGetters: useMealsGetters, useActions: useMealsActions } =
+  createNamespacedHelpers("meals");
+const { useActions: useFiltersActions, useGetters: useFiltersGetters } =
+  createNamespacedHelpers("filters");
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
 export default {
   name: "MealsPage",
   components: {
-    Listfood,
+    ListFood,
     FilterTags,
     FilterPanel,
-    LoadingContent,
+    AppLoader,
   },
 
-  async setup() {
+  setup() {
+    const router = useRouter();
     const route = useRoute();
 
-    const meals = ref(null);
-    const loading = ref(true);
-    const error = ref(null);
-    const catOptions = ref([]);
-    const ingredientsOptions = ref([]);
-    const selectedCategory = ref("");
-    const selectedIngredients = ref([]);
-    const selectedFilterTags = ref([]);
     let filters = parseQueryStringToFilters(route.query);
+    const {
+      [MEALS]: mealsList,
+      [ERROR]: error,
+      [LOADING]: loading,
+    } = useMealsGetters([MEALS, ERROR, LOADING]);
+    const {
+      [GET_FILTERING_MEAL_ACTION]: getMeals,
+      [UPDATE_QUANTITY_OF_MEAL_ACTION]: updateQuantity,
+    } = useMealsActions([
+      GET_FILTERING_MEAL_ACTION,
+      UPDATE_QUANTITY_OF_MEAL_ACTION,
+    ]);
 
-    //getting data of meals by parsed filters
-    const fetchData = async (filtersFromQuery) => {
-      loading.value = true;
-      try {
-        const info = await foodApi.food.get.foodByFilters(filtersFromQuery);
-        if (!info.ok) {
-          error.value = info.error?.message;
-        } else {
-          meals.value = info.data ?? [];
-        }
-      } catch (err) {
-        error.value = err.message;
-      } finally {
-        loading.value = false;
+    const {
+      [FILTER_TAGS]: filterTags,
+      [INGREDIENT_OPTIONS]: ingredientsOptions,
+      [CATEGORY_OPTIONS]: catOptions,
+      [SELECTED_CATEGORY]: category,
+      [SELECTED_INGREDIENTS]: checkedIngredients,
+    } = useFiltersGetters([
+      FILTER_TAGS,
+      INGREDIENT_OPTIONS,
+      CATEGORY_OPTIONS,
+      SELECTED_CATEGORY,
+      SELECTED_INGREDIENTS,
+    ]);
+    const {
+      [UPDATE_SELECTED_FILTERS_ACTION]: updateSelectedFilters,
+      [UPDATE_FILTER_TAGS_ACTION]: updateFilterTags,
+      [GET_INGREDIENTS_OPTIONS_ACTION]: getIngredientsOptions,
+      [GET_CATEGORY_OPTIONS_ACTION]: getCategoryOptions,
+      [UPDATE_SELECTED_CATEGORY_ACTION]: updateSelectedCat,
+      [UPDATE_SELECTED_INGREDIENTS_ACTION]: updateSelectedIngredients,
+    } = useFiltersActions([
+      UPDATE_SELECTED_FILTERS_ACTION,
+      UPDATE_FILTER_TAGS_ACTION,
+      GET_INGREDIENTS_OPTIONS_ACTION,
+      GET_CATEGORY_OPTIONS_ACTION,
+      UPDATE_SELECTED_CATEGORY_ACTION,
+      UPDATE_SELECTED_INGREDIENTS_ACTION,
+    ]);
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
+    ]);
+
+    // press on filter button
+    const onFilter = (category, checkedIngredients) => {
+      let routeQuery = Object.assign({}, route.query);
+
+      if (category && category != "") {
+        routeQuery[[FilterType.CATEGORY]] = category;
+      } else {
+        delete routeQuery[[FilterType.CATEGORY]];
       }
+
+      if (checkedIngredients != "") {
+        routeQuery[[FilterType.INGREDIENTS]] = checkedIngredients.join(",");
+      } else delete routeQuery[[FilterType.INGREDIENTS]];
+
+      router.push({ name: "meal", query: routeQuery });
     };
 
-    //getting filter's options
-    const fetchFiltersOptions = async () => {
-      try {
-        const catList = await foodApi.category.get.listCategories();
-        if (catList.ok && catList.data?.length > 0) {
-          catList.data.forEach((cat) => catOptions.value.push(cat.strCategory));
-        } else if (!catList.ok) {
-          catOptions.value.push("can't load categories");
-        }
-      } catch (err) {
-        catOptions.value.push("can't load categories");
-      }
-      const ingredientList = await foodApi.ingredients.get.ingredientsList();
-      try {
-        if (ingredientList.ok & (ingredientList.data?.length > 0)) {
-          ingredientList.data.forEach((ing) =>
-            ingredientsOptions.value.push(ing.strIngredient)
-          );
-        } else if (!ingredientList.ok) {
-          ingredientsOptions.value.push("can't load ingredients");
-        }
-      } catch (err) {
-        ingredientsOptions.value.push("can't load ingredients");
-      }
-    };
-
-    //update selected filters with parsed filters
-    const updateSelectedFilters = (filtersFromQuery) => {
-      selectedCategory.value = toRaw(filtersFromQuery[[FilterType.CATEGORY]]);
-      selectedIngredients.value =
-        filtersFromQuery[[FilterType.INGREDIENTS]] &&
-        filtersFromQuery[[FilterType.INGREDIENTS]] != ""
-          ? toRaw(filtersFromQuery[[FilterType.INGREDIENTS]]).split(",")
+    //press on delete icon in filter tags
+    const deleteFromFilters = (tag) => {
+      let routeQuery = Object.assign({}, route.query);
+      if (tag.type === FilterType.INGREDIENTS) {
+        let ingredientsArr = routeQuery[[tag.type]]
+          ? routeQuery[[tag.type]].split(",")
           : [];
+        ingredientsArr = ingredientsArr.filter((ing) => ing != tag.val.id);
+        ingredientsArr.length > 0
+          ? (routeQuery[[tag.type]] = ingredientsArr.join(","))
+          : delete routeQuery[[tag.type]];
+      } else delete routeQuery[[tag.type]];
+
+      router.push({ name: "meal", query: routeQuery });
     };
 
-    //update selectedFilterTages with parsed filters
-    const updateSelectedFilterTags = (filtersFromQuery) => {
-      selectedFilterTags.value = [];
-      for (let key in filters) {
-        if (key === FilterType.INGREDIENTS && filtersFromQuery[key] != "") {
-          const ingredientsArr = filtersFromQuery[key].split(",");
-          ingredientsArr.forEach((ing) =>
-            selectedFilterTags.value.push({
-              type: FilterType.INGREDIENTS,
-              val: ing,
-            })
-          );
-        } else if (filtersFromQuery[key] != "") {
-          selectedFilterTags.value.push({
-            type: key,
-            val: filtersFromQuery[key],
-          });
-        }
-      }
-    };
     watch(
       () => route.query,
       (newValue) => {
-        filters = parseQueryStringToFilters(newValue);
-        updateSelectedFilters(filters);
-        updateSelectedFilterTags(filters);
-        fetchData(filters);
+        if (route.name == "meal") {
+          filters = parseQueryStringToFilters(newValue);
+          updateSelectedFilters(filters);
+          updateFilterTags(filters);
+          getMeals(filters);
+        }
       }
     );
-    //get and set initial info and filters
-    await fetchFiltersOptions();
-    await fetchData(filters);
-    updateSelectedFilters(filters);
-    updateSelectedFilterTags(filters);
 
-    //get and set info and filters after changes in url
+    //get and set initial info and filter's object
+    onMounted(async () => {
+      getMeals(filters);
+      await getIngredientsOptions(filters);
+      await getCategoryOptions(filters);
+      updateSelectedFilters(filters);
+      updateFilterTags(filters);
+    });
 
     return {
-      meals,
       loading,
+      mealsList,
       error,
-      catOptions,
+      filterTags,
+      onFilter,
+      deleteFromFilters,
       ingredientsOptions,
-      selectedCategory,
-      selectedIngredients,
-      selectedFilterTags,
+      catOptions,
+      category,
+      checkedIngredients,
+      updateSelectedCat,
+      updateSelectedIngredients,
+      updateQuantity,
+      addToCart,
     };
   },
 };

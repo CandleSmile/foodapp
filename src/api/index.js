@@ -1,6 +1,8 @@
-import { getAxiosReq } from "./axiosReq";
+import { post, get, anyRequest } from "./axiosRequests";
 import apiUrls from "./consts/apiUrls.js";
 import { FilterType } from "../const/filterType";
+import { statusCodes } from "./consts/statusCodes";
+
 const api = {
   food: {
     get: {
@@ -9,92 +11,140 @@ const api = {
         const searchFilter = filters[FilterType.SEARCH];
         const ingredientsFilter = filters[FilterType.INGREDIENTS];
 
-        //1. Search query (in any case to get all info)
-        const res = await getAxiosReq(
-          `${apiUrls.getSearchProducts}${searchFilter}`
-        );
+        //1. Search and ingredients query
 
-        let meals = res.data?.meals;
-        if (!meals) {
-          return { ok: res.ok, data: [], error: null };
-        }
-        //2. Filter by category if chosen
-        if (catFilter != "") {
-          meals = meals.filter((f) =>
-            f.strCategory.toLowerCase().includes(catFilter.toLowerCase())
-          );
-        }
-        //2. Filter by ingredients if chosen
-        if (ingredientsFilter != "") {
-          const resByIngredients = await getAxiosReq(
-            `${apiUrls.getFoodByIngredients}${ingredientsFilter}`
-          );
-
-          if (resByIngredients.ok && resByIngredients.data) {
-            if (!resByIngredients.data.meals) {
-              meals = [];
-            }
-            meals = meals.filter(
-              (meal) =>
-                resByIngredients.data.meals.findIndex(
-                  (mbi) => mbi.idMeal == meal.idMeal
-                ) >= 0
-            );
-          }
-        }
-
-        return {
-          ok: res.ok,
+        const {
           data: meals,
-          error: res.error,
-        };
+          status,
+          error,
+        } = await post(apiUrls.getMealsUrl, {
+          searchString: searchFilter,
+          categoryId: catFilter == "" ? null : catFilter,
+          ingredientIds:
+            ingredientsFilter != "" ? ingredientsFilter.split(",") : [],
+        });
+
+        return { meals, error, status };
       },
-      initialFoods: async () => {
-        const res = await getAxiosReq(`${apiUrls.getLatestProducts}`);
-        return {
-          ok: res.ok,
-          data: res.data?.meals,
-          error: res.error,
-        };
+      latestMeals: async () => {
+        let {
+          status,
+          data: meals,
+          error,
+        } = await get(apiUrls.getLatestMealsUrl);
+
+        return { status, meals, error };
       },
 
       foodById: async (id) => {
-        const url = `${apiUrls.getFoodByIdUrl}${id}`;
-        return await getAxiosReq(url);
+        return await get(apiUrls.getFoodByIdUrl, { id });
       },
     },
   },
-  category: {
+  categories: {
     get: {
-      allCategoriesWithImages: async () => {
-        const res = await getAxiosReq(`${apiUrls.getCategoriesUrl}`);
-
-        return {
-          ok: res.ok,
-          data: res.data?.categories,
-          error: res.error,
-        };
-      },
       listCategories: async () => {
-        const res = await getAxiosReq(`${apiUrls.getListCategories}`);
-        return {
-          ok: res.ok,
-          data: res.data?.meals,
-          error: res.error,
-        };
+        const {
+          status,
+          data: categories,
+          error,
+        } = await get(apiUrls.getCategoriesUrl);
+
+        return { status, categories, error };
       },
     },
   },
   ingredients: {
     get: {
-      ingredientsList: async () => {
-        const res = await getAxiosReq(`${apiUrls.getIngredientsList}`);
+      ingredients: async () => {
+        const { status, data, error } = await get(apiUrls.getIngredientsUrl);
         return {
-          ok: res.ok,
-          data: res.data?.meals,
-          error: res.error,
+          status,
+          data,
+          error,
         };
       },
+    },
+  },
+
+  shop: {
+    post: {
+      buy: async (items) => {
+        const cart = {
+          cartItems: items.map((item) => ({
+            mealId: item.id,
+            quantity: item.quantity,
+            price: item.price,
+            title: item.title,
+          })),
+        };
+        const { status, data, error } = await post(apiUrls.makeOrderUrl, cart);
+        return { status, data, error };
+      },
+    },
+    get: {
+      orders: async () => {
+        const { status, data, error } = await get(apiUrls.getOrderUrl);
+        return { status, data, error };
+      },
+    },
+  },
+
+  auth: {
+    login: async (username, password) => {
+      const { status, data, error } = await post(
+        apiUrls.loginUrl,
+
+        {
+          username: username,
+          password: password,
+        }
+      );
+      return { status, data, error };
+    },
+
+    logOut: async () => {
+      try {
+        const { status, error } = await post(apiUrls.logOutUrl);
+        return { status, error };
+      } catch (err) {
+        return {
+          status: statusCodes.UnexpectedError,
+          error: new Error("Something went wrong"),
+        };
+      }
+    },
+
+    register: async (username, password, passwordConfirmation) => {
+      const { status, data, error } = await post(apiUrls.registerUrl, {
+        username: username,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      });
+      return { status, data, error };
+    },
+
+    checkLogin: async (username) => {
+      const { status, data, error } = await anyRequest(
+        apiUrls.checkLogin,
+        "POST",
+        {
+          userName: username,
+        }
+      );
+      return { status, data, error };
+    },
+
+    getUsers: async () => {
+      const { status, data, error } = await get("auth/GetUsers");
+      return { status, data, error };
+    },
+  },
+
+  loadDb: {
+    load: async (model) => {
+      const { status, data, error } = await post("DbLoad/LoadDb", model);
+      return { status, data, error };
     },
   },
 };

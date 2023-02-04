@@ -1,71 +1,113 @@
 <template>
-  <LoadingContent v-if="loadingCat" />
+  <AppLoader v-if="loadingCat || loading" :is-dark="false" />
 
-  <ListCategories v-else :data="categories" :error="errorCat"></ListCategories>
-  <LoadingContent v-if="loading" />
-  <Listfood
-    v-else
-    title-list="Latest Meals"
-    :meals="meals"
-    :error="error"
-  ></Listfood>
+  <template v-else>
+    <ListCategories
+      :categories-list="categoriesList"
+      v-if="categoriesList && categoriesList.length > 0"
+    />
+    <div
+      class="categories-item__no-category-data"
+      v-else-if="categoriesList && categoriesList.length == 0"
+    >
+      <p>Categories were not found</p>
+    </div>
+    <div class="categories-item__error" v-else>
+      <p>There war an error {{ errorCat }}</p>
+    </div>
+
+    <ListFood
+      v-if="mealsList && mealsList.length > 0"
+      title-list="Latest Meals"
+      :meals-list="mealsList"
+      @change-quantity="updateQuantity"
+      @add-to-cart="addToCart"
+    />
+    <div
+      class="list-food__no-meals-data"
+      v-else-if="mealsList && mealsList.length == 0"
+    >
+      <p>Meals were not found</p>
+    </div>
+    <div class="list-food__error" v-else>
+      <p>There war an error {{ errorMeal }}</p>
+    </div>
+  </template>
 </template>
 
 <script>
-import Listfood from "../components/Listfood.vue";
+import { onMounted } from "vue";
+import ListFood from "../components/ListFood.vue";
 import ListCategories from "../components/ListCategories.vue";
-import LoadingContent from "../components/general/LoadingContent.vue";
-import { foodApi } from "../api/index.js";
-import { ref } from "vue";
+import AppLoader from "../components/general/AppLoader.vue";
+
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+import {
+  GET_LATEST_MEAL_ACTION,
+  GET_CATEGORIES_ACTION,
+  CATEGORIES,
+  LOADING,
+  ERROR,
+  MEALS,
+  UPDATE_QUANTITY_OF_MEAL_ACTION,
+  ADD_TO_CART_ACTION,
+} from "@/store/storeConstants";
+
+const { useGetters: useCategoriesGetters, useActions: useCategoriesActions } =
+  createNamespacedHelpers("categories");
+const { useGetters: useMealsGetters, useActions: useMealsActions } =
+  createNamespacedHelpers("meals");
+const { useActions: useCartActions } = createNamespacedHelpers("cart");
+
 export default {
   name: "HomePage",
   components: {
-    Listfood,
+    ListFood,
     ListCategories,
-    LoadingContent,
+    AppLoader,
   },
-  async setup() {
-    let meals = ref(null);
-    let loading = ref(true);
-    let error = ref(null);
+  setup() {
+    const {
+      [CATEGORIES]: categoriesList,
+      [ERROR]: errorCat,
+      [LOADING]: loadingCat,
+    } = useCategoriesGetters([CATEGORIES, ERROR, LOADING]);
 
-    let categories = ref(null);
-    let loadingCat = ref(true);
-    let errorCat = ref(null);
+    const {
+      [MEALS]: mealsList,
+      [ERROR]: errorMeal,
+      [LOADING]: loading,
+    } = useMealsGetters([MEALS, ERROR, LOADING]);
 
-    try {
-      const catInfo = await foodApi.category.get.allCategoriesWithImages();
-      if (!catInfo.ok) {
-        errorCat.value = catInfo.error?.message;
-      } else {
-        categories.value = catInfo.data ?? [];
-      }
-    } catch (err) {
-      errorCat.value = err.message;
-    } finally {
-      loadingCat.value = false;
-    }
+    const { [GET_CATEGORIES_ACTION]: getCategories } = useCategoriesActions([
+      GET_CATEGORIES_ACTION,
+    ]);
 
-    try {
-      const info = await foodApi.food.get.initialFoods();
-      if (!info.ok) {
-        error.value = info.error?.message;
-      } else {
-        meals.value = info.data ?? [];
-      }
-    } catch (err) {
-      error.value = err.message;
-    } finally {
-      loading.value = false;
-    }
+    const {
+      [GET_LATEST_MEAL_ACTION]: getMeals,
+      [UPDATE_QUANTITY_OF_MEAL_ACTION]: updateQuantity,
+    } = useMealsActions([
+      GET_LATEST_MEAL_ACTION,
+      UPDATE_QUANTITY_OF_MEAL_ACTION,
+    ]);
+    const { [ADD_TO_CART_ACTION]: addToCart } = useCartActions([
+      ADD_TO_CART_ACTION,
+    ]);
+
+    onMounted(() => {
+      getCategories();
+      getMeals();
+    });
 
     return {
-      meals,
       loading,
-      error,
-      categories,
       loadingCat,
+      categoriesList,
       errorCat,
+      mealsList,
+      errorMeal,
+      updateQuantity,
+      addToCart,
     };
   },
 };

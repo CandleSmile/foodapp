@@ -1,3 +1,9 @@
+//media-points
+$mediaExtraLarge: 1700px;
+$mediaSmallScreen: 1024px;
+$mediaTablets: 768px;
+$mediaMobile: 480px;
+
 //begin main-colors-block
 $primary-dark-color: #d55448;
 $primary-light-color: #ffa577;
@@ -70,3 +76,20 @@ $meal-items-gap-small: 10px;
     $width: calc((100% / #{$item-count}) - (#{$items-gap} * (#{$item-count} - 1) / #{$item-count}));
     @return #{$width};
 }
+
+$login-link-color: $primary-light-color;
+
+$input-field-border-color: $secondary-dark-color;
+$input-field-border-error-color: $primary-dark-color;
+$input-field-color: #000;
+$errors-color: $primary-dark-color;
+
+$add-to-cart-background-color: $primary-light-color;
+ $in-cart-background-color: $primary-dark-color;
+
+$header-height-large:105px ;
+$header-height-small:50px;
+$header-background-color: #fff;
+
+$loading-color:$secondary-dark-color;
+$loading-color-dark-theme: #fff;

@@ -1,30 +1,34 @@
 <template>
-  <section class="filter-tags-panel" v-if="filterTags && filterTags.length > 0">
+  <section class="filter-tags-panel" v-if="tags && tags.length > 0">
     <ul class="filter-tags-panel__list">
       <li
         :class="[tag.className, 'filter-tags-panel__list-item']"
-        v-for="(tag, index) in filterTags"
-        :key="index"
+        v-for="tag in tags"
+        :key="tag.val.id"
       >
-        {{ tag.val }}
+        {{ tag.val.name }}
         <span
           class="filter-tags-panel__list-item-remove-filter"
-          @click="deleteFromFilters(tag)"
+          @click="$emit('deleteTag', tag)"
         ></span>
       </li>
     </ul>
   </section>
 </template>
-<script setup>
-import { FilterType } from "@/const/filterType";
-import { useRouter, useRoute } from "vue-router";
-import { defineProps, computed } from "vue";
-const props = defineProps({
-  initialFilterTags: Array,
-});
 
-const router = useRouter();
-const route = useRoute();
+<script setup>
+import { defineEmits, defineProps, computed } from "vue";
+import { FilterType } from "@/const/filterType";
+
+defineEmits(["deleteTag"]);
+const props = defineProps(["filterTags"]);
+
+const tags = computed(() =>
+  props.filterTags?.map((tag) => ({
+    ...tag,
+    className: classByTagType(tag.type),
+  }))
+);
 
 const classByTagType = (tagType) => {
   let className = "";
@@ -40,28 +44,8 @@ const classByTagType = (tagType) => {
   }
   return className;
 };
-
-const filterTags = computed(() =>
-  props.initialFilterTags.map((f) => {
-    return { ...f, className: classByTagType(f.type) };
-  })
-);
-
-const deleteFromFilters = (tag) => {
-  let routeQuery = Object.assign({}, route.query);
-  if (tag.type === FilterType.INGREDIENTS) {
-    let ingredientsArr = routeQuery[[tag.type]]
-      ? routeQuery[[tag.type]].split(",")
-      : [];
-    ingredientsArr = ingredientsArr.filter((ing) => ing != tag.val);
-    ingredientsArr.length > 0
-      ? (routeQuery[[tag.type]] = ingredientsArr.join(","))
-      : delete routeQuery[[tag.type]];
-  } else delete routeQuery[[tag.type]];
-
-  router.push({ name: "meal", query: routeQuery });
-};
 </script>
+
 <style lang="scss">
 .filter-tags-panel__list {
   display: flex;
@@ -84,6 +68,7 @@ const deleteFromFilters = (tag) => {
       height: 1rem;
       position: relative;
       cursor: pointer;
+
       &::before,
       &::after {
         content: "";
@@ -96,16 +81,20 @@ const deleteFromFilters = (tag) => {
         margin: -0.05rem 0 0 -0.2rem;
         transform: rotate(-45deg);
       }
+
       &::after {
         transform: rotate(45deg);
       }
     }
+
     &--category-theme {
       background: $filter-tag-cat-background;
     }
+
     &--search-theme {
       background: $filter-tag-search-background;
     }
+
     &--ingredients-theme {
       background: $filter-tag-ingredients-background;
     }

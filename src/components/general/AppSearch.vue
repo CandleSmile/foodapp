@@ -1,46 +1,28 @@
 <template>
-  <div class="search-form">
+  <div class="app-search">
     <input
       type="text"
       :placeholder="placeholder"
-      class="search-form__input"
-      :id="id"
-      v-model="query"
-      @keyup.enter="onSearch"
+      class="app-search__input"
+      :value="query"
+      @input="$emit('updateQuery', $event.target.value)"
+      @keyup.enter="$emit('search', $event.target.value)"
     />
-    <span class="search-form__icon" @click="onSearch"></span>
+    <span class="app-search__icon" @click="$emit('search', query)"></span>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from "vue";
-const emit = defineEmits(["onSearch", "update:modelValue"]);
-const props = defineProps({
-  id: String,
+import { defineProps, defineEmits } from "vue";
+defineEmits(["search", "updateQuery"]);
+defineProps({
   placeholder: String,
-  modelValue: String,
+  query: String,
 });
-
-const query = computed({
-  get() {
-    return props.modelValue;
-  },
-  set(value) {
-    emit("update:modelValue", value);
-  },
-});
-
-const onSearch = () => {
-  console.log(query);
-  emit("onSearch", query.value);
-};
 </script>
 
 <style scoped lang="scss">
-.header__search-form {
-  align-self: center;
-}
-.search-form {
+.app-search {
   position: relative;
 
   &__input {
@@ -56,16 +38,20 @@ const onSearch = () => {
     color: $search-text-color;
     //fixing probleams with autocomplete styles
     -webkit-background-clip: text;
+
     &::placeholder {
       color: $search-placeholder-color;
     }
+
     &:focus {
       outline: none;
+
       &::placeholder {
         opacity: 0;
       }
     }
   }
+
   &__icon {
     position: absolute;
     height: 12px;
@@ -75,7 +61,8 @@ const onSearch = () => {
     left: 12px;
     top: 9px;
     border-radius: 100%;
-    &:after {
+
+    &::after {
       content: "";
       position: absolute;
       background: $search-icon-color;
