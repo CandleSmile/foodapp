@@ -108,8 +108,8 @@ router.beforeEach((to, from, next) => {
     from,
     next,
     store,
+    router,
   };
-
   return middleware[0]({
     ...context,
     next: middlewarePipeline(context, middleware, 1),

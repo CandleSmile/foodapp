@@ -58,7 +58,6 @@ const mutations = {
   },
   setError(state, error) {
     state.error = error?.message ?? "";
-    console.log(state.error);
   },
   setLoading(state, isLoading) {
     state.loading = isLoading;

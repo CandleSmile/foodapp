@@ -1,9 +1,6 @@
-export default function authCheck({ to, next, store }) {
+export default function authCheck({ to, next, store, router }) {
   if (!store.state.auth.status.loggedIn) {
-    return next({
-      name: "login",
-      query: { redirect: to.fullPath },
-    });
+    return router.push({ name: "login", query: { redirect: to.fullPath } });
   }
   return next();
 }
