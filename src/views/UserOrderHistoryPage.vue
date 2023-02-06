@@ -3,7 +3,10 @@
   <article v-else class="user-order-history">
     <h2 class="user-order-history__title">Your orders history</h2>
 
-    <ul v-if="error == ''" class="user-order-history__order-list">
+    <ul
+      v-if="error == '' && orders && orders.length > 0"
+      class="user-order-history__order-list"
+    >
       <li
         v-for="order in orders"
         :key="order.id"
@@ -59,6 +62,9 @@
         </div>
       </li>
     </ul>
+    <div v-else-if="error == '' && orders && orders.length == 0">
+      <p>You haven't orders yet.</p>
+    </div>
     <div class="user-order-history__error" v-else>
       <p>There war an error {{ error }}</p>
     </div>
