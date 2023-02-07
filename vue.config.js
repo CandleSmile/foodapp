@@ -8,6 +8,9 @@ module.exports = defineConfig({
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
+    client: {
+      webSocketURL: "ws://0.0.0.0:8081/ws",
+    },
     https: {
       key: fs.readFileSync("./certs/localhost-key.pem"),
       cert: fs.readFileSync("./certs/localhost.pem"),

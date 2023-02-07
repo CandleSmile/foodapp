@@ -4,7 +4,7 @@ import MealsPage from "../views/MealsPage.vue";
 import CartPage from "../views/CartPage.vue";
 import NotFound from "../views/NotFound.vue";
 import LoginPage from "../views/LoginPage.vue";
-import UserOrderHistoryPage from "../views/UserOrderHistoryPage.vue";
+import ProfilePage from "../views/ProfilePage.vue";
 
 import RegistrationPage from "../views/RegistrationPage.vue";
 import authCheck from "./middlewares/authCheck";
@@ -51,9 +51,9 @@ const routeInfos = [
         },
       },
       {
-        path: "/orders",
-        component: UserOrderHistoryPage,
-        name: "orders",
+        path: "/profile",
+        component: ProfilePage,
+        name: "profile",
         meta: {
           middleware: [authCheck, loginTokensCheck],
         },

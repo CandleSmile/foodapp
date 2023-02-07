@@ -1,10 +1,7 @@
 <template>
-  <AppLoader v-if="loading" :is-dark="false" />
-  <article v-else class="user-order-history">
-    <h2 class="user-order-history__title">Your orders history</h2>
-
+  <article class="user-order-history">
     <ul
-      v-if="error == '' && orders && orders.length > 0"
+      v-if="orders && orders.length > 0"
       class="user-order-history__order-list"
     >
       <li
@@ -62,37 +59,14 @@
         </div>
       </li>
     </ul>
-    <div v-else-if="error == '' && orders && orders.length == 0">
+    <div v-else>
       <p>You haven't orders yet.</p>
-    </div>
-    <div class="user-order-history__error" v-else>
-      <p>There war an error {{ error }}</p>
     </div>
   </article>
 </template>
 <script setup>
-import { onMounted } from "vue";
-import { createNamespacedHelpers } from "vuex-composition-helpers";
-
-import {
-  GET_ORDERS_ACTION,
-  ORDERS,
-  ERROR,
-  LOADING,
-} from "@/store/storeConstants";
-
-import AppLoader from "../components/general/AppLoader.vue";
-const { useGetters, useActions } = createNamespacedHelpers("orders");
-const {
-  [ORDERS]: orders,
-  [ERROR]: error,
-  [LOADING]: loading,
-} = useGetters([ORDERS, ERROR, LOADING]);
-const { [GET_ORDERS_ACTION]: getOrders } = useActions([GET_ORDERS_ACTION]);
-
-onMounted(async () => {
-  await getOrders();
-});
+import { defineProps } from "vue";
+defineProps({ orders: Array });
 </script>
 <style lang="scss">
 .user-order-history {

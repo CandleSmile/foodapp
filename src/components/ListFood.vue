@@ -89,9 +89,10 @@ export default {
 const mapMeals = (meals) =>
   meals?.map((meal) => ({
     ...meal,
-    tagsString: meal.tags.reduce((tagString, tag) => {
-      return tagString + tagString != "" ? ", " : "" + tag.name;
-    }, ""),
+    tagsString: meal.tags.reduce(
+      (tagString, tag) => tagString + (tagString != "" ? ", " : "") + tag.name,
+      ""
+    ),
   }));
 </script>
 

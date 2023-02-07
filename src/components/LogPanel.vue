@@ -1,5 +1,5 @@
 <template>
-  <RouterLink class="profile-link" v-if="loggedIn" :to="{ name: 'orders' }">
+  <RouterLink class="profile-link" v-if="loggedIn" :to="{ name: 'profile' }">
     Profile
   </RouterLink>
   <RouterLink class="login-link" v-if="!loggedIn" :to="{ name: 'login' }">

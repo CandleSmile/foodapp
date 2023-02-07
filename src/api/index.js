@@ -135,8 +135,11 @@ const api = {
       return { status, data, error };
     },
 
-    getUsers: async () => {
-      const { status, data, error } = await get("auth/GetUsers");
+    changePassword: async (password, passwordConfirmation) => {
+      const { status, data, error } = await post(apiUrls.changePassword, {
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      });
       return { status, data, error };
     },
   },

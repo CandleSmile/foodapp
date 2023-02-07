@@ -10,6 +10,7 @@ import {
   CHECK_LOGIN_ACTION,
   SHOW_NOTIFY_INFO,
   CLEAR_NOTIFY_INFO_ACTION,
+  CHANGE_PASSWORD_ACTION,
 } from "@/store/storeConstants";
 import { foodApi } from "@/api/index";
 
@@ -21,7 +22,6 @@ const state = user
   ? {
       status: { loggedIn: true },
       user,
-      users: null,
       popupInfo: "",
       error: "",
       loading: false,
@@ -29,7 +29,6 @@ const state = user
   : {
       status: { loggedIn: false },
       user: "",
-      users: null,
       popupInfo: "",
       error: "",
       loading: false,
@@ -42,12 +41,11 @@ const getters = {
   [ERROR]: ({ error }) => error,
   [LOADING]: ({ loading }) => loading,
   [SHOW_NOTIFY_INFO]: ({ popupInfo }) => popupInfo,
-  users: ({ users }) => users ?? [],
 };
 
 // actions
 const actions = {
-  async [LOGIN_ACTION]({ commit, dispatch }, { user, password }) {
+  async [LOGIN_ACTION]({ commit }, { user, password }) {
     commit("setError", "");
     commit("setLoading", true);
     try {
@@ -57,7 +55,6 @@ const actions = {
         localStorage.setItem("user", user);
         commit("setUser", user);
         commit("setLoggedIn", true);
-        await dispatch("getUsers");
       } else {
         commit(
           "setError",
@@ -127,9 +124,28 @@ const actions = {
     commit("setPopup", "");
   },
 
-  async getUsers({ commit }) {
-    const res = await foodApi.auth.getUsers();
-    commit("setUsers", res.data);
+  async [CHANGE_PASSWORD_ACTION](
+    { commit },
+    { password, passwordConfirmation }
+  ) {
+    commit("setError", "");
+    commit("setLoading", true);
+    try {
+      const res = await foodApi.auth.changePassword(
+        password,
+        passwordConfirmation
+      );
+      if (res.status == statusCodes.OK) {
+        commit("setPopup", "Your password has been changed");
+        document.forms["change-password"].reset();
+      } else {
+        commit("setError", res.error?.message);
+      }
+    } catch (err) {
+      commit("setError", err.message);
+    } finally {
+      commit("setLoading", false);
+    }
   },
 };
 
@@ -146,9 +162,6 @@ const mutations = {
   },
   setLoggedIn(state, loggedIn) {
     state.status.loggedIn = loggedIn;
-  },
-  setUsers(state, users) {
-    state.users = users;
   },
   setPopup(state, info) {
     state.popupInfo = info;

@@ -7,6 +7,7 @@ export default {
   loginUrl: "auth/login",
   logOutUrl: "auth/logout",
   registerUrl: "auth/register",
+  changePassword: "auth/changePassword",
   checkLogin: "auth/checkLogin",
   makeOrderUrl: "shop/makeOrder",
   getOrderUrl: "shop/getOrders",
