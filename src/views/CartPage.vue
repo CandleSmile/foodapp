@@ -48,6 +48,29 @@
         <div class="cart-list__item-col cart-list__item-col--5">&nbsp;</div>
       </li>
     </ul>
+    <div class="cart__delivery">
+      <h3 class="cart__delivery-title">
+        Choose your date and time slot for delivery:
+      </h3>
+      <AppDatePicker
+        :available-dates="deliveryAvailableDates"
+        :show-available-dates="true"
+        :enable-time-picker="false"
+        :modelValue="deliveryDate"
+        @handle-date="onHandleDate"
+        placeholder="Select delivery date"
+        class="cart__delivery-date"
+      />
+      <AppSelect
+        :options="deliveryAvailableTimeSlots"
+        :modelValue="deliveryTime"
+        @update:modelValue="(newValue) => updateSelectedTime(newValue)"
+        placeholder="Select time slot"
+        :multiple="false"
+        id="time"
+        class="cart__delivery-time"
+      />
+    </div>
     <div class="cart-buttons">
       <AppButton
         class="cart-buttons-purchase app-button--theme-light"
@@ -78,7 +101,9 @@
 </template>
 <script setup>
 import AppButton from "@/components/general/AppButton.vue";
+import AppSelect from "@/components/general/AppSelect.vue";
 import AppLoader from "@/components/general/AppLoader.vue";
+import AppDatePicker from "@/components/general/AppDatePicker.vue";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -91,6 +116,13 @@ import {
   LOADING,
   CHECKOUT_STATUS,
   CLEAR_CHECKOUT_ACTION,
+  GET_AVAILABLE_DATES_ACTION,
+  UPDATE_DATA_AND_AVAILABLE_TIME_OPTIONS,
+  DELIVERY_AVAILABLE_DATE_OPTIONS,
+  DELIVERY_AVAILABLE_TIME_OPTIONS,
+  DELIVERY_DATE,
+  DELIVERY_TIME,
+  UPDATE_SELECTED_TIME_ACTION,
 } from "@/store/storeConstants";
 const router = useRouter();
 const { useGetters, useActions } = createNamespacedHelpers("cart");
@@ -100,23 +132,47 @@ const {
   [MEALS_IN_CART]: mealsInCart,
   [LOADING]: loading,
   [CHECKOUT_STATUS]: checkOutStatus,
+  [DELIVERY_AVAILABLE_DATE_OPTIONS]: deliveryAvailableDates,
+  [DELIVERY_AVAILABLE_TIME_OPTIONS]: deliveryAvailableTimeSlots,
+  [DELIVERY_DATE]: deliveryDate,
+  [DELIVERY_TIME]: deliveryTime,
 } = useGetters([
   CART_COUNT,
   CART_TOTAL_PRICE,
   MEALS_IN_CART,
   LOADING,
   CHECKOUT_STATUS,
+  DELIVERY_AVAILABLE_DATE_OPTIONS,
+  DELIVERY_AVAILABLE_TIME_OPTIONS,
+  DELIVERY_DATE,
+  DELIVERY_TIME,
 ]);
 const {
   [DELETE_FROM_CART_ACTION]: deleteFromCart,
   [BUY_ACTION]: buy,
   [CLEAR_CHECKOUT_ACTION]: clearCheckout,
-} = useActions([DELETE_FROM_CART_ACTION, BUY_ACTION, CLEAR_CHECKOUT_ACTION]);
+  [GET_AVAILABLE_DATES_ACTION]: getDates,
+  [UPDATE_DATA_AND_AVAILABLE_TIME_OPTIONS]: updateDateAndTimeOptions,
+  [UPDATE_SELECTED_TIME_ACTION]: updateSelectedTime,
+} = useActions([
+  DELETE_FROM_CART_ACTION,
+  BUY_ACTION,
+  CLEAR_CHECKOUT_ACTION,
+  GET_AVAILABLE_DATES_ACTION,
+  UPDATE_DATA_AND_AVAILABLE_TIME_OPTIONS,
+  UPDATE_SELECTED_TIME_ACTION,
+]);
 
 const goToPurchase = () => {
   router.push({ name: "meal" });
 };
+
+const onHandleDate = (modelData) => {
+  updateDateAndTimeOptions(modelData);
+};
+
 onMounted(() => {
+  getDates();
   clearCheckout();
 });
 </script>
@@ -229,6 +285,26 @@ onMounted(() => {
 
     &-start-button {
       width: 150px;
+    }
+  }
+  &__delivery {
+    &-title {
+      font-size: 1em;
+      font-weight: 600;
+    }
+    &-time {
+      .v-select {
+        width: 100%;
+      }
+      & .app-select__custom-select .vs__search,
+      & .app-select__custom-select .vs__selected {
+        font-size: 1rem;
+        line-height: 1.5rem;
+        &:focus {
+          font-size: 1rem;
+          line-height: 1.5rem;
+        }
+      }
     }
   }
 }

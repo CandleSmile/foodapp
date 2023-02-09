@@ -31,7 +31,7 @@ const api = {
           status,
           data: meals,
           error,
-        } = await get(apiUrls.getLatestMealsUrl);
+        } = await get(apiUrls.getLatestMealsUrl, { count: 10, skip: 0 });
 
         return { status, meals, error };
       },
@@ -69,7 +69,9 @@ const api = {
 
   shop: {
     post: {
-      buy: async (items) => {
+      buy: async (items, deliveryDate, deliveryTime) => {
+        console.log(deliveryDate);
+        console.log(deliveryTime);
         const cart = {
           cartItems: items.map((item) => ({
             mealId: item.id,

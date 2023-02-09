@@ -1,7 +1,7 @@
 export default {
   getCategoriesUrl: "categories/getCategories",
   getMealsUrl: "meals/getMeals",
-  getLatestMealsUrl: "meals/getLatestMeals",
+  getLatestMealsUrl: "meals/GetMealsByCount",
   getFoodByIdUrl: "meals/getMeal",
   getIngredientsUrl: "ingredients/getIngredients",
   loginUrl: "auth/login",
