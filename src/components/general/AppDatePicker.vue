@@ -22,6 +22,14 @@
       @update:model-value="updateData"
       class="app-datepicker__date"
     />
+    <div
+      v-show="error && errors.length > 0"
+      class="app-datepicker__error"
+      v-for="error of errors"
+      :key="error.$uid"
+    >
+      {{ error.$message }}
+    </div>
   </div>
 </template>
 <script setup>
@@ -35,6 +43,7 @@ defineProps({
   modelValue: [Date, String],
   placeholder: String,
   enableTimePicker: Boolean,
+  errors: Array,
 });
 const emits = defineEmits(["handleDate"]);
 const updateData = (modelData) => {
@@ -42,6 +51,15 @@ const updateData = (modelData) => {
 };
 </script>
 <style lang="scss">
+.app-datepicker {
+  &__error {
+    color: $primary-dark-color;
+    font-size: 0.7rem;
+    text-align: left;
+    padding-bottom: 10px;
+    padding-top: 5px;
+  }
+}
 .dp__input {
   padding-top: 5px;
   padding-bottom: 5px;

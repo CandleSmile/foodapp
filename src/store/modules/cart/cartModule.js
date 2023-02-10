@@ -124,23 +124,24 @@ const actions = {
     commit("setCheckoutStatus", null);
   },
 
-  [GET_AVAILABLE_DATES_ACTION]({ commit }) {
-    const dates = [
-      new Date(),
-      new Date(new Date().setDate(new Date().getDate() + 1)),
-    ];
-    commit("setAvailableDateOptions", dates);
+  async [GET_AVAILABLE_DATES_ACTION]({ commit }) {
+    const result = await foodApi.shop.get.deliveryDates();
+    if (result.status == statusCodes.OK) {
+      commit("setAvailableDateOptions", result.data);
+    }
   },
 
-  [UPDATE_DATA_AND_AVAILABLE_TIME_OPTIONS]({ commit }, deliveryDate) {
+  async [UPDATE_DATA_AND_AVAILABLE_TIME_OPTIONS]({ commit }, deliveryDate) {
     commit("setDeliveryDate", deliveryDate);
-    if (deliveryDate == null) return [];
-    const timeSlots = [
-      { label: "9 00 - 9 30", id: 1 },
-      { label: "9 30 - 10 00", id: 2 },
-      { label: "10 00 - 10 30", id: 3 },
-    ];
-    commit("setAvailableTimeSlots", timeSlots);
+    if (deliveryDate == null) {
+      commit("setAvailableTimeSlots", []);
+    }
+
+    const result = await foodApi.shop.get.deliveryTimeSlots(deliveryDate);
+    if (result.status == statusCodes.OK) {
+      commit("setAvailableTimeSlots", result.data);
+    }
+
     commit("setDeliveryTime", "");
   },
 

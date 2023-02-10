@@ -89,6 +89,25 @@ const api = {
         const { status, data, error } = await get(apiUrls.getOrderUrl);
         return { status, data, error };
       },
+
+      deliveryDates: async () => {
+        const { status, data, error } = await get(apiUrls.getDeliveryDatesUrl, {
+          fromDate: new Date(),
+        });
+
+        return { status, data, error };
+      },
+
+      deliveryTimeSlots: async (deliveryDate) => {
+        const { status, data, error } = await get(
+          apiUrls.getDeliveryTimeSlots,
+          {
+            date: deliveryDate,
+          }
+        );
+
+        return { status, data, error };
+      },
     },
   },
 

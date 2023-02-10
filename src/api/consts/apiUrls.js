@@ -11,4 +11,6 @@ export default {
   checkLogin: "auth/checkLogin",
   makeOrderUrl: "shop/makeOrder",
   getOrderUrl: "shop/getOrders",
+  getDeliveryDatesUrl: "shop/GetDeliveryDates",
+  getDeliveryTimeSlots: "shop/GetDeliveryTimeSlots",
 };

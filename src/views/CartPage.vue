@@ -59,6 +59,7 @@
         :modelValue="deliveryDate"
         @handle-date="onHandleDate"
         placeholder="Select delivery date"
+        :errors="v$.deliveryDate.$errors"
         class="cart__delivery-date"
       />
       <AppSelect
@@ -68,6 +69,7 @@
         placeholder="Select time slot"
         :multiple="false"
         id="time"
+        :errors="v$.deliveryTime.$errors"
         class="cart__delivery-time"
       />
     </div>
@@ -80,7 +82,7 @@
       >
       <AppButton
         class="cart-buttons-buy app-button--theme-dark"
-        @click="buy"
+        @click="makeOrder"
         :disabled="loading"
         >Buy</AppButton
       >
@@ -104,6 +106,9 @@ import AppButton from "@/components/general/AppButton.vue";
 import AppSelect from "@/components/general/AppSelect.vue";
 import AppLoader from "@/components/general/AppLoader.vue";
 import AppDatePicker from "@/components/general/AppDatePicker.vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
+
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -163,12 +168,27 @@ const {
   UPDATE_SELECTED_TIME_ACTION,
 ]);
 
+const rules = {
+  deliveryDate: { required },
+  deliveryTime: { required },
+};
+const v$ = useVuelidate(rules, { deliveryDate, deliveryTime });
+
 const goToPurchase = () => {
   router.push({ name: "meal" });
 };
 
 const onHandleDate = (modelData) => {
   updateDateAndTimeOptions(modelData);
+};
+
+const makeOrder = async () => {
+  const isDataCorrect = await v$.value.$validate();
+  if (!isDataCorrect) {
+    return;
+  }
+
+  await buy();
 };
 
 onMounted(() => {

@@ -13,6 +13,14 @@
       :reduce="(option) => option.id"
       :label="label"
     />
+    <div
+      v-show="error && errors.length > 0"
+      class="app-select__error"
+      v-for="error of errors"
+      :key="error.$uid"
+    >
+      {{ error.$message }}
+    </div>
   </div>
 </template>
 <script setup>
@@ -30,6 +38,7 @@ const props = defineProps({
   multiple: Boolean,
   id: String,
   label: String,
+  errors: Array,
 });
 
 const vModel = computed({
@@ -88,6 +97,11 @@ const vModel = computed({
     .vs__dropdown-option--highlight {
       background-color: $primary-light-color;
     }
+  }
+  &__error {
+    color: $primary-dark-color;
+    font-size: 0.7rem;
+    padding-bottom: 10px;
   }
 }
 </style>
