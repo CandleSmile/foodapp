@@ -71,6 +71,7 @@
         id="time"
         :errors="v$.deliveryTime.$errors"
         class="cart__delivery-time"
+        label="time"
       />
     </div>
     <div class="cart-buttons">

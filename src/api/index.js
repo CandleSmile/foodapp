@@ -70,8 +70,6 @@ const api = {
   shop: {
     post: {
       buy: async (items, deliveryDate, deliveryTime) => {
-        console.log(deliveryDate);
-        console.log(deliveryTime);
         const cart = {
           cartItems: items.map((item) => ({
             mealId: item.id,
@@ -79,6 +77,8 @@ const api = {
             price: item.price,
             title: item.title,
           })),
+          deliveryDate: deliveryDate,
+          deliveryTimeId: deliveryTime,
         };
         const { status, data, error } = await post(apiUrls.makeOrderUrl, cart);
         return { status, data, error };
