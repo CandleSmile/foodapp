@@ -127,7 +127,10 @@ const actions = {
   async [GET_AVAILABLE_DATES_ACTION]({ commit }) {
     const result = await foodApi.shop.get.deliveryDates();
     if (result.status == statusCodes.OK) {
-      commit("setAvailableDateOptions", result.data);
+      commit(
+        "setAvailableDateOptions",
+        result.data?.map((dt) => dt.deliveryDate)
+      );
     }
   },
 
